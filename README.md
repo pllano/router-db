@@ -16,13 +16,13 @@ routerDb - One simple interface for working with any number of databases at the 
 Для унификации работы с базами данных используется наш собственный стандарт [APIS-2018](https://github.com/pllano/APIS-2018/)
 ### Переключатся между базами данных на лету
 `routerDb` — Имеет встроенный роутер переключения между базами, он может переключатся между базами данных на лету, если основная база данных недоступна. Для этого необходимо в конфигурации указать названия обоих баз. Он контролирует состояние баз данных `master` и `slave`. Если база указанная в конфигурации `$resource` недоступна, подключит `master` или `slave` базу.
-
+#### Получение данных
 ```php
 use routerDb\Db;
 use routerDb\Router;
  
 // Массив с данными запроса
-$arr = [
+$getArr = [
     "limit" => 10,
     "offset" => 0,
     "order" => "DESC",
@@ -47,12 +47,38 @@ $db_name = $db->get($resource);
 $router = new Router($db_name);
 
 // Отправляем запрос для получения списка
-$router->get($resource, $arr);
+$router->get($resource, $getArr);
 // или
 // Получить данные записи по id и дополнительные данные с других связанных ресурсов по параметрам relations
 $router->get($resource, ["relations" => "address,cart,user:user_id:iname:oname:phone:email"], $id);
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
+#### Создание
+```php
+use routerDb\Db;
+use routerDb\Router;
+
+// Массив с данными запроса
+$postArr = [
+    "name" => "Admin",
+    "user_id" => 2,
+    "email" => "admin@example.com"
+];
+
+// Подробности формирования конфигурации ниже
+$config = array();
+// Ресурс (таблица) к которому обращаемся
+$resource = "price";
+// Отдаем конфигурацию
+$db = new Db($config);
+// Получаем название базы для указанного ресурса
+$db_name = $db->get($resource);
+// Подключаемся к базе
+$router = new Router($db_name);
+// Вернет id созданной записи или null при ошибке
+$new_id = $router->post($resource, $postArr);
+ 
+```
 
 ### Глобальная конфигурация
 
