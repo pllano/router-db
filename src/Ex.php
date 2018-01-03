@@ -18,6 +18,6 @@ namespace routerDb;
  *
  * @category Exceptions
  */
-class RouterEx extends \Exception {
+class Ex extends \Exception {
  
 }
