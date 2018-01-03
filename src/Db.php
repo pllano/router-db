@@ -21,8 +21,9 @@ class Db
     */
     private $db = null;
     private $config;
+    private $package = "\RouterDb\\";
  
-    public function __construct($db = null, array $config = array())
+    public function __construct($db = null, array $config = array(), $package = null)
     {
         if ($db !== null) {
             $this->db = $db;
@@ -30,12 +31,15 @@ class Db
         if (count($config) >= 1){
             $this->config = $config;
         }
+        if ($package !== null) {
+            $this->package = $package;
+        }
     }
     
     public function get($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
-            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
             $db = new $class($this->config["db"][$this->db]);
             return $db->get($resource, $arr, $id);
         } else {
@@ -46,7 +50,7 @@ class Db
     public function post($resource = null, array $arr = array())
     {
         if ($this->db !== null && $resource !== null) {
-            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
             $db = new $class($this->config["db"][$this->db]);
             return $db->post($resource, $arr);
         } else {
@@ -57,7 +61,7 @@ class Db
     public function put($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
-            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
             $db = new $class($this->config["db"][$this->db]);
             return $db->put($resource, $arr, $id);
         } else {
@@ -68,7 +72,7 @@ class Db
     public function patch($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
-            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
             $db = new $class($this->config["db"][$this->db]);
             return $db->patch($resource, $arr, $id);
         } else {
@@ -79,7 +83,7 @@ class Db
     public function delete($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
-            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
             $db = new $class($this->config["db"][$this->db]);
             return $db->delete($resource, $arr, $id);
         } else {
