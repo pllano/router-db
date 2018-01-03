@@ -19,12 +19,13 @@ routerDb - One simple interface for working with any number of databases at the 
 
 #### Общий код
 ```php
-use routerDb\Db;
-use routerDb\Router;
-// Отдаем роутеру конфигурацию. Подробности формирования конфигурации ниже.
-$router = new Router($config);
+use RouterDb\Db;
+use RouterDb\Router;
+
 // Ресурс (таблица) к которому обращаемся
 $resource = "user";
+// Отдаем роутеру RouterDb конфигурацию.
+$router = new Router($config);
 // Получаем название базы для указанного ресурса
 $name_db = $router->get($resource);
 // Подключаемся к базе
