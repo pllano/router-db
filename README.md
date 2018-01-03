@@ -22,13 +22,13 @@ routerDb - One simple interface for working with any number of databases at the 
 use routerDb\Db;
 use routerDb\Router;
 // Отдаем конфигурацию. Подробности формирования конфигурации ниже.
-$db = new Db($config);
+$router = new Router($config);
 // Ресурс (таблица) к которому обращаемся
 $resource = "user";
 // Получаем название базы для указанного ресурса
-$db_name = $db->get($resource);
+$name = $router->get($resource);
 // Подключаемся к базе
-$router = new Router($db_name, $config);
+$db = new Db($name, $config);
 ```
 
 #### Получение данных `GET`
@@ -42,7 +42,7 @@ $getArr = [
     "state" => 1
 ];
 // Отправляем запрос для получения списка пользователей
-$router->get($resource, $getArr);
+$db->get($resource, $getArr);
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 #### Создание `POST`
@@ -52,7 +52,7 @@ $postArr["role"] = 1;
 $postArr["name"] = "Admin";
 $postArr["email"] = "admin@example.com";
 // Вернет id нового пользователя или null при ошибке
-$user_id = $router->post($resource, $postArr);
+$user_id = $db->post($resource, $postArr);
 ```
 #### Обновление `PUT`
 ```php
@@ -62,14 +62,14 @@ $id = 1;
 $putArr["name"] = "Admin2";
 $putArr["email"] = "admin2@example.com";
 // Вернет id если все ок, или null при ошибке
-$response = $router->put($resource, $putArr, $id);
+$response = $db->put($resource, $putArr, $id);
 ```
 #### Удаление `DELETE`
 ```php
 // id записи
 $id = 1;
 // Вернет id если все ок, или null при ошибке
-$response = $router->delete($resource, [], $id);
+$response = $db->delete($resource, [], $id);
 ```
 ### Базы данных
 Поддерживаются следующие системы хранения и управления данными через роутер [routerDb\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php):
