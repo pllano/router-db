@@ -19,9 +19,9 @@ routerDb - One simple interface for working with any number of databases at the 
 
 ```php
 use routerDb\Router as Db;
-use routerDb\ConfigDb;
+use routerDb\ConfigDb as routerDb;
  
-// Массив с данными
+// Массив с данными запроса
 $arr = [
     "limit" => 10,
     "offset" => 0,
@@ -40,9 +40,9 @@ $config = array();
 // Ресурс (таблица) к которому обращаемся
 $resource = "price";
 // Отдаем конфигурацию и название ресурса
-$configDb = new ConfigDb($resource, $config);
+$routerDb = new routerDb($config);
 // Получаем название базы для указанного ресурса
-$db_name = $configDb->get();
+$db_name = $routerDb->get($resource);
 // Подключаемся к базе
 $db = new Db($db_name);
 // Отправляем запрос
