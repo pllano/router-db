@@ -1,6 +1,6 @@
 # routerDb
 routerDb - one interface for different databases
-## routerDb — модуль «API Shop» для работы с базами данных
+## routerDb — модуль работы с базами данных для «API Shop»
 
 Поддерживаются следующие системы хранения и управления данными через роутер [routerDb\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php):
 - работа через API транзитом через клас [ApiDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ApiDb.php)
@@ -11,7 +11,7 @@ routerDb - one interface for different databases
 - Без особых сложностей возможно написать клас для работы с любой другой базой данных.
 
 ### Использовать несколько баз данных
-API Shop позволяет одновременно работать с любым количеством баз данных. Название базы данных можно задать для каждого ресурса индивидуально. По умолчанию api.
+routerDb позволяет одновременно работать с любым количеством баз данных. Название базы данных можно задать для каждого ресурса индивидуально. По умолчанию api.
 
 ```php
 use routerDb\Router as Db;
