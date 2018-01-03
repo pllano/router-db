@@ -11,9 +11,9 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb;
+namespace RouterDb\Mysql;
  
-use RouterDb\PdoDb;
+use RouterDb\Mysql\PdoDb;
 use PDO;
  
 class MysqlDb
