@@ -27,15 +27,15 @@ class JsonDb
     public function __construct(array $config = array())
     {
         if (count($config) >= 1){
-		    if (isset($config["dir"])) {
+            if (isset($config["dir"])) {
                 $this->dir = $config["dir"];
-		    }
-		    if (isset($config["cached"])) {
+            }
+            if (isset($config["cached"])) {
                 $this->cached = $config["cached"];
-		    }
-		    if (isset($config["cache_lifetime"])) {
+            }
+            if (isset($config["cache_lifetime"])) {
                 $this->cache_lifetime = $config["cache_lifetime"];
-		    }
+            }
             if (isset($config["temp"])) {
                 $this->temp = $config["temp"];
             }
@@ -45,7 +45,7 @@ class JsonDb
             if (isset($config["crypt"])) {
                 $this->crypt = $config["crypt"];
             }
-		}
+        }
     }
     
     public function get($resource = null, array $arr = array(), $id = null)
@@ -73,3 +73,4 @@ class JsonDb
  
 }
  
+    

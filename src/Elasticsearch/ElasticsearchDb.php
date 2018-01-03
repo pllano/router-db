@@ -21,7 +21,7 @@ use GuzzleHttp\Client as Guzzle;
 */
 class ElasticsearchDb
 {
-	
+    
     private $resource = null;
     private $host = null;
     private $port = null;
@@ -34,15 +34,15 @@ class ElasticsearchDb
     public function __construct(array $config = array())
     {
         if (count($config) >= 1){
-		    if (isset($config["host"])) {
+            if (isset($config["host"])) {
                 $this->host = $config["host"];
-		    }
-		    if (isset($config["port"])) {
+            }
+            if (isset($config["port"])) {
                 $this->port = $config["port"];
-		    }
-		    if (isset($config["type"])) {
+            }
+            if (isset($config["type"])) {
                 $this->type = $config["type"];
-		    }
+            }
             if (isset($config["index"])) {
                 $this->index = $config["index"];
             }
@@ -55,9 +55,9 @@ class ElasticsearchDb
             if (isset($config["password"])) {
                 $this->password = $config["password"];
             }
-		}
+        }
     }
-	
+    
     public function get($resource = null, array $arr = array(), $id = null)
     {
 
@@ -66,19 +66,19 @@ class ElasticsearchDb
     // Создаем одну запись
     public function post($resource = null, array $arr = array())
     {
-		
+        
     }
-	
+    
     // Обновляем
     public function put($resource = null, array $arr = array(), $id = null)
     {
-		
+        
     }
-	
+    
     // Удаляем
     public function delete($resource = null, array $arr = array(), $id = null)
     {
-		
+        
     }
  
 }

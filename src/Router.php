@@ -20,7 +20,7 @@ class Router
      * @var string
     */
     private $db = null;
-	private $config;
+    private $config;
  
     public function __construct($db = null, array $config = array())
     {

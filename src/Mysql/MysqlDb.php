@@ -29,10 +29,10 @@ class MysqlDb
     function __construct(array $config = array())
     {
         if (count($config) >= 1){
-		    $db = new PdoDb($config);
-		}
-		//$this->db = $db->getInstance();
-		$this->db = PdoDb::getInstance();
+            $db = new PdoDb($config);
+        }
+        //$this->db = $db->getInstance();
+        $this->db = PdoDb::getInstance();
     }
  
     public function get($resource = null, array $arr = array(), $id = null)
