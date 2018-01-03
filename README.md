@@ -20,6 +20,12 @@ routerDb - One simple interface for working with any number of databases at the 
 ```php
 use routerDb\Db;
 use routerDb\Router;
+
+// Подробности формирования конфигурации ниже
+$config = array();
+
+// Ресурс (таблица) к которому обращаемся
+$resource = "price";
  
 // Массив с данными запроса
 $getArr = [
@@ -35,10 +41,6 @@ $getArr = [
     }')
 ];
 
-// Подробности формирования конфигурации ниже
-$config = array();
-// Ресурс (таблица) к которому обращаемся
-$resource = "price";
 // Отдаем конфигурацию
 $db = new Db($config);
 // Получаем название базы для указанного ресурса
@@ -58,6 +60,12 @@ $router->get($resource, ["relations" => "address,cart,user:user_id:iname:oname:p
 use routerDb\Db;
 use routerDb\Router;
 
+// Подробности формирования конфигурации ниже
+$config = array();
+
+// Ресурс (таблица) к которому обращаемся
+$resource = "user";
+
 // Массив с данными запроса
 $postArr = [
     "name" => "Admin",
@@ -69,10 +77,6 @@ $postArr["name"] = "Admin";
 $postArr["user_id"] = 2;
 $postArr["email"] = "admin@example.com";
 
-// Подробности формирования конфигурации ниже
-$config = array();
-// Ресурс (таблица) к которому обращаемся
-$resource = "price";
 // Отдаем конфигурацию
 $db = new Db($config);
 // Получаем название базы для указанного ресурса
