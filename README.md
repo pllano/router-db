@@ -31,7 +31,7 @@ $name_db = $router->get($resource);
 $db = new Db($name_db, $config);
 
 // При необходимости $name_db можно указать явно
-$db = new Db("user", $config);
+$db = new Db("mysql", $config);
 ```
 
 #### Получение данных `GET`
