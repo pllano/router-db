@@ -21,14 +21,17 @@ routerDb - One simple interface for working with any number of databases at the 
 ```php
 use routerDb\Db;
 use routerDb\Router;
-// Отдаем конфигурацию. Подробности формирования конфигурации ниже.
+// Отдаем роутеру конфигурацию. Подробности формирования конфигурации ниже.
 $router = new Router($config);
 // Ресурс (таблица) к которому обращаемся
 $resource = "user";
 // Получаем название базы для указанного ресурса
-$name = $router->get($resource);
+$name_db = $router->get($resource);
 // Подключаемся к базе
-$db = new Db($name, $config);
+$db = new Db($name_db, $config);
+
+// При необходимости $name_db можно указать явно
+$db = new Db("user", $config);
 ```
 
 #### Получение данных `GET`
