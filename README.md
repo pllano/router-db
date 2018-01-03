@@ -29,12 +29,7 @@ $getArr = [
     "offset" => 0,
     "order" => "DESC",
     "sort" => "created",
-    "state" => 1,
-    "relations" => base64_encode('{
-        "product": ["type_id","brand_id","serie_id","articul"],
-        "user": "all",
-        "address": "all"
-    }')
+    "state" => 1
 ];
 // Отдаем конфигурацию. Подробности формирования конфигурации ниже.
 $db = new Db($config);
@@ -44,9 +39,6 @@ $db_name = $db->get($resource);
 $router = new Router($db_name);
 // Отправляем запрос для получения списка
 $router->get($resource, $getArr);
-// или
-// Получить данные записи по id и дополнительные данные с других связанных ресурсов по параметрам relations
-$router->get($resource, ["relations" => "address,cart,user:user_id:iname:oname:phone:email"], $id);
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 #### Создание `POST`
