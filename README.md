@@ -21,8 +21,6 @@ routerDb - One simple interface for working with any number of databases at the 
 use routerDb\Db;
 use routerDb\Router;
 
-// Подробности формирования конфигурации ниже
-$config = array();
 // Ресурс (таблица) к которому обращаемся
 $resource = "price";
 // Массив с данными запроса
@@ -39,6 +37,7 @@ $getArr = [
     }')
 ];
 // Отдаем конфигурацию
+// Подробности формирования конфигурации ниже
 $db = new Db($config);
 // Получаем название базы для указанного ресурса
 $db_name = $db->get($resource);
@@ -56,21 +55,14 @@ $router->get($resource, ["relations" => "address,cart,user:user_id:iname:oname:p
 use routerDb\Db;
 use routerDb\Router;
 
-// Подробности формирования конфигурации ниже
-$config = array();
 // Ресурс (таблица) к которому обращаемся
 $resource = "user";
-// Массив с данными запроса
-$postArr = [
-    "name" => "Admin",
-    "user_id" => 2,
-    "email" => "admin@example.com"
-];
-// или тоже самое чуть по другому
+// Массив с данными запроса чуть по другому
 $postArr["name"] = "Admin";
 $postArr["user_id"] = 2;
 $postArr["email"] = "admin@example.com";
 // Отдаем конфигурацию
+// Подробности формирования конфигурации ниже
 $db = new Db($config);
 // Получаем название базы для указанного ресурса
 $db_name = $db->get($resource);
@@ -85,21 +77,15 @@ $new_id = $router->post($resource, $postArr);
 use routerDb\Db;
 use routerDb\Router;
 
-// Подробности формирования конфигурации ниже
-$config = array();
 // Ресурс (таблица) к которому обращаемся
 $resource = "user";
 // id записи
 $id = 1;
 // Массив с данными запроса
-$putArr = [
-    "name" => "Admin2",
-    "email" => "admin2@example.com"
-];
-// или тоже самое чуть по другому
 $putArr["name"] = "Admin2";
 $putArr["email"] = "admin2@example.com";
 // Отдаем конфигурацию
+// Подробности формирования конфигурации ниже
 $db = new Db($config);
 // Получаем название базы для указанного ресурса
 $db_name = $db->get($resource);
@@ -114,8 +100,6 @@ $response = $router->put($resource, $postArr, $id);
 use routerDb\Db;
 use routerDb\Router;
 
-// Подробности формирования конфигурации ниже
-$config = array();
 // Ресурс (таблица) к которому обращаемся
 $resource = "user";
 // id записи
@@ -123,6 +107,7 @@ $id = 1;
 // Пустой массив параметров
 $delArr = [];
 // Отдаем конфигурацию
+// Подробности формирования конфигурации ниже
 $db = new Db($config);
 // Получаем название базы для указанного ресурса
 $db_name = $db->get($resource);
