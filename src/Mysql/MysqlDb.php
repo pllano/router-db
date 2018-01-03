@@ -25,21 +25,21 @@ class MysqlDb
     private $limit = 10;
     private $relations = null;
     private $resource = null;
-	private $config = null;
+    private $config = null;
  
     function __construct(array $config = array())
     {
         if (count($config) >= 1){
-		    $this->config = $config;
-		    PdoDb::set($config);
-		}
+            $this->config = $config;
+            PdoDb::set($config);
+        }
         $this->db = PdoDb::getInstance();
     }
  
     public function get($resource = null, array $arr = array(), $id = null)
     {
         $count = $this->count($resource, $arr, $id);
-		$this->resource = $resource;
+        $this->resource = $resource;
         $i=0;
         if ($id >= 1) {
             if (count($arr) >= 1) {
@@ -113,7 +113,6 @@ class MysqlDb
             $resp["response"]["source"] = "mysql";
             $resp["response"]["total"] = $count["0"]["COUNT(*)"];
             $resp["request"]["query"] = "GET";
- 
         } else {
             // Если ничего не нашли отдаем 404
             $response = null;
@@ -124,7 +123,6 @@ class MysqlDb
             $resp["response"]["source"] = "mysql";
             $resp["response"]["total"] = 0;
             $resp["request"]["query"] = "GET";
-            
         }
         
         $resp["request"]["resource"] = $resource;
@@ -166,7 +164,6 @@ class MysqlDb
                                     foreach($relation as $key => $value)
                                     {
                                         $rel = $this->get_relations($key, $resource_id, $id);
-                                        //$rel = jsonDb::table($key)->where($resource_id, '=', $id)->findAll();
                                         foreach($rel as $k => $v) {
                                             if (in_array($k, $value)) {
                                                 $a = array($k, $v);
@@ -202,8 +199,7 @@ class MysqlDb
 
                                         if (array_key_exists($resource_id, $rel_table_config["schema"]) && isset($id)) {
                                             
-											$rel = $this->get_relations($val, $resource_id, $id);
-                                            //$rel = jsonDb::table($val)->where($resource_id, '=', $id)->findAll();
+                                            $rel = $this->get_relations($val, $resource_id, $id);
                                             if ($c == 1){
                                                 $control = $new_ex;
                                             } else {
@@ -213,7 +209,6 @@ class MysqlDb
                                         } elseif(array_key_exists($val_name, $table_config["schema"]) && isset($val_id)) {
                                                         
                                             $rel = $this->get_relations($val, $val_name, $val_id);
-											//$rel = jsonDb::table($val)->where($val_name, '=', $val_id)->findAll();
                                             if ($c == 1){
                                                 $control = $new_ex;
                                             } else {
@@ -296,16 +291,45 @@ class MysqlDb
             if ($stmt->execute()) {
                 // Если все ок отдаем id
                 $response = $this->db->dbh->lastInsertId();
+ 
+                $resp["headers"]["status"] = "201 Created";
+                $resp["headers"]["code"] = 201;
+                $resp["headers"]["message"] = "Created";
+                $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["response"]["total"] = 1;
+                $resp["response"]["id"] = $response;
+                $resp["response"]["source"] = "mysql";
+                $resp["request"]["query"] = "POST";
+                $resp["request"]["resource"] = $resource;
+            
             } else {
                 // Если ничего не нашли отдаем 0
                 $response = null;
+                $resp["headers"]["status"] = '400 Bad Request';
+                $resp["headers"]["code"] = 400;
+                $resp["headers"]["message"] = 'Bad Request';
+                $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["response"]["total"] = $response;
+                $resp["response"]["id"] = null;
+                $resp["response"]["source"] = "mysql";
+                $resp["request"]["query"] = "POST";
+                $resp["request"]["resource"] = $resource;
             }
         } else {
             // Неуказан ресурс
             $response = null;
+            $resp["headers"]["status"] = '400 Bad Request';
+            $resp["headers"]["code"] = 400;
+            $resp["headers"]["message"] = 'Bad Request';
+            $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["response"]["total"] = $response;
+            $resp["response"]["id"] = null;
+            $resp["response"]["source"] = "mysql";
+            $resp["request"]["query"] = "POST";
+            $resp["request"]["resource"] = $resource;
         }
         // Возвращаем ответ на запрос
-        return $response;
+        return $resp;
     }
  
     // Обновляем
@@ -337,9 +361,26 @@ class MysqlDb
             if ($stmt->execute()) {
                 // Если все ок отдаем 1
                 $response = 1;
+                $resp["headers"]["status"] = "202 Accepted";
+                $resp["headers"]["code"] = 202;
+                $resp["headers"]["message"] = "Accepted";
+                $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["response"]["total"] = $response;
+                $resp["response"]["id"] = $id;
+                $resp["request"]["query"] = "PUT";
+                $resp["request"]["resource"] = $resource;
             } else {
                 // Если нет отдаем 0
                 $response = null;
+                $resp["headers"]["status"] = '400 Bad Request';
+                $resp["headers"]["code"] = 400;
+                $resp["headers"]["message"] = 'Bad Request';
+                $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["response"]["total"] = $response;
+                $resp["response"]["id"] = $id;
+                $resp["response"]["source"] = "mysql";
+                $resp["request"]["query"] = "PUT";
+                $resp["request"]["resource"] = $resource;
             }
         } else {
             $i=0;
@@ -376,9 +417,17 @@ class MysqlDb
                 }
             }
             $response = $i;
+            $resp["headers"]["status"] = '400 Bad Request';
+            $resp["headers"]["code"] = 400;
+            $resp["headers"]["message"] = 'Bad Request';
+            $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["response"]["total"] = $response;
+            $resp["response"]["source"] = "mysql";
+            $resp["request"]["query"] = "PUT";
+            $resp["request"]["resource"] = $resource;
         }
         // Возвращаем колличество обновленных записей
-        return $response;
+        return $resp;
     }
  
     // Удаляем
@@ -397,9 +446,26 @@ class MysqlDb
                 if ($stmt->execute()) {
                     // Если все ок отдаем 1
                     $response = 1;
+                    $resp["headers"]["status"] = "200 Removed";
+                    $resp["headers"]["code"] = 200;
+                    $resp["headers"]["message"] = "Removed";
+                    $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                    $resp["response"]["total"] = $response;
+                    $resp["response"]["id"] = $id;
+                    $resp["request"]["query"] = "DELETE";
+                    $resp["request"]["resource"] = $resource;
                 } else {
                     // Если нет отдаем null
                     $response = null;
+                    $resp["headers"]["status"] = '404 Not Found';
+                    $resp["headers"]["code"] = 404;
+                    $resp["headers"]["message"] = 'Not Found';
+                    $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                    $resp["response"]["total"] = $response;
+                    $resp["response"]["id"] = $id;
+                    $resp["request"]["id"] = $response;
+                    $resp["request"]["query"] = "DELETE";
+                    $resp["request"]["resource"] = $resource;
                 }
             } else {
                 $i=0;
@@ -431,16 +497,37 @@ class MysqlDb
                         }
                     }
                     $response = $i;
+                    $resp["headers"]["status"] = "200 Removed";
+                    $resp["headers"]["code"] = 200;
+                    $resp["headers"]["message"] = "Deleted all rows";
+                    $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                    $resp["response"]["total"] = $response;
+                    $resp["request"]["query"] = "DELETE";
+                    $resp["request"]["resource"] = $resource;
                 } else {
                     $response = null;
+                    $resp["headers"]["status"] = '400 Bad Request';
+                    $resp["headers"]["code"] = 400;
+                    $resp["headers"]["message"] = 'Bad Request';
+                    $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                    $resp["response"]["total"] = $response;
+                    $resp["request"]["query"] = "DELETE";
+                    $resp["request"]["resource"] = $resource;
                 }
             }
         } else {
             // Неуказан ресурс
             $response = null;
+            $resp["headers"]["status"] = '404 Not Found';
+            $resp["headers"]["code"] = 404;
+            $resp["headers"]["message"] = 'Not Found';
+            $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["response"]["total"] = $response;
+            $resp["request"]["query"] = "DELETE";
+            $resp["request"]["resource"] = null;
         }
         // Возвращаем ответ
-        return $response;
+        return $resp;
     }
  
     // count для пагинатора
@@ -512,25 +599,25 @@ class MysqlDb
  
     public function get_relations($resource, $key, $value)
     {
-		// Формируем запрос к базе данных
+        // Формируем запрос к базе данных
         $sql = "
             SELECT * 
             FROM `".$resource."` 
             WHERE `".$key."` ='".$value."'
         ";
-		// Отправляем запрос в базу
+        // Отправляем запрос в базу
         $stmt = $this->db->dbh->prepare($sql);
         if ($stmt->execute()) {
-			// Ответ будет массивом
+            // Ответ будет массивом
             $response = array();
             // Получаем ответ в виде массива
             $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		} else {
-		    $response = null;
-		}
+        } else {
+            $response = null;
+        }
  
-		return $response;
+        return $response;
  
     }
 }
- 
+     
