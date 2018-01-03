@@ -8,19 +8,13 @@ routerDb - One simple interface for working with any number of databases at the 
     "pllano/router-db": "~1.0.1"
 }
 ```
-
-Поддерживаются следующие системы хранения и управления данными через роутер [routerDb\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php):
-- работа через API транзитом через клас [ApiDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ApiDb.php)
-- позволяет работать напрямую с [jsonDB](https://github.com/pllano/json-db) транзитом через клас [JsonDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/JsonDb.php)
-- jsonapiDb - Вы можете хранить данные в [jsonDB](https://github.com/pllano/json-db) в любом месте (даже на удаленном сервере) и работать с ней через API интерфейс, транзитом через клас [JsonapiDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/JsonapiDb.php)
-- позволяет работать напрямую с MySQL транзитом через клас [MysqlDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/MysqlDb.php)
-- позволяет работать с Elasticsearch с использованием [Elasticsearch-PHP](https://github.com/elastic/elasticsearch-php) транзитом через клас [ElasticsearchDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ElasticsearchDb.php)
-- Без особых сложностей возможно написать клас для работы с любой другой базой данных.
+### Структура базы данных
+По умолчанию используеться структура баз данных [db.json](https://github.com/pllano/db.json), вы можете настроить свою структуру для каждого ресурса (таблицы).
+### Один стантарт запросов ко всем базам
+Для унификации работы с базами данных используется наш стандарт [APIS-2018](https://github.com/pllano/APIS-2018/) он работает с структурой базы данных [jsonDb](https://github.com/pllano/json-db). Вы можете использовать [jsonDb](https://github.com/pllano/json-db) только для хранения структуры.
 
 ### Использовать несколько баз данных
 `routerDb` — позволяет одновременно работать с любым количеством баз данных и писать один код для всех баз данных, а всю интеграцию вывести в отдельный класс для каждой базы данных.
-### Один стантарт запросов ко всем базам
-Для унификации работы с базами данных используется наш собственный стандарт [APIS-2018](https://github.com/pllano/APIS-2018/)
 ### Переключатся между базами данных на лету
 `routerDb` — Имеет встроенный роутер переключения между базами, он может переключатся между базами данных на лету, если основная база данных недоступна. Для этого необходимо в конфигурации указать названия обоих баз. Он контролирует состояние баз данных `master` и `slave`. Если база указанная в конфигурации `$resource` недоступна, подключит `master` или `slave` базу.
 
@@ -78,7 +72,14 @@ $id = 1;
 // Вернет 1 если все ок, или null при ошибке
 $response = $router->delete($resource, [], $id);
 ```
-
+### Базы данных
+Поддерживаются следующие системы хранения и управления данными через роутер [routerDb\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php):
+- работа через API транзитом через клас [ApiDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ApiDb.php)
+- позволяет работать напрямую с [jsonDB](https://github.com/pllano/json-db) транзитом через клас [JsonDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/JsonDb.php)
+- jsonapiDb - Вы можете хранить данные в [jsonDB](https://github.com/pllano/json-db) в любом месте (даже на удаленном сервере) и работать с ней через API интерфейс, транзитом через клас [JsonapiDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/JsonapiDb.php)
+- позволяет работать напрямую с MySQL транзитом через клас [MysqlDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/MysqlDb.php)
+- позволяет работать с Elasticsearch с использованием [Elasticsearch-PHP](https://github.com/elastic/elasticsearch-php) транзитом через клас [ElasticsearchDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ElasticsearchDb.php)
+- Без особых сложностей возможно написать клас для работы с любой другой базой данных.
 ### Глобальная конфигурация
 
 ```php
@@ -87,6 +88,7 @@ $config["db"]["master"] = "api";
 // Название резервной базы данных. По умолчанию jsonapi
 $config["db"]["slave"] = "json";
 ```
+
 ### Конфигурация ресурсов
 Индивидуально по каждому ресурсу (таблице)
 ```php
