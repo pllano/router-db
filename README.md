@@ -35,6 +35,14 @@ $db = new Db($name_db, $config);
 $db = new Db("mysql", $config);
 ```
 
+#### Минимум кода
+```php
+use RouterDb\Db;
+// При необходимости код можно упростить
+$db = new Db("mysql", $config);
+$user = $db->get(""user, [], 1);
+```
+
 #### Получение данных `GET`
 ```php
 // Массив с данными запроса
