@@ -105,6 +105,8 @@ $this->package = "\RouterDb\\";
 $this->db = "elasticsearch";
 Первая буква слова переводится в верхний регистр
 $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+// Результат
+$class = new \RouterDb\Elasticsearch\ElasticsearchDb();
 ```
 
 ### Базы данных
