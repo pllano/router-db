@@ -14,21 +14,24 @@
 namespace RouterDb;
 
 use RouterDb\Utility;
-use RouterDb\Ex;
+use RouterDb\routerEx;
 use GuzzleHttp\Client as Guzzle;
 
 class Db
 {
     private $config = null;
     private $db = null;
- 
-    public function set($resource = null, array $config = array())
+    
+    public function __construct(array $config = array())
     {
         if (count($config) >= 1){
             $this->config = $config;
         }
-		//$this->config = (new Settings())->get();
-		if ($resource !== null) {
+    }
+ 
+    public function get($resource = null)
+    {
+        if ($resource !== null) {
             $this->db = $this->config["db"]["master"];
         } else {
             $this->db = null;
@@ -51,8 +54,9 @@ class Db
                 $records = json_decode($output, true);
                 if (isset($records["header"]["code"])) {
                     $this->db = "api";
+                    return $this->db;
                 }
-            } catch (Ex $ex) {
+            } catch (routerEx $ex) {
                 $db = $this->config["db"]["master"];
             }
         } elseif ($db == "jsonapi") {
@@ -69,42 +73,31 @@ class Db
                 $records = json_decode($output, true);
                 if (isset($records["headers"]["code"])) {
                     $this->db = "jsonapi";
+                    return $this->db;
                 }
-            } catch (Ex $ex) {
+            } catch (routerEx $ex) {
                 $db = $this->config["db"]["master"];
+                return $this->db;
             }
         } elseif ($db == "json") {
             try {\jsonDB\Validate::table($resource)->exists();
                 $this->db = "json";
+                return $this->db;
             } catch(\jsonDB\dbException $e){
                 $this->db = $this->config["db"]["master"];
+                return $this->db;
             }
         } elseif ($db == "mysql") {
             $this->db = "mysql";
+            return $this->db;
         } elseif ($db == "elasticsearch") {
             $this->db = "elasticsearch";
+            return $this->db;
         } else {
             $this->db = $this->config["db"]["master"];
+            return $this->db;
         }
     }
-    
-    public function get()
-    {
-        return $this->db;
-    }
- 
-    public function setConfig(array $config = array())
-    {
-        if (count($config) >= 1) {
-            $this->config = $config;
-        }
-    }
- 
-    public function getConfig()
-    {
-        $class = __CLASS__;
-        $ConfigDb = new $class;
-        return $ConfigDb->config;
-    }
+
 }
  
