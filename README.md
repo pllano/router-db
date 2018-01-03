@@ -45,10 +45,12 @@ $db = new Db($config);
 $db_name = $db->get($resource);
 // Подключаемся к базе
 $router = new Router($db_name);
-// Отправляем запрос для множества
+
+// Отправляем запрос для получения списка
 $router->get($resource, $arr);
-// или для конкретного id
-$router->get($resource, $arr, $id);
+// или
+// Получить данные по id, с дополнительными параметрами по relations
+$router->get($resource, ["relations" => "address,cart,user:user_id:iname:oname:phone:email"], $id);
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 
