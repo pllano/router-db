@@ -1,0 +1,37 @@
+{
+    "name":"pllano/router-db",
+    "type": "library",
+    "description": "Read very large CSV files in parts",
+    "keywords": ["router", "db"],
+    "license": "MIT",
+	"homepage": "https://github.com/pllano/router-db",
+    "authors": [
+        {
+            "name": "RouterDb",
+            "email": "open.source@pllano.com",
+            "homepage": "https://pllano.com/"
+        }
+    ],
+    "require":{
+        "php":">=5.3.0"
+    },
+	"require-dev": {
+		"slim/slim": "^3.9",
+		"phpunit/phpunit": "^6.4",
+		"guzzlehttp/guzzle": "^6.3",
+		"pllano/json-db": "^1.0.5",
+		"monolog/monolog": "^1.23",
+		"defuse/php-encryption": "^v2.1"
+	},
+	"autoload": {
+        "psr-4": {
+            "RouterDb\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    },
+    "minimum-stability": "stable"
+}
