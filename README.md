@@ -28,7 +28,7 @@ $resource = "user";
 // Получаем название базы для указанного ресурса
 $db_name = $db->get($resource);
 // Подключаемся к базе
-$router = new Router($db_nam, $config);
+$router = new Router($db_name, $config);
 ```
 
 #### Получение данных `GET`
