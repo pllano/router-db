@@ -61,8 +61,8 @@ $response = $db->get($resource, [], $id);
 $postArr["role"] = 1;
 $postArr["name"] = "Admin";
 $postArr["email"] = "admin@example.com";
-// Вернет id нового пользователя или null при ошибке
-$user_id = $db->post($resource, $postArr);
+// Вернет id новой записи или null при ошибке
+$id = $db->post($resource, $postArr);
 ```
 #### Обновление `PUT`
 ```php
