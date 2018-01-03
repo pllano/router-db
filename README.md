@@ -45,7 +45,14 @@ $getArr = [
     "state" => 1
 ];
 // Отправляем запрос для получения списка пользователей
-$db->get($resource, $getArr);
+// Вернет массив с данными
+$response = $db->get($resource, $getArr);
+```
+#### Получение данных `GET` по `id`
+```php
+$id = 1;
+// Вернет данные пользователя с указанным id
+$response = $db->get($resource, [], $id);
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 #### Создание `POST`
