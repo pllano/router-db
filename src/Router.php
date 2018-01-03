@@ -31,7 +31,7 @@ class Router
     public function get($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
-            $class = '\RouterDb\\'.ucfirst($this->db)."Db";
+            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
             $db = new $class();
             return $db->get($resource, $arr, $id);
         } else {
@@ -42,7 +42,7 @@ class Router
     public function post($resource = null, array $arr = array())
     {
         if ($this->db !== null && $resource !== null) {
-            $class = '\RouterDb\\'.ucfirst($this->db)."Db";
+            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
             $db = new $class();
             return $db->post($resource, $arr);
         } else {
@@ -53,7 +53,7 @@ class Router
     public function put($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
-            $class = '\RouterDb\\'.ucfirst($this->db)."Db";
+            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
             $db = new $class();
             return $db->put($resource, $arr, $id);
         } else {
@@ -64,7 +64,7 @@ class Router
     public function patch($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
-            $class = '\RouterDb\\'.ucfirst($this->db)."Db";
+            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
             $db = new $class();
             return $db->patch($resource, $arr, $id);
         } else {
@@ -75,7 +75,7 @@ class Router
     public function delete($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
-            $class = '\RouterDb\\'.ucfirst($this->db)."Db";
+            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
             $db = new $class();
             return $db->delete($resource, $arr, $id);
         } else {
