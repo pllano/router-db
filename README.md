@@ -246,7 +246,7 @@ $config["db"]["elasticsearch"]["port"] = 9200;
 // вы можете отключить type поставив false
 // в этом случае index будет формироватся так index_type
 $config["db"]["elasticsearch"]["type"] = true; // true|false
-$config["db"]["elasticsearch"]["index"] = "apishop";
+$config["db"]["elasticsearch"]["index"] = "elastic";
 // Если подключение к elasticsearch требует логин и пароль установите auth=true
 $config["db"]["elasticsearch"]["auth"] = false; // true|false
 $config["db"]["elasticsearch"]["user"] = "elastic";
