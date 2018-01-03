@@ -49,7 +49,7 @@ $router = new Router($db_name);
 // Отправляем запрос для получения списка
 $router->get($resource, $arr);
 // или
-// Получить данные по id, с дополнительными параметрами по relations
+// Получить данные записи по id и дополнительные данные с других связанных ресурсов по параметрам relations
 $router->get($resource, ["relations" => "address,cart,user:user_id:iname:oname:phone:email"], $id);
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
