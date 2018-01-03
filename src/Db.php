@@ -14,7 +14,7 @@
 namespace RouterDb;
 
 use RouterDb\Utility;
-use RouterDb\routerEx;
+use RouterDb\Ex;
 use GuzzleHttp\Client as Guzzle;
 
 class Db
@@ -52,7 +52,7 @@ class Db
                 if (isset($records["header"]["code"])) {
                     $this->db = "api";
                 }
-            } catch (routerEx $ex) {
+            } catch (Ex $ex) {
                 $db = $this->config["db"]["master"];
             }
         } elseif ($db == "jsonapi") {
@@ -70,7 +70,7 @@ class Db
                 if (isset($records["headers"]["code"])) {
                     $this->db = "jsonapi";
                 }
-            } catch (routerEx $ex) {
+            } catch (Ex $ex) {
                 $db = $this->config["db"]["master"];
             }
         } elseif ($db == "json") {
