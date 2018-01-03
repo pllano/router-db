@@ -13,92 +13,79 @@
  
 namespace RouterDb;
 
-use RouterDb\Utility;
-use RouterDb\Ex;
-use GuzzleHttp\Client as Guzzle;
-
 class Db
 {
-    private $config;
+    /**
+     * @param $db name
+     * @var string
+    */
     private $db = null;
-    
-    public function __construct(array $config = array())
+    private $config;
+ 
+    public function __construct($db = null, array $config = array())
     {
+        if ($db !== null) {
+            $this->db = $db;
+        }
         if (count($config) >= 1){
             $this->config = $config;
         }
     }
- 
-    public function get($resource = null)
+    
+    public function get($resource = null, array $arr = array(), $id = null)
     {
-        if ($resource !== null) {
-            $this->db = $this->config["db"]["master"];
+        if ($this->db !== null && $resource !== null) {
+            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            $db = new $class($this->config["db"][$this->db]);
+            return $db->get($resource, $arr, $id);
         } else {
-            $this->db = null;
+            return null;
         }
+    }
  
-        if (isset($this->config["resource"][$resource]["db"])) {
-            $db = $this->config["resource"][$resource]["db"];
+    public function post($resource = null, array $arr = array())
+    {
+        if ($this->db !== null && $resource !== null) {
+            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            $db = new $class($this->config["db"][$this->db]);
+            return $db->post($resource, $arr);
         } else {
-            $db = $this->config["db"]["master"];
+            return null;
         }
- 
-        if ($db == "api") {
-            try {
-                $url = $this->config["db"]["api"]["url"];
-                $public_key = $this->config["db"]["api"]["public_key"];
- 
-                $guzzle = new Guzzle();
-                $response = $guzzle->request("GET", $url."".$resource."?public_key=".$public_key."&limit=1&offset=0");
-                $output = $response->getBody();
-                $output = (new Utility())->clean_json($output);
-                $records = json_decode($output, true);
-                if (isset($records["header"]["code"])) {
-                    $this->db = "api";
-                    return $this->db;
-                }
-            } catch (Ex $ex) {
-                $db = $this->config["db"]["master"];
-            }
-        } elseif ($db == "jsonapi") {
-            try {
-                $url = $this->config["db"]["jsonapi"]["url"];
-                $public_key = "?";
-                if ($this->config["db"]["jsonapi"]["auth"] == "QueryKeyAuth") {
-                    $public_key = "?public_key=".$this->config["db"]["jsonapi"]["public_key"];
-                }
-                $guzzle = new Guzzle();
-                $response = $guzzle->request("GET", $url."".$resource."".$public_key."&limit=1&offset=0");
-                $output = $response->getBody();
-                $output = (new Utility())->clean_json($output);
-                $records = json_decode($output, true);
-                if (isset($records["headers"]["code"])) {
-                    $this->db = "jsonapi";
-                    return $this->db;
-                }
-            } catch (Ex $ex) {
-                $db = $this->config["db"]["master"];
-                return $this->db;
-            }
-        } elseif ($db == "json") {
-            try {\jsonDB\Validate::table($resource)->exists();
-                $this->db = "json";
-                return $this->db;
-            } catch(\jsonDB\dbException $e){
-                $this->db = $this->config["db"]["master"];
-                return $this->db;
-            }
-        } elseif ($db == "mysql") {
-            $this->db = "mysql";
-            return $this->db;
-        } elseif ($db == "elasticsearch") {
-            $this->db = "elasticsearch";
-            return $this->db;
+    }
+    
+    public function put($resource = null, array $arr = array(), $id = null)
+    {
+        if ($this->db !== null && $resource !== null) {
+            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            $db = new $class($this->config["db"][$this->db]);
+            return $db->put($resource, $arr, $id);
         } else {
-            $this->db = $this->config["db"]["master"];
-            return $this->db;
+            return null;
+        }
+    }
+    
+    public function patch($resource = null, array $arr = array(), $id = null)
+    {
+        if ($this->db !== null && $resource !== null) {
+            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            $db = new $class($this->config["db"][$this->db]);
+            return $db->patch($resource, $arr, $id);
+        } else {
+            return null;
+        }
+    }
+    
+    public function delete($resource = null, array $arr = array(), $id = null)
+    {
+        if ($this->db !== null && $resource !== null) {
+            $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            $db = new $class($this->config["db"][$this->db]);
+            return $db->delete($resource, $arr, $id);
+        } else {
+            return null;
         }
     }
 
 }
-     
+ 
