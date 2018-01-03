@@ -28,17 +28,17 @@ class ApiDb
     public function __construct(array $config = array())
     {
         if (count($config) >= 1){
-            if (isset($config["config"])) {
-                $this->api = $config["config"];
+            if (isset($config["db"]["api"]["config"])) {
+                $this->api = $config["db"]["api"]["config"];
             }
-            if (isset($config["url"])) {
-                $this->url = $config["url"];
+            if (isset($config["db"]["api"]["url"])) {
+                $this->url = $config["db"]["api"]["url"];
             }
-            if (isset($config["auth"])) {
-                $this->auth = $config["auth"];
+            if (isset($config["db"]["api"]["auth"])) {
+                $this->auth = $config["db"]["api"]["auth"];
             }
-            if (isset($config["public_key"])) {
-                $this->public_key = $config["public_key"];
+            if (isset($config["db"]["api"]["public_key"])) {
+                $this->public_key = $config["db"]["api"]["public_key"];
             }
         }
     }

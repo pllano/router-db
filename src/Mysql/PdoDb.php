@@ -22,7 +22,7 @@ class PdoDb {
     static $confArray;
  
     private function __construct()
-	{
+    {
         // building data source name from config
         $dsn = 'mysql:
                 host='.PdoDb::read('db.host').';
@@ -39,7 +39,7 @@ class PdoDb {
     }
  
     public static function getInstance() 
-	{
+    {
         if (!isset(self::$instance))
         {
             $object = __CLASS__;
@@ -66,13 +66,13 @@ class PdoDb {
  
     public static function set(array $config = array()) 
     {
-        PdoDb::write('db.host', $config["host"]);
-        PdoDb::write('db.port', $config["port"]);
-        PdoDb::write('db.basename', $config["dbname"]);
-        PdoDb::write('db.user', $config["user"]);
-        PdoDb::write('db.password', $config["password"]);
-        PdoDb::write('db.charset', $config["charset"]);
-        PdoDb::write('db.connect_timeout', $config["connect_timeout"]);
+        PdoDb::write('db.host', $config["db"]["mysql"]["host"]);
+        PdoDb::write('db.port', $config["db"]["mysql"]["port"]);
+        PdoDb::write('db.basename', $config["db"]["mysql"]["dbname"]);
+        PdoDb::write('db.user', $config["db"]["mysql"]["user"]);
+        PdoDb::write('db.password', $config["db"]["mysql"]["password"]);
+        PdoDb::write('db.charset', $config["db"]["mysql"]["charset"]);
+        PdoDb::write('db.connect_timeout', $config["db"]["mysql"]["connect_timeout"]);
     }
  
 }

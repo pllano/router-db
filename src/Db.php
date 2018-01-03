@@ -40,7 +40,12 @@ class Db
     {
         if ($this->db !== null && $resource !== null) {
             $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
-            $db = new $class($this->config["db"][$this->db]);
+			$configArr["settings"]["http-codes"] = $this->config["settings"]["http-codes"];
+			$configArr["db"][$this->db] = $this->config["db"][$this->db];
+			if ($this->db != "json"){
+			    $configArr["db"]["json"] = $this->config["db"]["json"];
+			}
+            $db = new $class($configArr);
             return $db->get($resource, $arr, $id);
         } else {
             return null;
@@ -51,7 +56,12 @@ class Db
     {
         if ($this->db !== null && $resource !== null) {
             $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
-            $db = new $class($this->config["db"][$this->db]);
+			$configArr["settings"]["http-codes"] = $this->config["settings"]["http-codes"];
+			$configArr["db"][$this->db] = $this->config["db"][$this->db];
+			if ($this->db != "json"){
+			    $configArr["db"]["json"] = $this->config["db"]["json"];
+			}
+            $db = new $class($configArr);
             return $db->post($resource, $arr);
         } else {
             return null;
@@ -62,7 +72,12 @@ class Db
     {
         if ($this->db !== null && $resource !== null) {
             $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
-            $db = new $class($this->config["db"][$this->db]);
+			$configArr["settings"]["http-codes"] = $this->config["settings"]["http-codes"];
+			$configArr["db"][$this->db] = $this->config["db"][$this->db];
+			if ($this->db != "json"){
+			    $configArr["db"]["json"] = $this->config["db"]["json"];
+			}
+            $db = new $class($configArr);
             return $db->put($resource, $arr, $id);
         } else {
             return null;
@@ -73,7 +88,12 @@ class Db
     {
         if ($this->db !== null && $resource !== null) {
             $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
-            $db = new $class($this->config["db"][$this->db]);
+			$configArr["settings"]["http-codes"] = $this->config["settings"]["http-codes"];
+			$configArr["db"][$this->db] = $this->config["db"][$this->db];
+			if ($this->db != "json"){
+			    $configArr["db"]["json"] = $this->config["db"]["json"];
+			}
+            $db = new $class($configArr);
             return $db->patch($resource, $arr, $id);
         } else {
             return null;
@@ -84,7 +104,12 @@ class Db
     {
         if ($this->db !== null && $resource !== null) {
             $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
-            $db = new $class($this->config["db"][$this->db]);
+			$configArr["settings"]["http-codes"] = $this->config["settings"]["http-codes"];
+			$configArr["db"][$this->db] = $this->config["db"][$this->db];
+			if ($this->db != "json"){
+			    $configArr["db"]["json"] = $this->config["db"]["json"];
+			}
+            $db = new $class($configArr);
             return $db->delete($resource, $arr, $id);
         } else {
             return null;

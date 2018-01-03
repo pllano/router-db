@@ -27,14 +27,14 @@ class JsonapiDb
     public function __construct(array $config = array())
     {
         if (count($config) >= 1) {
-            if (isset($config["url"])) {
-                $this->url = $config["url"];
+            if (isset($config["db"]["jsonapi"]["url"])) {
+                $this->url = $config["db"]["jsonapi"]["url"];
             }
-            if (isset($config["auth"])) {
-                $this->auth = $config["auth"];
+            if (isset($config["db"]["jsonapi"]["auth"])) {
+                $this->auth = $config["db"]["jsonapi"]["auth"];
             }
-            if (isset($config["public_key"])) {
-                $this->public_key = $config["public_key"];
+            if (isset($config["db"]["jsonapi"]["public_key"])) {
+                $this->public_key = $config["db"]["jsonapi"]["public_key"];
             }
         }
     }

@@ -27,44 +27,44 @@ class JsonDb
     public function __construct(array $config = array())
     {
         if (count($config) >= 1){
-            if (isset($config["dir"])) {
-                $this->dir = $config["dir"];
+            if (isset($config["db"]["json"]["dir"])) {
+                $this->dir = $config["db"]["json"]["dir"];
             }
-            if (isset($config["cached"])) {
-                $this->cached = $config["cached"];
+            if (isset($config["db"]["json"]["cached"])) {
+                $this->cached = $config["db"]["json"]["cached"];
             }
-            if (isset($config["cache_lifetime"])) {
-                $this->cache_lifetime = $config["cache_lifetime"];
+            if (isset($config["db"]["json"]["cache_lifetime"])) {
+                $this->cache_lifetime = $config["db"]["json"]["cache_lifetime"];
             }
-            if (isset($config["temp"])) {
-                $this->temp = $config["temp"];
+            if (isset($config["db"]["json"]["temp"])) {
+                $this->temp = $config["db"]["json"]["temp"];
             }
-            if (isset($config["api"])) {
-                $this->api = $config["api"];
+            if (isset($config["db"]["json"]["api"])) {
+                $this->api = $config["db"]["json"]["api"];
             }
-            if (isset($config["crypt"])) {
-                $this->crypt = $config["crypt"];
+            if (isset($config["db"]["json"]["crypt"])) {
+                $this->crypt = $config["db"]["json"]["crypt"];
             }
         }
     }
-    
+ 
     public function get($resource = null, array $arr = array(), $id = null)
     {
 
     }
-
+ 
     // Создаем одну запись
     public function post($resource = null, array $arr = array())
     {
         
     }
-    
+ 
     // Обновляем
     public function put($resource = null, array $arr = array(), $id = null)
     {
         
     }
-    
+ 
     // Удаляем
     public function delete($resource = null, array $arr = array(), $id = null)
     {
@@ -73,4 +73,3 @@ class JsonDb
  
 }
  
-    
