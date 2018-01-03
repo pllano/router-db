@@ -37,10 +37,8 @@ $db = new Db("mysql", $config);
 
 #### Минимум кода
 ```php
-use RouterDb\Db;
-// При необходимости код можно упростить
-$db = new Db("mysql", $config);
-$user = $db->get(""user, [], 1);
+// Получить данные пользователя id=1 одной строчкой кода
+$user = (new \RouterDb\Db("mysql", $config))->get(""user, [], 1);
 ```
 
 #### Получение данных `GET`
