@@ -37,6 +37,16 @@ $db = new Db($name_db, $config);
 
 // При необходимости $name_db можно указать явно
 $db = new Db("mysql", $config);
+
+// Поддерживает сторонние классы баз данных
+$package = "\RouterDb\\";
+$db = new Db($name_db, $config, $package);
+
+// Название класса формируется автоматически
+$this->package = "\RouterDb\\";
+$this->db = "elasticsearch";
+Первая буква слова переводится в верхний регистр
+$class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
 ```
 
 #### Получение данных `GET`
