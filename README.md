@@ -23,10 +23,8 @@ use routerDb\Router;
 
 // Подробности формирования конфигурации ниже
 $config = array();
-
 // Ресурс (таблица) к которому обращаемся
 $resource = "price";
- 
 // Массив с данными запроса
 $getArr = [
     "limit" => 10,
@@ -40,14 +38,12 @@ $getArr = [
         "address": "all"
     }')
 ];
-
 // Отдаем конфигурацию
 $db = new Db($config);
 // Получаем название базы для указанного ресурса
 $db_name = $db->get($resource);
 // Подключаемся к базе
 $router = new Router($db_name);
-
 // Отправляем запрос для получения списка
 $router->get($resource, $getArr);
 // или
@@ -62,10 +58,8 @@ use routerDb\Router;
 
 // Подробности формирования конфигурации ниже
 $config = array();
-
 // Ресурс (таблица) к которому обращаемся
 $resource = "user";
-
 // Массив с данными запроса
 $postArr = [
     "name" => "Admin",
@@ -76,7 +70,6 @@ $postArr = [
 $postArr["name"] = "Admin";
 $postArr["user_id"] = 2;
 $postArr["email"] = "admin@example.com";
-
 // Отдаем конфигурацию
 $db = new Db($config);
 // Получаем название базы для указанного ресурса
@@ -85,6 +78,58 @@ $db_name = $db->get($resource);
 $router = new Router($db_name);
 // Вернет id созданной записи или null при ошибке
 $new_id = $router->post($resource, $postArr);
+ 
+```
+#### Обновление `PUT`
+```php
+use routerDb\Db;
+use routerDb\Router;
+
+// Подробности формирования конфигурации ниже
+$config = array();
+// Ресурс (таблица) к которому обращаемся
+$resource = "user";
+// id записи
+$id = 1;
+// Массив с данными запроса
+$putArr = [
+    "name" => "Admin2",
+    "email" => "admin2@example.com"
+];
+// или тоже самое чуть по другому
+$putArr["name"] = "Admin2";
+$putArr["email"] = "admin2@example.com";
+// Отдаем конфигурацию
+$db = new Db($config);
+// Получаем название базы для указанного ресурса
+$db_name = $db->get($resource);
+// Подключаемся к базе
+$router = new Router($db_name);
+// Вернет 1 если все ок, или null при ошибке
+$response = $router->put($resource, $postArr, $id);
+ 
+```
+#### Удаление `DELETE`
+```php
+use routerDb\Db;
+use routerDb\Router;
+
+// Подробности формирования конфигурации ниже
+$config = array();
+// Ресурс (таблица) к которому обращаемся
+$resource = "user";
+// id записи
+$id = 1;
+// Пустой массив параметров
+$delArr = [];
+// Отдаем конфигурацию
+$db = new Db($config);
+// Получаем название базы для указанного ресурса
+$db_name = $db->get($resource);
+// Подключаемся к базе
+$router = new Router($db_name);
+// Вернет 1 если все ок, или null при ошибке
+$response = $router->delete($resource, $delArr, $id);
  
 ```
 
