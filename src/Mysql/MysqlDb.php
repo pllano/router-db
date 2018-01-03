@@ -26,9 +26,13 @@ class MysqlDb
     private $relations = null;
     private $resource = null;
  
-    function __construct()
+    function __construct(array $config = array())
     {
-        $this->db = PdoDb::getInstance();
+        if (count($config) >= 1){
+		    $db = new PdoDb($config);
+		}
+		//$this->db = $db->getInstance();
+		$this->db = PdoDb::getInstance();
     }
  
     public function get($resource = null, array $arr = array(), $id = null)

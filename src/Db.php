@@ -14,12 +14,12 @@
 namespace RouterDb;
 
 use RouterDb\Utility;
-use RouterDb\routerEx;
+use RouterDb\Ex;
 use GuzzleHttp\Client as Guzzle;
 
 class Db
 {
-    private $config = null;
+    private $config;
     private $db = null;
     
     public function __construct(array $config = array())
@@ -42,6 +42,7 @@ class Db
         } else {
             $db = $this->config["db"]["master"];
         }
+ 
         if ($db == "api") {
             try {
                 $url = $this->config["db"]["api"]["url"];
@@ -56,7 +57,7 @@ class Db
                     $this->db = "api";
                     return $this->db;
                 }
-            } catch (routerEx $ex) {
+            } catch (Ex $ex) {
                 $db = $this->config["db"]["master"];
             }
         } elseif ($db == "jsonapi") {
@@ -75,7 +76,7 @@ class Db
                     $this->db = "jsonapi";
                     return $this->db;
                 }
-            } catch (routerEx $ex) {
+            } catch (Ex $ex) {
                 $db = $this->config["db"]["master"];
                 return $this->db;
             }
@@ -100,4 +101,4 @@ class Db
     }
 
 }
- 
+     

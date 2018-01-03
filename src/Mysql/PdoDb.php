@@ -19,23 +19,21 @@ class PdoDb {
     
     public $dbh; // handle of the db connexion
     private static $instance;
-    private $settings = null;
 
-    private function __construct() {
-		
-        $this->settings = (new Settings())->get();
+    private function __construct(array $config = array()) {
+ 
         // building data source name from config
-        $dsn = 'mysql:host='.$this->settings["db"]["mysql"]["host"].
-               ';dbname='.$this->settings["db"]["mysql"]["dbname"].
-               ';port='.$this->settings["db"]["mysql"]["port"].
-               ';connect_timeout='.$this->settings["db"]["mysql"]["connect_timeout"].
-               ';charset='.$this->settings["db"]["mysql"]["charset"];
+        $dsn = 'mysql:host='.$config["host"].
+               ';dbname='.$config["dbname"].
+               ';port='.$config["port"].
+               ';connect_timeout='.$config["connect_timeout"].
+               ';charset='.$config["charset"];
         // getting DB user from config           
-        $user = $this->settings["db"]["mysql"]["user"];
+        $user = $config["user"];
         // getting DB password from config
-        $password = $this->settings["db"]["mysql"]["password"];
+        $password = $config["password"];
 
-        $this->dbh = new PDO($dsn, $user, $password);   
+        $this->dbh = new PDO($dsn, $user, $password);
     }
 
     public static function getInstance() {

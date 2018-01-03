@@ -13,7 +13,8 @@
  
 namespace RouterDb\Elasticsearch;
 
-use  RouterDb\ConfigDb;
+use RouterDb\Utility;
+use GuzzleHttp\Client as Guzzle;
  
 /**
  * ElasticsearchDb
@@ -21,9 +22,40 @@ use  RouterDb\ConfigDb;
 class ElasticsearchDb
 {
 	
-    public function __construct()
+    private $resource = null;
+    private $host = null;
+    private $port = null;
+    private $type = null;
+    private $index = null;
+    private $auth = null;
+    private $user = null;
+    private $password = null;
+ 
+    public function __construct(array $config = array())
     {
-
+        if (count($config) >= 1){
+		    if (isset($config["host"])) {
+                $this->host = $config["host"];
+		    }
+		    if (isset($config["port"])) {
+                $this->port = $config["port"];
+		    }
+		    if (isset($config["type"])) {
+                $this->type = $config["type"];
+		    }
+            if (isset($config["index"])) {
+                $this->index = $config["index"];
+            }
+            if (isset($config["auth"])) {
+                $this->auth = $config["auth"];
+            }
+            if (isset($config["user"])) {
+                $this->user = $config["user"];
+            }
+            if (isset($config["password"])) {
+                $this->password = $config["password"];
+            }
+		}
     }
 	
     public function get($resource = null, array $arr = array(), $id = null)

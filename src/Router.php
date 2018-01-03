@@ -20,11 +20,15 @@ class Router
      * @var string
     */
     private $db = null;
+	private $config;
  
-    public function __construct($db = null)
+    public function __construct($db = null, array $config = array())
     {
         if ($db !== null) {
             $this->db = $db;
+        }
+        if (count($config) >= 1){
+            $this->config = $config;
         }
     }
     
@@ -32,10 +36,10 @@ class Router
     {
         if ($this->db !== null && $resource !== null) {
             $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
-            $db = new $class();
+            $db = new $class($this->config["db"][$this->db]);
             return $db->get($resource, $arr, $id);
         } else {
-            return false;
+            return null;
         }
     }
  
@@ -43,10 +47,10 @@ class Router
     {
         if ($this->db !== null && $resource !== null) {
             $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
-            $db = new $class();
+            $db = new $class($this->config["db"][$this->db]);
             return $db->post($resource, $arr);
         } else {
-            return false;
+            return null;
         }
     }
     
@@ -54,10 +58,10 @@ class Router
     {
         if ($this->db !== null && $resource !== null) {
             $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
-            $db = new $class();
+            $db = new $class($this->config["db"][$this->db]);
             return $db->put($resource, $arr, $id);
         } else {
-            return false;
+            return null;
         }
     }
     
@@ -65,10 +69,10 @@ class Router
     {
         if ($this->db !== null && $resource !== null) {
             $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
-            $db = new $class();
+            $db = new $class($this->config["db"][$this->db]);
             return $db->patch($resource, $arr, $id);
         } else {
-            return false;
+            return null;
         }
     }
     
@@ -76,10 +80,10 @@ class Router
     {
         if ($this->db !== null && $resource !== null) {
             $class = "\RouterDb\\".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
-            $db = new $class();
+            $db = new $class($this->config["db"][$this->db]);
             return $db->delete($resource, $arr, $id);
         } else {
-            return false;
+            return null;
         }
     }
 

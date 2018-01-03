@@ -15,10 +15,37 @@ namespace RouterDb\Json;
 
 class JsonDb
 {
-    
-    public function __construct()
+ 
+    private $resource = null;
+    private $dir = null;
+    private $cached = null;
+    private $cache_lifetime = null;
+    private $temp = null;
+    private $api = null;
+    private $crypt = null;
+ 
+    public function __construct(array $config = array())
     {
-
+        if (count($config) >= 1){
+		    if (isset($config["dir"])) {
+                $this->dir = $config["dir"];
+		    }
+		    if (isset($config["cached"])) {
+                $this->cached = $config["cached"];
+		    }
+		    if (isset($config["cache_lifetime"])) {
+                $this->cache_lifetime = $config["cache_lifetime"];
+		    }
+            if (isset($config["temp"])) {
+                $this->temp = $config["temp"];
+            }
+            if (isset($config["api"])) {
+                $this->api = $config["api"];
+            }
+            if (isset($config["crypt"])) {
+                $this->crypt = $config["crypt"];
+            }
+		}
     }
     
     public function get($resource = null, array $arr = array(), $id = null)

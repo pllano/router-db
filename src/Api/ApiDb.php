@@ -11,31 +11,36 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb/Api;
+namespace RouterDb\Api;
 
-use RouterDb\ConfigDb;
 use RouterDb\Utility;
 use GuzzleHttp\Client as Guzzle;
 
 class ApiDb
 {
  
-    private $settings = null;
-    private $public_key = null;
     private $resource = null;
     private $url = null;
     private $auth = null;
     private $api = null;
+    private $public_key = null;
  
-    public function __construct()
+    public function __construct(array $config = array())
     {
-        $this->settings = (new ConfigDb())->get();
-        $this->api = $this->settings["db"]["api"]["config"];
-        $this->url = $this->settings["db"]["api"]["url"];
-        $this->auth = $this->settings["db"]["api"]["auth"];
-        if ($this->settings["db"]["api"]["public_key"] !== null) {
-            $this->public_key = $this->settings["db"]["api"]["public_key"];
-        }
+        if (count($config) >= 1){
+		    if (isset($config["config"])) {
+                $this->api = $config["config"];
+		    }
+		    if (isset($config["url"])) {
+                $this->url = $config["url"];
+		    }
+		    if (isset($config["auth"])) {
+                $this->auth = $config["auth"];
+		    }
+            if (isset($config["public_key"])) {
+                $this->public_key = $config["public_key"];
+            }
+		}
     }
  
     public function get($resource = null, array $arr = array(), $id = null)
@@ -44,9 +49,11 @@ class ApiDb
         $resource_id = "";
         $public_key = "";
         $array = "";
+ 
         if ($resource != null) {
             $this->resource = $resource;
         }
+ 
         if ($this->auth == "QueryKeyAuth") {
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
@@ -72,6 +79,7 @@ class ApiDb
             }
             $response = $guzzle->request("GET", $this->url."".$this->resource."".$resource_id."".$array);
         }
+ 
         if ($response != null) {
             $get_body = $response->getBody();
             $output = (new Utility())->clean_json($get_body);
@@ -136,7 +144,7 @@ class ApiDb
             return null;
         }    
     }
-    
+ 
     public function put($resource = null, array $arr = array(), $id = null)
     {
         $guzzle = new Guzzle();
@@ -190,11 +198,11 @@ class ApiDb
             return $records;
         }
     }
-    
+ 
     public function delete($resource = null, array $arr = array(), $id = null)
     {
         
     }
-    
+ 
 }
  

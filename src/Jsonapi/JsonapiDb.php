@@ -19,20 +19,24 @@ use GuzzleHttp\Client as Guzzle;
 class JsonapiDb
 {
  
-    private $settings = null;
     private $resource = null;
     private $url = null;
     private $auth = null;
     private $public_key = null;
  
-    public function __construct()
+    public function __construct(array $config = array())
     {
-        $this->settings = (new Settings())->get();
-        $this->auth = $this->settings["db"]["jsonapi"]["auth"];
-        $this->url = $this->settings["db"]["jsonapi"]["url"];
-        if ($this->settings["db"]["jsonapi"]["public_key"] != null) {
-            $this->public_key = $this->settings["db"]["jsonapi"]["public_key"];
-        }
+        if (count($config) >= 1) {
+		    if (isset($config["url"])) {
+                $this->url = $config["url"];
+		    }
+		    if (isset($config["auth"])) {
+                $this->auth = $config["auth"];
+		    }
+            if (isset($config["public_key"])) {
+                $this->public_key = $config["public_key"];
+            }
+		}
     }
  
     public function get($resource = null, array $arr = array(), $id = null)
