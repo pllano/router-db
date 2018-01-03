@@ -2,6 +2,13 @@
 routerDb - One simple interface for working with any number of databases at the same time
 ## routerDb — Один интерфейс для работы с любым количеством баз данных
 
+Подключить с помощью Composer
+```php
+"require": {
+    "pllano/router-db": "~1.0.1"
+}
+```
+
 Поддерживаются следующие системы хранения и управления данными через роутер [routerDb\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php):
 - работа через API транзитом через клас [ApiDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ApiDb.php)
 - позволяет работать напрямую с [jsonDB](https://github.com/pllano/json-db) транзитом через клас [JsonDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/JsonDb.php)
@@ -149,7 +156,7 @@ $config["resource"]["role"]["db"] = "mysql";
 Подключить с помощью Composer
 ```php
 "require": {
-	"pllano/json-db": "^1.0.5"
+    "pllano/json-db": "^1.0.5"
 }
 ```
 Настройки подключения к jsonDb напрямую
@@ -205,7 +212,7 @@ $config["db"]["mysql"]["password"] = "";
 Подключить с помощью Composer
 ```php
 "require": {
-"elasticsearch/elasticsearch": "~6.0"
+    "elasticsearch/elasticsearch": "~6.0"
 }
 ```
 Настройки подключения к Elasticsearch
