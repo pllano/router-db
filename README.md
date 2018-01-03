@@ -19,7 +19,7 @@ routerDb - One simple interface for working with any number of databases at the 
 #### Минимум кода
 ```php
 // Получить данные пользователя id=1 одной строчкой кода
-$user = (new \RouterDb\Db("mysql", $config))->get(""user, [], 1);
+$user = (new \RouterDb\Db("mysql", $config))->get("user", [], 1);
 ```
 #### Общий код для всех примеров
 ```php
