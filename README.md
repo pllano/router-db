@@ -16,7 +16,7 @@ routerDb - One simple interface for working with any number of databases at the 
 Для унификации работы с базами данных используется наш собственный стандарт [APIS-2018](https://github.com/pllano/APIS-2018/)
 ### Переключатся между базами данных на лету
 `routerDb` — Имеет встроенный роутер переключения между базами, он может переключатся между базами данных на лету, если основная база данных недоступна. Для этого необходимо в конфигурации указать названия обоих баз. Он контролирует состояние баз данных `master` и `slave`. Если база указанная в конфигурации `$resource` недоступна, подключит `master` или `slave` базу.
-#### Получение данных
+#### Получение данных `GET`
 ```php
 use routerDb\Db;
 use routerDb\Router;
@@ -55,7 +55,7 @@ $router->get($resource, $getArr);
 $router->get($resource, ["relations" => "address,cart,user:user_id:iname:oname:phone:email"], $id);
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
-#### Создание
+#### Создание `POST`
 ```php
 use routerDb\Db;
 use routerDb\Router;
