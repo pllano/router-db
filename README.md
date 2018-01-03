@@ -31,7 +31,7 @@ use routerDb\Router;
 // Отдаем конфигурацию. Подробности формирования конфигурации ниже.
 $db = new Db($config);
 // Ресурс (таблица) к которому обращаемся
-$resource = "price";
+$resource = "user";
 // Получаем название базы для указанного ресурса
 $db_name = $db->get($resource);
 // Подключаемся к базе
@@ -42,36 +42,32 @@ $router = new Router($db_name);
 ```php
 // Массив с данными запроса
 $getArr = [
-    "limit" => 10,
+    "limit" => 5,
     "offset" => 0,
     "order" => "DESC",
     "sort" => "created",
     "state" => 1
 ];
-
-// Отправляем запрос для получения списка
+// Отправляем запрос для получения списка пользователей
 $router->get($resource, $getArr);
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 #### Создание `POST`
 ```php
 // Массив с данными запроса
+$postArr["role"] = 1;
 $postArr["name"] = "Admin";
-$postArr["user_id"] = 2;
 $postArr["email"] = "admin@example.com";
-
-// Вернет id созданной записи или null при ошибке
-$new_id = $router->post($resource, $postArr);
+// Вернет id нового пользователя или null при ошибке
+$user_id = $router->post($resource, $postArr);
 ```
 #### Обновление `PUT`
 ```php
 // id записи
 $id = 1;
-
 // Массив с данными запроса
 $putArr["name"] = "Admin2";
 $putArr["email"] = "admin2@example.com";
-
 // Вернет 1 если все ок, или null при ошибке
 $response = $router->put($resource, $putArr, $id);
 ```
@@ -79,7 +75,6 @@ $response = $router->put($resource, $putArr, $id);
 ```php
 // id записи
 $id = 1;
-
 // Вернет 1 если все ок, или null при ошибке
 $response = $router->delete($resource, [], $id);
 ```
