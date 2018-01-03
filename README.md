@@ -89,7 +89,14 @@ $config["resource"]["contact"]["db"] = "mysql";
 $config["resource"]["role"]["db"] = "mysql";
 ```
 ### Конфигурация баз данных
-Настройки подключения к jsondb напрямую
+#### jsonDb
+Подключить с помощью Composer
+```php
+"require": {
+	"pllano/json-db": "^1.0.5"
+}
+```
+Настройки подключения к jsonDb напрямую
 ```php
 // Директория для хранения файлов json базы данных.
 $config["db"]["json"]["dir"] = __DIR__ . "/../../json-db/db/";
@@ -138,6 +145,13 @@ $config["db"]["mysql"]["connect_timeout"] = 15;
 $config["db"]["mysql"]["user"] = "";
 $config["db"]["mysql"]["password"] = "";
 ```
+#### Elasticsearch PHP
+Подключить с помощью Composer
+```php
+"require": {
+"elasticsearch/elasticsearch": "~6.0"
+}
+```
 Настройки подключения к Elasticsearch
 ```php
 // По умолчанию http://localhost:9200/
@@ -153,3 +167,4 @@ $config["db"]["elasticsearch"]["auth"] = false; // true|false
 $config["db"]["elasticsearch"]["user"] = "elastic";
 $config["db"]["elasticsearch"]["password"] = "elastic_password";
 ```
+ 
