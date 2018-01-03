@@ -24,6 +24,8 @@ $user = (new \RouterDb\Db("mysql", $config))->get("user", [], 1);
 // Получить расширенные данные пользователя id=1, дополнительно запрашиваем адрес и корзину
 $user = (new \RouterDb\Db("mysql", $config))->get("user", ["relation" => "address,cart"], 1);
 ```
+Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
+
 #### Общий код для всех примеров
 ```php
 use RouterDb\Db;
@@ -59,7 +61,6 @@ $id = 1;
 // Вернет данные пользователя с указанным id
 $response = $db->get($resource, [], $id);
 ```
-Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 #### Создание `POST`
 ```php
 // Массив с данными запроса
