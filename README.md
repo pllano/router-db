@@ -1,6 +1,6 @@
 # routerDb
 routerDb - One simple interface for working with any number of databases at the same time
-## routerDb — Один простой интерфейс для одновременной работы с любым количеством баз данных
+## routerDb — Один интерфейс для работы с любым количеством баз данных
 
 Поддерживаются следующие системы хранения и управления данными через роутер [routerDb\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php):
 - работа через API транзитом через клас [ApiDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ApiDb.php)
