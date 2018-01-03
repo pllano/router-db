@@ -88,7 +88,7 @@ $db_name = $db->get($resource);
 // Подключаемся к базе
 $router = new Router($db_name);
 // Вернет 1 если все ок, или null при ошибке
-$response = $router->put($resource, $postArr, $id);
+$response = $router->put($resource, $putArr, $id);
  
 ```
 #### Удаление `DELETE`
