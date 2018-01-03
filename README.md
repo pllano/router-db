@@ -34,19 +34,6 @@ $router = new Router($config);
 $name_db = $router->get($resource);
 // Подключаемся к базе
 $db = new Db($name_db, $config);
-
-// При необходимости $name_db можно указать явно
-$db = new Db("mysql", $config);
-
-// Поддерживает сторонние классы баз данных
-$package = "\RouterDb\\";
-$db = new Db($name_db, $config, $package);
-
-// Название класса формируется автоматически
-$this->package = "\RouterDb\\";
-$this->db = "elasticsearch";
-Первая буква слова переводится в верхний регистр
-$class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
 ```
 
 #### Получение данных `GET`
@@ -96,6 +83,30 @@ $id = 1;
 // Вернет id если все ок, или null при ошибке
 $response = $db->delete($resource, [], $id);
 ```
+
+#### Поддерживает сторонние классы баз данных
+```php
+use RouterDb\Db;
+use RouterDb\Router;
+
+// Ресурс (таблица) к которому обращаемся
+$resource = "user";
+// Отдаем роутеру RouterDb конфигурацию.
+$router = new Router($config);
+// Получаем название базы для указанного ресурса
+$name_db = $router->get($resource);
+
+// Поддерживает сторонние классы баз данных
+$package = "\RouterDb\\";
+$db = new Db($name_db, $config, $package);
+
+// Название класса формируется автоматически
+$this->package = "\RouterDb\\";
+$this->db = "elasticsearch";
+Первая буква слова переводится в верхний регистр
+$class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+```
+
 ### Базы данных
 Поддерживаются следующие системы хранения и управления данными через роутер [routerDb\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php):
 - работа через API транзитом через клас [ApiDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ApiDb.php)
