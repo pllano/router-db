@@ -25,20 +25,38 @@ API Shop позволяет одновременно работать с люб�
 ```php
 // Цены получать через API
 $config["resource"]["price"]["db"] = "api";
-// Данные пользователей хранить в MySQL
-$config["resource"]["user"]["db"] = "mysql";
-// Свойтва товара хранить в Elasticsearch
+// Там где нужен поиск храним в Elasticsearch
 $config["resource"]["params"]["db"] = "elasticsearch";
-// Локализацию хранить в jsonDB
-$config["resource"]["language"]["db"] = "json";
+$config["resource"]["product"]["db"] = "elasticsearch";
+$config["resource"]["type"]["db"] = "elasticsearch";
+$config["resource"]["brand"]["db"] = "elasticsearch";
+$config["resource"]["serie"]["db"] = "elasticsearch";
+$config["resource"]["article"]["db"] = "elasticsearch";
+$config["resource"]["article_category"]["db"] = "elasticsearch";
+// Локализацию и валюты получать от jsonapi
+$config["resource"]["language"]["db"] = "jsonapi";
+$config["resource"]["currency"]["db"] = "jsonapi";
+$config["resource"]["category"]["db"] = "jsonapi";
 // Платежи хранить в Oracle
 $config["resource"]["pay"]["db"] = "oracle";
+// Другие данные хранить в MySQL
+$config["resource"]["user"]["db"] = "mysql";
+$config["resource"]["site"]["db"] = "mysql";
+$config["resource"]["user"]["db"] = "mysql";
+$config["resource"]["cart"]["db"] = "mysql";
+$config["resource"]["order"]["db"] = "mysql";
+$config["resource"]["address"]["db"] = "mysql";
+$config["resource"]["images"]["db"] = "mysql";
+$config["resource"]["seo"]["db"] = "mysql";
+$config["resource"]["description"]["db"] = "mysql";
+$config["resource"]["contact"]["db"] = "mysql";
+$config["resource"]["role"]["db"] = "mysql";
 ```
 ### Встроенный роутер переключения между базами
 `routerDb\Router` — роутер подключения к базам данных, дает возможность писать один код для всех баз данных а интеграцию вывести в отдельный класс для каждой базы данных.
 
 ### Конфигурация
-
+Глобальная конфигурация
 ```php
 // Название основной базы данных. По умолчанию api
 $config["db"]["master"] = "api";
@@ -60,9 +78,8 @@ $config["db"]["json"]["api"] = false;
 // Шифруем базу
 $config["db"]["json"]["crypt"] = false;
 ```
-
+Настройки подключения к jsondb через API
 ```php
-// Настройки подключения к jsondb через API
 // URL API jsondb
 $config["db"]["jsonapi"]["url"] = "https://xti.com.ua/json-db/";
 // Доступные методы аутентификации: null, CryptoAuth, QueryKeyAuth, HttpTokenAuth, LoginPasswordAuth
@@ -72,8 +89,7 @@ $config["db"]["jsonapi"]["public_key"] = "";
 // Приватный ключ шифрования
 $config["db"]["jsonapi"]["private_key"] = "";
 ```
-
-Если работает через API будет брать часть конфигурации из api
+Настройки подключения к RESTful API
 ```php
 // Если работает через API будет брать часть конфигурации из api
 $config["db"]["api"]["config"] = true; // true|false
@@ -86,9 +102,8 @@ $config["db"]["api"]["public_key"] = "";
 // Приватный ключ шифрования
 $config["db"]["api"]["private_key"] = "";
 ```
-
+Настройки подключения к базе MySQL
 ```php
-// Настройки подключения к базе MySQL
 $config["db"]["mysql"]["host"] = "localhost";
 $config["db"]["mysql"]["dbname"] = "";
 $config["db"]["mysql"]["port"] = "";
@@ -96,6 +111,21 @@ $config["db"]["mysql"]["charset"] = "utf8";
 $config["db"]["mysql"]["connect_timeout"] = 15;
 $config["db"]["mysql"]["user"] = "";
 $config["db"]["mysql"]["password"] = "";
+```
+Настройки подключения к Elasticsearch
+```php
+// По умолчанию http://localhost:9200/
+$config["db"]["elasticsearch"]["host"] = "localhost";
+$config["db"]["elasticsearch"]["port"] = 9200;
+// Учитывая то что в следующих версиях Elasticsearch не будет type
+// вы можете отключить type поставив false
+// в этом случае index будет формироватся так index_type
+$config["db"]["elasticsearch"]["type"] = true; // true|false
+$config["db"]["elasticsearch"]["index"] = "apishop";
+// Если подключение к elasticsearch требует логин и пароль установите auth=true
+$config["db"]["elasticsearch"]["auth"] = false; // true|false
+$config["db"]["elasticsearch"]["user"] = "elastic";
+$config["db"]["elasticsearch"]["password"] = "elastic_password";
 ```
 
 ```php
