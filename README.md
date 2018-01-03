@@ -64,6 +64,10 @@ $postArr = [
     "user_id" => 2,
     "email" => "admin@example.com"
 ];
+// или тоже самое чуть по другому
+$postArr["name"] = "Admin";
+$postArr["user_id"] = 2;
+$postArr["email"] = "admin@example.com";
 
 // Подробности формирования конфигурации ниже
 $config = array();
