@@ -61,14 +61,14 @@ $id = 1;
 // Массив с данными запроса
 $putArr["name"] = "Admin2";
 $putArr["email"] = "admin2@example.com";
-// Вернет 1 если все ок, или null при ошибке
+// Вернет id если все ок, или null при ошибке
 $response = $router->put($resource, $putArr, $id);
 ```
 #### Удаление `DELETE`
 ```php
 // id записи
 $id = 1;
-// Вернет 1 если все ок, или null при ошибке
+// Вернет id если все ок, или null при ошибке
 $response = $router->delete($resource, [], $id);
 ```
 ### Базы данных
