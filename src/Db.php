@@ -17,7 +17,7 @@ use RouterDb\Utility;
 use RouterDb\routerEx;
 use GuzzleHttp\Client as Guzzle;
 
-class ConfigDb
+class Db
 {
     private $config = null;
     private $db = null;
