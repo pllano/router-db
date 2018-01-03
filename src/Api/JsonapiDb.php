@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb;
+namespace RouterDb\Api;
  
 use RouterDb\Utility;
 use GuzzleHttp\Client as Guzzle;
