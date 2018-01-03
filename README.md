@@ -10,7 +10,43 @@ routerDb - one interface for different databases
 - позволяет работать с Elasticsearch с использованием [Elasticsearch-PHP](https://github.com/elastic/elasticsearch-php) транзитом через клас [ElasticsearchDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ElasticsearchDb.php)
 - Без особых сложностей возможно написать клас для работы с любой другой базой данных.
 
-### Резервная база данных
+### Использовать несколько баз данных
+API Shop позволяет одновременно работать с любым количеством баз данных. Название базы данных можно задать для каждого ресурса индивидуально. По умолчанию api.
+
+```php
+use routerDb\Router as Db;
+use routerDb\ConfigDb;
+ 
+// Массив с данными
+$arr = [
+    "limit" => 10,
+    "offset" => 0,
+    "order" => "DESC",
+    "sort" => "created",
+    "state" => 1,
+    "relations" => base64_encode('{
+        "product": ["type_id","brand_id","serie_id","articul"],
+        "user": "all",
+        "address": "all"
+    }')
+];
+
+// Подробности формирования конфигурации ниже
+$config = array();
+// Ресурс (таблица) к которому обращаемся
+$resource = "price";
+// Отдаем конфигурацию и название ресурса
+$configDb = new ConfigDb($resource, $config);
+// Получаем название базы для указанного ресурса
+$db_name = $configDb->get();
+// Подключаемся к базе
+$db = new Db($db_name);
+// Отправляем запрос
+$db->get($resource, $arr);
+```
+Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
+
+### Две основных базы данных
 routerDb может переключатся между базами данных на лету, если основная база данных недоступна. Для этого необходимо в конфигурации указать названия обоих баз.
 ```php
 // Название основной базы данных. По умолчанию api
@@ -18,9 +54,6 @@ $config["db"]["master"] = "api";
 // Название резервной базы данных. По умолчанию json
 $config["db"]["slave"] = "json"; // Рекомендуется оставить json
 ```
-### Использовать несколько баз данных
-API Shop позволяет одновременно работать с любым количеством баз данных. Название базы данных можно задать для каждого ресурса индивидуально. По умолчанию api.
-
 `routerDb\ConfigDb` контролирует состояние баз данных `master` и `slave`. Если база указанная в конфигурации `$resource` недоступна, подключит `master` или `slave` базу.
 ```php
 // Цены получать через API
@@ -127,32 +160,3 @@ $config["db"]["elasticsearch"]["auth"] = false; // true|false
 $config["db"]["elasticsearch"]["user"] = "elastic";
 $config["db"]["elasticsearch"]["password"] = "elastic_password";
 ```
-
-```php
-use routerDb\Router as Db;
-use routerDb\ConfigDb;
- 
-// Массив с данными
-$arr = [
-    "limit" => 10,
-    "offset" => 0,
-    "order" => "DESC",
-    "sort" => "created",
-    "state" => 1,
-    "relations" => base64_encode('{
-        "product": ["type_id","brand_id","serie_id","articul"],
-        "user": "all",
-        "address": "all"
-    }')
-];
-
-// Ресурс к которому обращаемся
-$resource = "price";
-// Получаем название базы для указанного ресурса
-$db_name = new ConfigDb($resource, $config);
-// Подключаемся к базе
-$db = new Db($db_name);
-// Отправляем запрос
-$db->get($resource, $arr);
-```
-Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
