@@ -121,7 +121,7 @@ $count = $arr["response"]["total"]; // колличество удаленных
 require __DIR__ . '/NamedatabaseDb.php';
 require __DIR__ . '/NamedatabasePing.php';
 
-// В файлах вашего пакета должно быть указанно
+// В файлах стороннего пакета должно быть указанно
 
 namespace YourPackage\Namedatabase;
 
