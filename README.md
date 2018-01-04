@@ -54,10 +54,11 @@ $getArr = [
 
 $response = $db->get($resource, $getArr);
 
-// Вернет массив json
-// ["headers"]["code"] - 200 или другой в зависимости от ошибки
-// ["response"]["total"] аналог count - общее колличество записей соответствующих запросу
-// ["body"]["items"] - массив с данными
+// Вернет массив json 
+$arr = json_decode($response, true);
+$code = $arr["headers"]["code"]; // 200 или другой в зависимости от ошибки
+$count = $arr["response"]["total"]; // общее колличество записей соответствующих запросу
+$items = $arr["body"]["items"]; // массив с данными
 ```
 #### Получение данных `GET` по `id`
 ```php
@@ -75,9 +76,10 @@ $postArr["email"] = "admin@example.com";
 $id = $db->post($resource, $postArr);
 
 // Вернет массив json
-// ["headers"]["code"] - 201 или другой в зависимости от ошибки
-// ["response"]["total"] - 1 если все ок, или null при ошибке
-// ["response"]["id"] - id новой записи, или null при ошибке
+$arr = json_decode($response, true);
+$code = $arr["headers"]["code"]; // 201 или другой в зависимости от ошибки
+$count = $arr["response"]["total"]; // 1 если все ок, или null при ошибке
+$id = $arr["response"]["id"]; // id новой записи, или null при ошибке
 ```
 #### Обновление `PUT`
 ```php
@@ -90,8 +92,9 @@ $putArr["email"] = "admin2@example.com";
 $response = $db->put($resource, $putArr, $id);
 
 // Вернет массив json
-// ["headers"]["code"] - 202 или другой в зависимости от ошибки
-// ["response"]["total"] - колличество обновленных записей, или null при ошибке
+$arr = json_decode($response, true);
+$code = $arr["headers"]["code"]; // 202 или другой в зависимости от ошибки
+$count = $arr["response"]["total"]; // колличество обновленных записей, или null при ошибке
 ```
 #### Удаление `DELETE`
 ```php
@@ -100,8 +103,9 @@ $id = 1;
 $response = $db->delete($resource, [], $id);
 
 // Вернет массив json
-// ["headers"]["code"] - 200 или другой в зависимости от ошибки
-// ["response"]["total"] - колличество удаленных записей, или null при ошибке
+$arr = json_decode($response, true);
+$code = $arr["headers"]["code"]; // 200 или другой в зависимости от ошибки
+$count = $arr["response"]["total"]; // колличество удаленных записей, или null при ошибке
 ```
 
 #### Поддерживает сторонние классы баз данных
