@@ -1,6 +1,6 @@
 # routerDb
 routerDb - One simple interface for working with any number of databases at the same time
-## routerDb — Один интерфейс для работы с любым количеством баз данных
+## routerDb — Один интерфейс для работы со всеми базами данных
 
 Подключить с помощью Composer
 ```php
