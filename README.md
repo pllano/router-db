@@ -26,6 +26,8 @@ $user = (new \RouterDb\Db("mysql", $config))->get("user", ["relation" => "addres
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 
+Примечание: `relations` чем-то напоминает `JOIN` но не является полным его аналогом !
+
 #### Общий код для всех примеров
 ```php
 use RouterDb\Db;
