@@ -51,9 +51,13 @@ $getArr = [
     "sort" => "created",
     "state" => 1
 ];
-// Отправляем запрос для получения списка пользователей
-// Вернет массив с данными
+
 $response = $db->get($resource, $getArr);
+
+// Вернет массив json
+// ["headers"]["code"] - 200 или другой в зависимости от ошибки
+// ["response"]["total"] - общее колличество
+// ["body"]["items"] - массив с данными
 ```
 #### Получение данных `GET` по `id`
 ```php
@@ -67,8 +71,13 @@ $response = $db->get($resource, [], $id);
 $postArr["role"] = 1;
 $postArr["name"] = "Admin";
 $postArr["email"] = "admin@example.com";
-// Вернет id новой записи или null при ошибке
+
 $id = $db->post($resource, $postArr);
+
+// Вернет массив json
+// ["headers"]["code"] - 201 или другой в зависимости от ошибки
+// ["response"]["total"] - 1 если все ок, или null при ошибке
+// ["response"]["id"] - id новой записи, или null при ошибке
 ```
 #### Обновление `PUT`
 ```php
@@ -77,15 +86,24 @@ $id = 1;
 // Массив с данными запроса
 $putArr["name"] = "Admin2";
 $putArr["email"] = "admin2@example.com";
-// Вернет id если все ок, или null при ошибке
+
 $response = $db->put($resource, $putArr, $id);
+
+// Вернет массив json
+// ["headers"]["code"] - 202 или другой в зависимости от ошибки
+// ["response"]["total"] - 1 если все ок, или null при ошибке
+// ["response"]["id"] - id если все ок, или null при ошибке
 ```
 #### Удаление `DELETE`
 ```php
 // id записи
 $id = 1;
-// Вернет id если все ок, или null при ошибке
 $response = $db->delete($resource, [], $id);
+
+// Вернет массив json
+// ["headers"]["code"] - 200 или другой в зависимости от ошибки
+// ["response"]["total"] - 1 если все ок, или null при ошибке
+// ["response"]["id"] - id если все ок, или null при ошибке
 ```
 
 #### Поддерживает сторонние классы баз данных
