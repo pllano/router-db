@@ -132,13 +132,18 @@ $package = "\RouterDb\\";
 $db = new Db($name_db, $config, $package);
 
 // Название класса формируется автоматически
-$this->package = "\RouterDb\\";
-$this->db = "elasticsearch";
+$this->package = "\YourPackage\\"; // По умолчанию "\RouterDb\\"
+$this->db = "namedb"; // Пример: json, mysql
 Первая буква слова переводится в верхний регистр
 $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
 // Результат
-$class = "\RouterDb\Elasticsearch\ElasticsearchDb";
+$class = "\YourPackage\Namedb\NamedbDb";
 $db = new $class($config["db"][$name_db]);
+// Примечание: в файле вашего класса должно быть указанно
+namespace YourPackage\Namedb;
+class NamedbDb
+{
+}
 ```
 
 ### Базы данных
