@@ -166,7 +166,7 @@ class NamedatabaseDb
  
 }
 ```
-#### NamedatabasePing.php - Пингует доступность базы данных
+#### NamedatabasePing.php - Пингует доступность ресурса в базе данных
 ```php
 namespace YourPackage\Namedatabase;
 
