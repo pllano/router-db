@@ -129,7 +129,7 @@ namespace YourPackage\Namedatabase;
 class NamedatabaseDb
 {
  
-    private $config = null;
+    private $config;
  
     public function __construct(array $config = array())
     {
