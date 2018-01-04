@@ -367,8 +367,10 @@ $config["db"]["mysql"]["connect_timeout"] = 15;
 $config["db"]["mysql"]["user"] = "";
 $config["db"]["mysql"]["password"] = "";
 ```
-#### Elasticsearch PHP
-Подключить с помощью Composer
+#### Elasticsearch
+На вашем сервере должен бытьу становлен и настроен [Elasticsearch](https://www.elastic.co/downloads/elasticsearch)
+
+Дальше вы можете подключить Elasticsearch PHP с помощью Composer
 ```php
 "require": {
     "elasticsearch/elasticsearch": "~6.0"
