@@ -5,7 +5,7 @@ routerDb - One simple interface for working with any number of databases at the 
 Подключить с помощью Composer
 ```php
 "require": {
-    "pllano/router-db": "~1.0.1"
+    "pllano/router-db": "1.0.1"
 }
 ```
 ## Что умеет `routerDb` ?
@@ -22,7 +22,9 @@ routerDb - One simple interface for working with any number of databases at the 
 ### Синхронизировать данные между `master` и `slave`
 Как только основная база `master` ресурса станет доступна `routerDb\Queue` синхронизирует данные в базу указанную в конфигурации `$resource` или `master` если нет.
 ### Управление структурой баз данных
-По умолчанию используеться структура баз данных [db.json](https://github.com/pllano/db.json), вы можете настроить свою структуру для каждого ресурса (таблицы). 
+По умолчанию используеться структура баз данных [db.json](https://github.com/pllano/db.json), вы можете настроить свою структуру для каждого ресурса (таблицы).
+### Идеальное решение для использования в вашей API
+По у
 
 #### Минимум кода
 ```php
