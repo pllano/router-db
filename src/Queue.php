@@ -11,27 +11,64 @@
  * file that was distributed with this source code.
  */
  
+/**
+ * Поля ресурса queue
+ *
+ * "resource": "string"
+ * "resource_id": "integer"
+ * "request": "string"
+ * "request_body": "string"
+ */
+ 
 namespace RouterDb;
  
 class Queue
 {
  
+    /**
+     * @param $config
+     * @var array
+    */
     private $config;
-    private $db = null;
-    private $package = "\RouterDb\\";
+    /**
+     * @param $class
+     * @var string
+    */
+    private $class;
  
-    public function __construct(array $config = array(), $package = null)
+    public function __construct(array $config = array())
     {
         if (count($config) >= 1){
-            $this->config = $config;
+ 
+            // Получаем название резервной базы
+            $db = $config["db"]["slave"];
+ 
+            // Получаем конфигурацию для резервной базы
+            $configArr["settings"]["http-codes"] = $config["settings"]["http-codes"];
+            $configArr["db"][$db] = $config["db"][$db];
+			$this->config = $configArr;
+ 
+            $class = "\RouterDb\\".ucfirst($db)."\\".ucfirst($db)."Db";
+			$this->class = $class;
+ 
         }
-        if ($package !== null) {
-            $this->package = $package;
-        }
+ 
     }
  
     public function run()
     {
+ 
+        $class = $this->class;
+		$db = new $class($this->config);
+		$response = $db->get("queue");
+ 
+		$count = count($response);
+		if (count($count) >= 1) {
+		    // Возвращаем колличество записей оставшихся в очереди
+            return $count;
+		} else {
+		    return null;
+		}
  
     }
  
@@ -40,8 +77,21 @@ class Queue
  
     }
  
-    public function add($request, $resource = null, array $arr = array(), $id = null)
+	public function add($request, $db, $resource = null, array $arr = array(), $id = null)
     {
+ 
+		$array["resource"] = $request;
+		$array["request"] = $resource;
+		if (isset($id)) {
+		    $array["resource_id"] = $id;
+		}
+		if ($request != "POST") {
+		    $array["request_body"] = base64_encode(json_encode($arr));
+		}
+ 
+        $class = $this->class;
+		$queueDb = new $class($this->config);
+		$queueDb->post("queue", $array);
  
     }
 }
