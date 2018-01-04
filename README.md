@@ -121,11 +121,11 @@ $count = $arr["response"]["total"]; // колличество удаленных
 require __DIR__ . '/NamedatabaseDb.php';
 require __DIR__ . '/NamedatabasePing.php';
 ```
-#### Каркас для разработки
+#### Структура NamedatabaseDb.php
+// Обрабатывает запросы к базе данных
 ```php
 namespace YourPackage\Namedatabase;
  
-// Обрабатывает запросы к базе данных
 class NamedatabaseDb
 {
  
@@ -165,13 +165,44 @@ class NamedatabaseDb
     }
  
 }
-
+```
+#### Структура NamedatabaseDb.php
+// Пингует доступность базы данных
+```php
 namespace YourPackage\Namedatabase;
 
+use RouterDb\Ex;
+ 
 class NamedatabasePing
 {
-    // Пингует доступность базы данных
-    // Возращает название базы namedatabase или null
+ 
+    private $config;
+ 
+    public function __construct(array $config = array())
+    {
+        if (count($config) >= 1){
+            $this->config = $config;
+        }
+    }
+ 
+    public function ping($resource = null)
+    {
+        if ($resource != null) {
+            try {
+                // Должен возвращать название базы namedatabase или null если база недоступна
+                // Этот код работает без проверки доступности базы
+                $response = $resource;
+ 
+                return $response;
+ 
+            } catch (Ex $ex) {
+            return null;
+            }
+        } else {
+            return null;
+        }
+    }
+ 
 }
 ```
 #### Использование пакета
