@@ -232,7 +232,7 @@ $this->db = $name_db;
 Первая буква слова переводится в верхний регистр
 $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
 // Результат
-$class = "\YourPackage\Nameclass\NameclassDb";
+// $class = "\YourPackage\Nameclass\NameclassDb";
 $db = new $class($config["db"][$name_db]);
  
 ```
