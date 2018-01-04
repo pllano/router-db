@@ -128,11 +128,11 @@ $router = new Router($config);
 $name_db = $router->get($resource);
 
 // Поддерживает сторонние классы баз данных
-$package = "\RouterDb\\";
+$package = "\YourPackage\\";
 $db = new Db($name_db, $config, $package);
 
 // Название класса формируется автоматически
-$this->package = "\YourPackage\\"; // По умолчанию "\RouterDb\\"
+$this->package = "\RouterDb\\"; // По умолчанию
 $this->db = "namedb"; // Пример: json, mysql
 Первая буква слова переводится в верхний регистр
 $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
