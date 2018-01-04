@@ -121,8 +121,7 @@ $count = $arr["response"]["total"]; // колличество удаленных
 require __DIR__ . '/NamedatabaseDb.php';
 require __DIR__ . '/NamedatabasePing.php';
 ```
-#### Структура NamedatabaseDb.php
-// Обрабатывает запросы к базе данных
+#### NamedatabaseDb.php - Обрабатывает запросы к базе данных
 ```php
 namespace YourPackage\Namedatabase;
  
@@ -166,8 +165,7 @@ class NamedatabaseDb
  
 }
 ```
-#### Структура NamedatabasePing.php
-Пингует доступность базы данных
+#### NamedatabasePing.php - Пингует доступность базы данных
 ```php
 namespace YourPackage\Namedatabase;
 
