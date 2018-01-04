@@ -133,18 +133,18 @@ $db = new Db($name_db, $config, $package);
 
 // Название класса формируется автоматически
 $this->package = "\RouterDb\\"; // По умолчанию
-$this->db = "namedb"; // Пример: json, mysql
+$this->db = "nameclass"; // Пример: json, mysql
 Первая буква слова переводится в верхний регистр
 $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
 // Результат
-$class = "\YourPackage\Namedb\NamedbDb";
+$class = "\YourPackage\Nameclass\NameclassDb";
 $db = new $class($config["db"][$name_db]);
 
 // В файле вашего класса должно быть указанно
 
-namespace YourPackage\Namedb;
+namespace YourPackage\Nameclass;
 
-class NamedbDb
+class NameclassDb
 {
 }
 
