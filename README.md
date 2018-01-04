@@ -59,6 +59,13 @@ $arr = json_decode($response, true);
 $code = $arr["headers"]["code"]; // 200 или другой в зависимости от ошибки
 $count = $arr["response"]["total"]; // общее колличество записей соответствующих запросу
 $items = $arr["body"]["items"]; // массив с данными
+
+foreach($items as $value)
+{
+  $id = items["item"]["id"];
+  $iname = items["item"]["iname"];
+}
+
 ```
 #### Получение данных `GET` по `id`
 ```php
