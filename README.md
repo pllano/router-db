@@ -5,7 +5,7 @@ routerDb - One simple interface for working with any number of databases at the 
 Подключить с помощью Composer
 ```php
 "require": {
-    "pllano/router-db": "1.0.2-beta"
+    "pllano/router-db": "1.0.2"
 }
 ```
 ## Что умеет `routerDb` ?
