@@ -112,6 +112,27 @@ $response = $db->delete($resource, [], $id);
 $code = $response["headers"]["code"]; // 200 или другой в зависимости от ошибки
 $count = $response["response"]["total"]; // колличество удаленных записей, или null при ошибке
 ```
+#### Поиск `GET` в режиме `search`
+Добавлен новый вид GET запроса который заточен исключительно на полнотекстовый поиск.
+
+Не поддерживает параметр `relations` и получение данных по `id`
+```php
+$resource = "product"; // Ресурс
+$arr = []; // Параметры запроса
+$search = ""; // Ключевое слово
+$response = $db->search($resource, $arr, $search);
+
+// Вернет массив
+$code = $response["headers"]["code"]; // 200 или другой в зависимости от ошибки
+$count = $response["response"]["total"]; // колличество найденых записей, или null при ошибке
+$items = $response["body"]["items"]; // массив с данными
+
+foreach($items as $value)
+{
+  $id = items["item"]["id"];
+  $iname = items["item"]["iname"];
+}
+```
 
 #### Поддерживает сторонние пакеты
 ```php
