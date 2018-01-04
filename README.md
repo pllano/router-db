@@ -117,11 +117,11 @@ $count = $arr["response"]["total"]; // колличество удаленных
 
 #### Поддерживает сторонние пакеты
 ```php
-// Вы должны подключить свой пакет
+// Вы должны подключить пакет
 require __DIR__ . '/NamedatabaseDb.php';
 require __DIR__ . '/NamedatabasePing.php';
  
-// В файлах стороннего пакета должно быть указанно
+// В файлах пакета должно быть указанно
  
 namespace YourPackage\Namedatabase;
  
@@ -171,7 +171,7 @@ class NamedatabasePing
     // Возращает название базы namedatabase или null
 }
 ```
-#### Использование стороннего пакета
+#### Использование пакета
 ```php
 use RouterDb\Db;
 use RouterDb\Router;
