@@ -337,7 +337,7 @@ $config["db"]["json"]["api"] = false;
 // Шифруем базу
 $config["db"]["json"]["crypt"] = false;
 ```
-Настройки подключения к jsondb через API
+Настройки подключения к [jsonDb](https://github.com/pllano/json-db) через [API](https://github.com/pllano/json-db/tree/master/api)
 ```php
 // URL API jsondb
 $config["db"]["jsonapi"]["url"] = "https://xti.com.ua/json-db/";
