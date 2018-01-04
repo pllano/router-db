@@ -321,14 +321,8 @@ $config["resource"]["contact"]["db"] = "mysql";
 $config["resource"]["role"]["db"] = "mysql";
 ```
 ### Конфигурация баз данных
-#### jsonDb
-Подключить с помощью Composer
-```php
-"require": {
-    "pllano/json-db": "^1.0.5"
-}
-```
-Настройки подключения к jsonDb напрямую
+#### [jsonDb](https://github.com/pllano/json-db)
+Настройки подключения к [jsonDb](https://github.com/pllano/json-db) которая идет в комплекте по умолчанию и выступает как резервная база данных.
 ```php
 // Директория для хранения файлов json базы данных.
 $config["db"]["json"]["dir"] = __DIR__ . "/../../json-db/db/";
