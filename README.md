@@ -210,16 +210,16 @@ use RouterDb\Router;
 
 // В конфигурации необходимо указать название базы данных для ресурса
 $config["resource"]["user"]["db"] = "namedatabase";
+// Подключить ваш пакет
+$package = "\YourPackage\\";
 
 // Ресурс или таблица к которой обращаемся
 $resource = "user";
-// Отдаем роутеру RouterDb конфигурацию.
-$router = new Router($config);
+// Отдаем роутеру RouterDb конфигурацию и название пакета.
+$router = new Router($config, $package);
 // Получаем название базы для указанного ресурса
 $name_db = $router->get($resource); // Вернет namedatabase если база доступна
-
-// Подключить ваш пакет
-$package = "\YourPackage\\";
+// Подключаем базу
 $db = new Db($name_db, $config, $package);
 // Отправить запрос
 $response = $db->get($resource, [], 1);
