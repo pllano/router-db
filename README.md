@@ -83,6 +83,17 @@ foreach($items as $value)
 $id = 1;
 // Вернет данные пользователя с указанным id
 $response = $db->get($resource, [], $id);
+
+// Вернет массив
+$code = $response["headers"]["code"]; // 200 или другой в зависимости от ошибки
+$count = $response["response"]["total"]; // общее колличество записей соответствующих запросу
+$item = $response["body"]["items"]["0"]["item"]; // Данные пользователя
+
+$role_id = $item["role_id"];
+$email = $item["email"];
+$phone = $item["phone"];
+$iname = $item["iname"];
+$fname = $item["fname"];
 ```
 #### Создание `POST`
 ```php
