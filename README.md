@@ -139,11 +139,15 @@ $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
 // Результат
 $class = "\YourPackage\Namedb\NamedbDb";
 $db = new $class($config["db"][$name_db]);
-// Примечание: в файле вашего класса должно быть указанно
+
+// В файле вашего класса должно быть указанно
+
 namespace YourPackage\Namedb;
+
 class NamedbDb
 {
 }
+
 ```
 
 ### Базы данных
