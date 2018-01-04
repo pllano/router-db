@@ -137,6 +137,7 @@ class NamedatabaseDb
     public function get($resource = null, array $arr = array(), $id = null)
     {
         // Получение данных
+        // Должен возвращать count для пагинации в параметре ["response"]["total"]
     }
  
     public function post($resource = null, array $arr = array())
@@ -157,6 +158,7 @@ class NamedatabaseDb
     public function search($resource = null, array $arr = array(), $search = null)
     {
         // Новый запрос, аналог get рассчитан на полнотекстовый поиск
+        // Должен возвращать count для пагинации в параметре ["response"]["total"]
     }
  
 }
