@@ -120,19 +120,55 @@ $count = $arr["response"]["total"]; // колличество удаленных
 // Вы должны подключить свой пакет
 require __DIR__ . '/NamedatabaseDb.php';
 require __DIR__ . '/NamedatabasePing.php';
-
+ 
 // В файлах стороннего пакета должно быть указанно
-
+ 
 namespace YourPackage\Namedatabase;
-
+ 
+// Обрабатывает запросы к базе данных
 class NamedatabaseDb
 {
+ 
+    public function __construct(array $config = array())
+    {
+ 
+    }
+    
+    public function get($resource = null, array $arr = array(), $id = null)
+    {
+ 
+    }
+ 
+    public function post($resource = null, array $arr = array())
+    {
+ 
+    }
+ 
+    public function put($resource = null, array $arr = array(), $id = null)
+    {
+    
+    }
+ 
+    public function delete($resource = null, array $arr = array(), $id = null)
+    {
+ 
+    }
+ 
+    public function search($resource = null, array $arr = array())
+    {
+        // Новый запрос, аналог get расчитан на полнотекстовый поиск
+        // Обрабатыввает только текстовые поля
+        // Игнорирует id и все другие цифровые поля
+    }
+ 
 }
 
 namespace YourPackage\Namedatabase;
 
 class NamedatabasePing
 {
+    // Пингует доступность базы данных
+    // Возращает название базы namedatabase или null
 }
 ```
 #### Использование стороннего пакета
