@@ -368,7 +368,7 @@ $config["db"]["mysql"]["user"] = "";
 $config["db"]["mysql"]["password"] = "";
 ```
 #### Elasticsearch
-На вашем сервере должен бытьу становлен и настроен [Elasticsearch](https://www.elastic.co/downloads/elasticsearch)
+На вашем сервере должен быть установлен и настроен [Elasticsearch](https://www.elastic.co/downloads/elasticsearch)
 
 Дальше вы можете подключить Elasticsearch PHP с помощью Composer
 ```php
