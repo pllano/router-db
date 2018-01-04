@@ -194,7 +194,7 @@ class NamedatabasePing
                 return $response;
  
             } catch (Ex $ex) {
-            return null;
+                return null;
             }
         } else {
             return null;
