@@ -120,9 +120,9 @@ $count = $arr["response"]["total"]; // колличество удаленных
 // Вы должны подключить пакет
 require __DIR__ . '/NamedatabaseDb.php';
 require __DIR__ . '/NamedatabasePing.php';
- 
-// В файлах пакета должно быть указанно
- 
+```
+#### Каркас для разработки
+```php
 namespace YourPackage\Namedatabase;
  
 // Обрабатывает запросы к базе данных
