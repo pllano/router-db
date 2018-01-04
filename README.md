@@ -129,36 +129,39 @@ namespace YourPackage\Namedatabase;
 class NamedatabaseDb
 {
  
+    private $config = null;
+ 
     public function __construct(array $config = array())
     {
- 
+        // Получить и установить конфигурацию
+        if (count($config) >= 1){
+            $this->config = $config;
+        }
     }
     
     public function get($resource = null, array $arr = array(), $id = null)
     {
- 
+        // Получение данных
     }
  
     public function post($resource = null, array $arr = array())
     {
- 
+        // Создание одной записи
     }
  
     public function put($resource = null, array $arr = array(), $id = null)
     {
-    
+        // Обновление одной или нескольких записей
     }
  
     public function delete($resource = null, array $arr = array(), $id = null)
     {
- 
+        // Удаление одной или нескольких записей
     }
  
-    public function search($resource = null, array $arr = array())
+    public function search($resource = null, array $arr = array(), $search = null)
     {
-        // Новый запрос, аналог get расчитан на полнотекстовый поиск
-        // Обрабатыввает только текстовые поля
-        // Игнорирует id и все другие цифровые поля
+        // Новый запрос, аналог get рассчитан на полнотекстовый поиск
     }
  
 }
