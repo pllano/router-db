@@ -455,4 +455,19 @@ $config["db"]["elasticsearch"]["auth"] = false; // true|false
 $config["db"]["elasticsearch"]["user"] = "elastic";
 $config["db"]["elasticsearch"]["password"] = "elastic_password";
 ```
- 
+<a name="feedback"></a>
+## Поддержка, обратная связь, новости
+
+Общайтесь с нами через почту open.source@pllano.com
+
+Если вы нашли баг в API json DB загляните в [issues](https://github.com/pllano/router-db/issues), возможно, про него мы уже знаем и
+постараемся исправить в ближайшем будущем. Если нет, лучше всего сообщить о нём там. Там же вы можете оставлять свои пожелания и предложения.
+
+За новостями вы можете следить по
+[коммитам](https://github.com/pllano/router-db/commits/master) в этом репозитории.
+[RSS](https://github.com/pllano/router-db/commits/master.atom).
+
+Лицензия
+-------
+
+The MIT License (MIT). Please see [LICENSE](https://github.com/pllano/router-db/blob/master/LICENSE) for more information.
