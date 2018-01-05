@@ -211,6 +211,11 @@ class NamedatabaseDb
         // Должен возвращать count для пагинации в параметре ["response"]["total"]
     }
  
+    public function last_id($resource)
+    {
+        // Получить последний идентификатор
+    }
+ 
 }
 ```
 #### NamedatabasePing.php - Пингует доступность ресурса в базе данных
