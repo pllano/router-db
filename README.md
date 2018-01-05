@@ -351,16 +351,16 @@ $config["resource"]["role"]["db"] = "mysql";
 // Сейчас используется только один параметр для каждого ресурса
 $config["resource"]["user"]["db"] = "mysql";
 ```
-Мы хотим дать возможность:
+В будущем мы хотим дать возможность:
 ```php
 // Подключится к другой базе mysql
-$config["resource"]["user"]["host"] = "mysql";
-$config["resource"]["user"]["dbname"] = "mysql";
-$config["resource"]["user"]["port"] = "mysql";
-$config["resource"]["user"]["charset"] = "mysql";
-$config["resource"]["user"]["connect_timeout"] = "mysql";
-$config["resource"]["user"]["user"] = "mysql";
-$config["resource"]["user"]["password"] = "mysql";
+$config["resource"]["user"]["host"] = "localhost";
+$config["resource"]["user"]["dbname"] = "";
+$config["resource"]["user"]["port"] = "";
+$config["resource"]["user"]["charset"] = "utf8";
+$config["resource"]["user"]["connect_timeout"] = 30;
+$config["resource"]["user"]["user"] = "";
+$config["resource"]["user"]["password"] = "";
 
 // Включать кеширование для каждого ресурса индивидуально
 $config["resource"]["user"]["cached"] = true;
