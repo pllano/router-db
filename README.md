@@ -315,40 +315,125 @@ $config["db"]["slave"] = "json";
 ### Конфигурация ресурсов
 Индивидуально по каждому ресурсу (таблице)
 ```php
-// Цены получать через API
+// API Shop позволяет одновременно работать с любым количеством баз данных
+// Название базы данных для каждого ресурса. По умолчанию api
+ 
+// Хранилище для ресурса site
+$config["resource"]["site"]["db"] = "api"; // +
+// Синхронизировать ресурс site или нет. По умолчанию false
+$config["resource"]["site"]["synchronize"] = false;
+ 
+// Хранилище для ресурса price
 $config["resource"]["price"]["db"] = "api";
-// Там где нужен поиск храним в Elasticsearch
-$config["resource"]["params"]["db"] = "elasticsearch";
-$config["resource"]["product"]["db"] = "elasticsearch";
-$config["resource"]["type"]["db"] = "elasticsearch";
-$config["resource"]["brand"]["db"] = "elasticsearch";
-$config["resource"]["serie"]["db"] = "elasticsearch";
-$config["resource"]["article"]["db"] = "elasticsearch";
-$config["resource"]["article_category"]["db"] = "elasticsearch";
-// Локализацию и валюты получать от jsonapi
-$config["resource"]["language"]["db"] = "jsonapi";
-$config["resource"]["currency"]["db"] = "jsonapi";
+// Синхронизировать ресурс price или нет. По умолчанию false
+$config["resource"]["price"]["synchronize"] = false;
+
+// Хранилище для ресурса language
+$config["resource"]["language"]["db"] = "json";
+// Синхронизировать ресурс language или нет. По умолчанию false
+$config["resource"]["language"]["synchronize"] = false;
+ 
+// Хранилище для ресурса user
+$config["resource"]["user"]["db"] = "jsonapi";
+// Синхронизировать ресурс user или нет. По умолчанию false
+$config["resource"]["user"]["synchronize"] = false;
+ 
+// Хранилище для ресурса cart
+$config["resource"]["cart"]["db"] = "jsonapi";
+// Синхронизировать ресурс cart или нет. По умолчанию false
+$config["resource"]["cart"]["synchronize"] = false;
+ 
+// Хранилище для ресурса order
+$config["resource"]["order"]["db"] = "jsonapi";
+// Синхронизировать ресурс order или нет. По умолчанию false
+$config["resource"]["order"]["synchronize"] = false;
+ 
+// Хранилище для ресурса address
+$config["resource"]["address"]["db"] = "jsonapi";
+// Синхронизировать ресурс address или нет. По умолчанию false
+$config["resource"]["address"]["synchronize"] = false;
+ 
+// Хранилище для ресурса pay
+$config["resource"]["pay"]["db"] = "jsonapi";
+// Синхронизировать ресурс pay или нет. По умолчанию false
+$config["resource"]["pay"]["synchronize"] = false;
+ 
+// Хранилище для ресурса product
+$config["resource"]["product"]["db"] = "jsonapi";
+// Синхронизировать ресурс product или нет. По умолчанию false
+$config["resource"]["product"]["synchronize"] = false;
+ 
+// Хранилище для ресурса type
+$config["resource"]["type"]["db"] = "jsonapi";
+// Синхронизировать ресурс type или нет. По умолчанию false
+$config["resource"]["type"]["synchronize"] = false;
+ 
+// Хранилище для ресурса brand
+$config["resource"]["brand"]["db"] = "jsonapi";
+// Синхронизировать ресурс brand или нет. По умолчанию false
+$config["resource"]["brand"]["synchronize"] = false;
+ 
+// Хранилище для ресурса serie
+$config["resource"]["serie"]["db"] = "jsonapi";
+// Синхронизировать ресурс serie или нет. По умолчанию false
+$config["resource"]["serie"]["synchronize"] = false;
+ 
+// Хранилище для ресурса images
+$config["resource"]["images"]["db"] = "jsonapi";
+// Синхронизировать ресурс images или нет. По умолчанию false
+$config["resource"]["images"]["synchronize"] = false;
+ 
+// Хранилище для ресурса seo
+$config["resource"]["seo"]["db"] = "jsonapi";
+// Синхронизировать ресурс seo или нет. По умолчанию false
+$config["resource"]["seo"]["synchronize"] = false;
+ 
+// Хранилище для ресурса description
+$config["resource"]["description"]["db"] = "jsonapi";
+// Синхронизировать ресурс description или нет. По умолчанию false
+$config["resource"]["description"]["synchronize"] = false;
+ 
+// Хранилище для ресурса params
+$config["resource"]["params"]["db"] = "jsonapi";
+// Синхронизировать ресурс params или нет. По умолчанию false
+$config["resource"]["params"]["synchronize"] = false;
+ 
+// Хранилище для ресурса contact
+$config["resource"]["contact"]["db"] = "jsonapi";
+// Синхронизировать ресурс contact или нет. По умолчанию false
+$config["resource"]["contact"]["synchronize"] = false;
+ 
+// Хранилище для ресурса category
 $config["resource"]["category"]["db"] = "jsonapi";
-// Платежи хранить в Oracle
-$config["resource"]["pay"]["db"] = "oracle";
-// Другие данные хранить в MySQL
-$config["resource"]["user"]["db"] = "mysql";
-$config["resource"]["site"]["db"] = "mysql";
-$config["resource"]["user"]["db"] = "mysql";
-$config["resource"]["cart"]["db"] = "mysql";
-$config["resource"]["order"]["db"] = "mysql";
-$config["resource"]["address"]["db"] = "mysql";
-$config["resource"]["images"]["db"] = "mysql";
-$config["resource"]["seo"]["db"] = "mysql";
-$config["resource"]["description"]["db"] = "mysql";
-$config["resource"]["contact"]["db"] = "mysql";
-$config["resource"]["role"]["db"] = "mysql";
+// Синхронизировать ресурс category или нет. По умолчанию false
+$config["resource"]["category"]["synchronize"] = false;
+ 
+// Хранилище для ресурса role
+$config["resource"]["role"]["db"] = "jsonapi";
+// Синхронизировать ресурс role или нет. По умолчанию false
+$config["resource"]["role"]["synchronize"] = false;
+ 
+// Хранилище для ресурса currency
+$config["resource"]["currency"]["db"] = "jsonapi";
+// Синхронизировать ресурс currency или нет. По умолчанию false
+$config["resource"]["currency"]["synchronize"] = false;
+ 
+// Хранилище для ресурса article
+$config["resource"]["article"]["db"] = "mysql";
+// Синхронизировать ресурс article или нет. По умолчанию false
+$config["resource"]["article"]["synchronize"] = false;
+ 
+// Хранилище для ресурса article_category
+$config["resource"]["article_category"]["db"] = "mysql";
+// Синхронизировать ресурс article_category или нет. По умолчанию false
+$config["resource"]["article_category"]["synchronize"] = false;
 ```
 #### На будущее, заложена возможность расширять индивидуальную конфигурацию каждого ресурса.
 Например:
 ```php
-// Сейчас используется только один параметр для каждого ресурса
+// Сейчас используется только два параметра для каждого ресурса
 $config["resource"]["user"]["db"] = "mysql";
+$config["resource"]["user"]["synchronize"] = false;
 ```
 В будущем мы хотим дать возможность:
 ```php
