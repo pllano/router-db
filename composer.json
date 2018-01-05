@@ -17,7 +17,7 @@
     },
 	"require-dev": {
 		"guzzlehttp/guzzle": "^6.3",
-		"pllano/json-db": "^1.0",
+		"pllano/json-db": "^1.0"
 	},
 	"autoload": {
         "psr-4": {
