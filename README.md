@@ -372,8 +372,11 @@ $config["resource"]["user"]["key"] = true;
 // Отдавать в ответе только указанные поля
 $config["resource"]["user"]["fields"] = "phone,email,iname,fname";
 
-// Запретить или разрешить отдавать связанные данные через параметр relations
+// Запретить или разрешить отдавать связанные данные из других ресурсов через параметр relations
 $config["resource"]["user"]["relations"] = false;
+
+// Переключатся на slave базу
+$config["resource"]["user"]["slave"] = false;
 ```
 
 ### Конфигурация баз данных
