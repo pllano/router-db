@@ -354,13 +354,13 @@ $config["resource"]["user"]["db"] = "mysql";
 В будущем мы хотим дать возможность:
 ```php
 // Подключится к другой базе mysql
-$config["resource"]["user"]["host"] = "localhost";
-$config["resource"]["user"]["dbname"] = "";
-$config["resource"]["user"]["port"] = "";
-$config["resource"]["user"]["charset"] = "utf8";
-$config["resource"]["user"]["connect_timeout"] = 30;
-$config["resource"]["user"]["user"] = "";
-$config["resource"]["user"]["password"] = "";
+$config["resource"]["user"]["mysql"]["host"] = "localhost";
+$config["resource"]["user"]["mysql"]["dbname"] = "";
+$config["resource"]["user"]["mysql"]["port"] = "";
+$config["resource"]["user"]["mysql"]["charset"] = "utf8";
+$config["resource"]["user"]["mysql"]["connect_timeout"] = 30;
+$config["resource"]["user"]["mysql"]["user"] = "";
+$config["resource"]["user"]["mysql"]["password"] = "";
  
 // Включать кеширование для каждого ресурса индивидуально
 $config["resource"]["user"]["cached"] = true;
@@ -376,9 +376,9 @@ $config["resource"]["user"]["fields"] = "phone,email,iname,fname";
 $config["resource"]["user"]["relations"] = false;
  
 // Запретить или разрешить переключатся на slave базу
-$config["resource"]["user"]["slave"] = false;
+$config["resource"]["user"]["db"]["slave"] = false;
 // Или указать slave базу индивидуально для этого ресурса
-$config["resource"]["user"]["slave"] = "api";
+$config["resource"]["user"]["db"]["slave"] = "api";
 ```
 
 ### Конфигурация баз данных
