@@ -459,7 +459,7 @@ $config["resource"]["user"]["fields"] = "phone,email,iname,fname";
 // Запретить или разрешить отдавать связанные данные из других ресурсов через параметр relations
 $config["resource"]["user"]["relations"] = false;
  
-// Запретить или разрешить переключатся на slave базу
+// Запретить переключатся на slave базу
 $config["resource"]["user"]["db"]["slave"] = false;
 // Или указать slave базу индивидуально для этого ресурса
 $config["resource"]["user"]["db"]["slave"] = "api";
