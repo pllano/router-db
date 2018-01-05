@@ -151,9 +151,9 @@ class Queue
                             }
                         }
                     } elseif ($request == "PUT" || $request == "PATCH") {
-                        // В разработке
+                        // Еще в разработке ...
                     } elseif ($request == "DELETE") {
-                        // В разработке
+                        // Еще в разработке ...
                     }
                 
                 }
@@ -194,6 +194,7 @@ class Queue
             $db = new $class($this->config);
             // Получить последний идентификатор
             $last_id = $db->last_id($resource);
+            // Еще в разработке ...
  
         }
  

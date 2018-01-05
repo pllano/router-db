@@ -429,6 +429,104 @@ class MysqlDb
         // Возвращаем колличество обновленных записей
         return $resp;
     }
+	
+    // Обновляем
+    public function patch($resource = null, array $arr = array(), $id = null)
+    {
+        $this->resource = $resource;
+        // Задаем пустое значение $query чтобы не выдавало ошибок
+        $query = '';
+        // если есть id, тогда в массиве $arr данные для одной записи
+        if ($id >= 1) {
+            if (count($arr) >= 1) {
+                foreach($arr as $key => $value)
+                {
+                    if ($key == ''){$key = null;}
+                    if (isset($key) && isset($value)) {
+                        $query .= "`".$key."` ='".$value."' ";
+                    }
+                }
+            }
+            // Формируем запрос к базе данных
+            $sql = "
+                UPDATE `".$resource."` 
+                SET ".$query." 
+                WHERE `".$resource."_id` =".$id."
+            ";
+            // Отправляем запрос в базу
+            $stmt = $this->db->dbh->prepare($sql);
+
+            if ($stmt->execute()) {
+                // Если все ок отдаем 1
+                $response = 1;
+                $resp["headers"]["status"] = "202 Accepted";
+                $resp["headers"]["code"] = 202;
+                $resp["headers"]["message"] = "Accepted";
+                $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["response"]["total"] = $response;
+                $resp["response"]["id"] = $id;
+                $resp["request"]["query"] = "PATCH";
+                $resp["request"]["resource"] = $resource;
+            } else {
+                // Если нет отдаем 0
+                $response = null;
+                $resp["headers"]["status"] = '400 Bad Request';
+                $resp["headers"]["code"] = 400;
+                $resp["headers"]["message"] = 'Bad Request';
+                $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["response"]["total"] = $response;
+                $resp["response"]["id"] = $id;
+                $resp["response"]["source"] = "mysql";
+                $resp["request"]["query"] = "PATCH";
+                $resp["request"]["resource"] = $resource;
+            }
+        } else {
+            $i=0;
+            if (count($arr) >= 1) {
+                foreach($arr as $item)
+                {
+                    foreach($item as $key => $value)
+                    {
+                        if ($key == ""){$key = null;}
+                        if (isset($key) && isset($value)) {
+                            if ($key == $resource."_id"){
+                                $key_id = $key;
+                                $id = $value;
+                            } else {
+                                $query .= "`".$key."` ='".$value."' ";
+                            }
+                        }
+                    }
+                    // Формируем запрос к базе данных
+                    $sql = "
+                        UPDATE `".$resource."` 
+                        SET ".$query." 
+                        WHERE `".$key_id."` =".$id."
+                    ";
+                    // Отправляем запрос в базу
+                    $stmt = $this->db->dbh->prepare($sql);
+                    if ($stmt->execute()) {
+                        // Если все ок +1
+                        $i+=1;
+                    } else {
+                        // Если нет +0
+                        $i+=0;
+                    }
+                }
+            }
+            $response = $i;
+            $resp["headers"]["status"] = '400 Bad Request';
+            $resp["headers"]["code"] = 400;
+            $resp["headers"]["message"] = 'Bad Request';
+            $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["response"]["total"] = $response;
+            $resp["response"]["source"] = "mysql";
+            $resp["request"]["query"] = "PATCH";
+            $resp["request"]["resource"] = $resource;
+        }
+        // Возвращаем колличество обновленных записей
+        return $resp;
+    }
  
     // Удаляем
     public function delete($resource = null, array $arr = array(), $id = null)
@@ -534,6 +632,8 @@ class MysqlDb
     {
         // Новый запрос, аналог get рассчитан на полнотекстовый поиск
         // Должен возвращать count для пагинации в параметре ["response"]["total"]
+ 
+        // Еще в разработке ...
     }
  
     // count для пагинатора
