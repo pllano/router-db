@@ -193,16 +193,19 @@ class NamedatabaseDb
     public function post($resource = null, array $arr = array())
     {
         // Создание одной записи
+        // Должен возвращать id новой записи в параметре ["response"]["id"]
     }
  
     public function put($resource = null, array $arr = array(), $id = null)
     {
         // Обновление одной или нескольких записей
+        // Должен возвращать колличество измененных записей в параметре ["response"]["total"]
     }
  
     public function delete($resource = null, array $arr = array(), $id = null)
     {
         // Удаление одной или нескольких записей
+        // Должен возвращать колличество удаленных записей в параметре ["response"]["total"]
     }
  
     public function search($resource = null, array $arr = array(), $search = null)
@@ -213,7 +216,7 @@ class NamedatabaseDb
  
     public function last_id($resource)
     {
-        // Получить последний идентификатор
+        // Должен возвращать последний идентификатор ["response"]["last_id"]
     }
  
 }
