@@ -216,7 +216,7 @@ class NamedatabaseDb
  
     public function last_id($resource)
     {
-        // Должен возвращать последний идентификатор ["response"]["last_id"]
+        // Должен возвращать последний идентификатор без параметров
     }
  
 }
