@@ -127,6 +127,7 @@ class ElasticsearchDb
     public function delete($resource = null, array $arr = array(), $id = null)
     {
         $client = Elastic::create()->build();
+        
         $client->delete($params);
     }
 
@@ -135,13 +136,17 @@ class ElasticsearchDb
         // Новый запрос, аналог get рассчитан на полнотекстовый поиск
         // Должен возвращать count для пагинации в параметре ["response"]["total"]
         $client = Elastic::create()->build();
+        // Здесь будет много кода с маневрами :)
         $client->search($params);
     }
  
     // Получить последний идентификатор
     public function last_id($resource)
     {
- 
+        // Здесь есть проблема !
+        // В Elasticsearch id не являются целым числом
+        // Возникнут проблемы с синхронизацией записей
+        // Сейчас думаем как решить этот вопрос
     }
  
 }

@@ -455,7 +455,8 @@ class Db
             $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
             // Полключаемся к базе
             $db = new $class($this->config);
-            // Отправляем запрос и получаем ответ
+            // Отправляем запрос и получаем last_id
+			// Возвращаем last_id без параметров
             return $db->last_id($resource);
         } else {
             return null;
