@@ -132,6 +132,7 @@ class Queue
                     }
                 
                     if ($item_db != null && $resource != null) {
+                        // Обработка в зависимости от типа запроса
                         if ($request == "POST" && $resource_id != null) {
                             $queueClass = "\RouterDb\\".ucfirst($item_db)."\\".ucfirst($item_db)."Db";
                             $queueDb = new $queueClass($this->config);
@@ -152,15 +153,39 @@ class Queue
                                 }
                             }
                         } elseif ($request == "PUT" || $request == "PATCH") {
-                            // Еще в разработке ...
+                            if (isset($resource_db)) {
+                                // Обновляем запись в основной базе
+                                $queueClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
+                                $queueDb = new $queueClass($this->config);
+                                // Повторяем копию запроса
+                                if ($request == "PUT") {
+                                    $resp = $queueDb->put($resource, $request_body, $resource_id);
+                                } elseif ($request == "PATCH") {
+                                    $resp = $queueDb->patch($resource, $request_body, $resource_id);
+                                }
+                                // Если все прошло успешно
+                                if (isset($resp["headers"]["code"])) {
+                                    // Удаляем запись в queue в не зависимости какой код ответа пришол
+                                    $db->delete("queue", [], $id);
+                                }
+                            }
                         } elseif ($request == "DELETE") {
-                            // Еще в разработке ...
+                            if (isset($resource_db)) {
+                                // Удаляем запись в основной базе
+                                $queueClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
+                                $queueDb = new $queueClass($this->config);
+                                // Повторяем копию запроса на удаление
+                                $resp = $queueDb->delete($resource, $request_body, $resource_id);
+                                // Если удаление прошло успешно
+                                if (isset($resp["headers"]["code"])) {
+                                    // Возможно записи уже были удалены другим запросом который прошел напрямую в основную базу
+                                    // Удаляем запись в queue в не зависимости какой код ответа пришол
+                                    $db->delete("queue", [], $id);
+                                }
+                            }
                         }
-                
                     }
- 
                 }
- 
                 // Повторно проверяем колличество запросов в очереди
                 // Чтобы уменьшить нагрузку выставляем лимит из конфигурации
                 // Чтобы ускорить копирование увеличьте лимит в $config["db"]["queue"]["limit"]
@@ -199,7 +224,7 @@ class Queue
             // Еще в разработке ...
             // Нужно получить last_id в обоих базах ?
             // Нужно записать полученный last_id в базу slave ?
-			// Есть большая проблема с NoSql базами так как в них id не является целым числом
+            // Есть большая проблема с NoSql базами так как в них id не является целым числом
         }
     }
  
