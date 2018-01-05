@@ -344,6 +344,25 @@ $config["resource"]["description"]["db"] = "mysql";
 $config["resource"]["contact"]["db"] = "mysql";
 $config["resource"]["role"]["db"] = "mysql";
 ```
+В конфигурации ресурсов на будущее заложена возможность расширять конфигурацию ресурса.
+```php
+// Сейчас используется один параметр для каждого ресурса
+$config["resource"]["site"]["db"] = "mysql";
+// В будущем мы хотим доработать возможность индивидуальных настроек
+// Например подключится к другой базе mysql нежели указана в конфигурации
+$config["resource"]["site"]["host"] = "mysql";
+$config["resource"]["site"]["dbname"] = "mysql";
+$config["resource"]["site"]["port"] = "mysql";
+$config["resource"]["site"]["charset"] = "mysql";
+$config["resource"]["site"]["connect_timeout"] = "mysql";
+$config["resource"]["site"]["user"] = "mysql";
+$config["resource"]["site"]["password"] = "mysql";
+// Также например можно включать кеширование для каждого ресурса индивидуально
+$config["resource"]["site"]["cached"] = true;
+// Или шифрование
+$config["resource"]["site"]["crypt"] = true;
+```
+
 ### Конфигурация баз данных
 #### [jsonDb](https://github.com/pllano/json-db)
 Настройки подключения к [jsonDb](https://github.com/pllano/json-db) которая идет в комплекте по умолчанию и выступает как резервная база данных.
