@@ -260,7 +260,7 @@ class MysqlDb
                     $resp['body'] = $items;
                 }
             } elseif ($response == null) {
-                $resp["body"]["items"]["item"] = "[]";
+                $resp["body"]["items"] = "[]";
             }
  
             return $resp;
@@ -530,6 +530,12 @@ class MysqlDb
         return $resp;
     }
  
+    public function search($resource = null, array $arr = array(), $search = null)
+    {
+        // Новый запрос, аналог get рассчитан на полнотекстовый поиск
+        // Должен возвращать count для пагинации в параметре ["response"]["total"]
+    }
+ 
     // count для пагинатора
     public function count($resource = null, array $arr = array(), $id = null)
     {
@@ -619,5 +625,12 @@ class MysqlDb
         return $response;
  
     }
+ 
+    // Получить последний идентификатор
+    public function last_id($resource)
+    {
+        return $this->db->dbh->query("SHOW TABLE STATUS LIKE '".$resource."'")->fetch(PDO::FETCH_ASSOC)['Auto_increment'];
+    }
+ 
 }
      

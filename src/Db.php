@@ -60,18 +60,23 @@ class Db
  
             // Формируем название транзитного класса базы данных
             $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
- 
-            // Формируем конфигурацию
-            $configArr["settings"]["http-codes"] = $this->config["settings"]["http-codes"];
-            $configArr["db"][$this->db] = $this->config["db"][$this->db];
-            if ($this->db != "json"){
-                $configArr["db"]["json"] = $this->config["db"]["json"];
-            }
- 
             // Подключаемся к базе данных
-            $db = new $class($configArr);
+            $db = new $class($this->config);
             // Отправляем запрос и получаем ответ
             $response = $db->get($resource, $arr, $id);
+
+            // Подключаем контроллер очереди запросов
+            $queue = new Queue($this->config, $this->package);
+            $count = $queue->run();
+            if ($count === null) {
+                // Запускаем синхронизацию из $this->config["resource"][$resource]["db"] в базу данных slave
+                // Это мягкая синхронизация которая запишет очередной id из основной базы  
+                // Все последующие записи в slave будут иметь id больше чем в основной базе
+                // Выполнять саму синхронизацию (копирование) записей будет по несколько при каждом запросе
+                // Выполнит указанное в $this->config["db"]["queue"]["limit"] колличество записей за один проход
+                // Синхронизация работает по принципу чем чаще ресурс опрашивается тем важнее в нем данные
+                $queue->synchronize($resource);
+            }
  
             // Возвращаем ответ
             return $response;
@@ -94,16 +99,8 @@ class Db
  
             // Формируем название транзитного класса базы данных
             $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
- 
-            // Формируем конфигурацию
-            $configArr["settings"]["http-codes"] = $this->config["settings"]["http-codes"];
-            $configArr["db"][$this->db] = $this->config["db"][$this->db];
-            if ($this->db != "json"){
-                $configArr["db"]["json"] = $this->config["db"]["json"];
-            }
- 
             // Подключаемся к базе данных
-            $db = new $class($configArr);
+            $db = new $class($this->config);
             // Отправляем запрос и получаем ответ
             $response = $db->search($resource, $arr, $search);
  
@@ -122,15 +119,9 @@ class Db
     {
         // Если база данных и ресурс не равняются null
         if ($this->db !== null && $resource !== null) {
-            // Получаем конфигурацию
-            $configArr["settings"]["http-codes"] = $this->config["settings"]["http-codes"];
-            $configArr["db"][$this->db] = $this->config["db"][$this->db];
-            if ($this->db != "json"){
-                $configArr["db"]["json"] = $this->config["db"]["json"];
-            }
  
             // Подключаем контроллер очереди запросов
-            $queue = new Queue($this->config);
+            $queue = new Queue($this->config, $this->package);
  
             // Проверяем наличие невыполненных запросов в очереди
             // Выполнит до 5 запросов, самых давних по дате если нужная таблица в выбранной базе доступна
@@ -138,18 +129,17 @@ class Db
             $count = $queue->run();
             if ($count === null) {
  
-                // Выполняем необходимый запрос
                 // Формируем класс через который будем работать
                 $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
                 // Полключаемся к базе
-                $db = new $class($configArr);
+                $db = new $class($this->config);
                 // Отправляем запрос и получаем ответ
                 $response = $db->post($resource, $arr);
  
                 // Проверяем совпадает ли база полученная от Router с записанной в конфиге
                 // Получаем название базы для $resource из конфига
                 $resource_db = $this->config["resource"][$resource]["db"];
-                // Если название базы не совпадает пишем копию запроса в очередь
+                // Если название базы не совпадает с основной, пишем копию запроса в очередь
                 if ($this->db != $resource_db) {
                     // Получаем id созданной записи
                     $id = $response["response"]["id"];
@@ -160,13 +150,17 @@ class Db
                 }
  
                 // Проверим очередь повторно
+                // Если отдаст null это будет означать что текущая запись прошла в основную базу и можно начинать синхронизацию
+                // Если ресурс queue пустой обработка будет мгновенной и не повлияет на скорость работы
+                // Если в ресурсе queue будут записи то мы выбираем баланс между стабильностью работы и скоростью
                 $count = $queue->run();
                 if ($count === null) {
-                    // Запускаем синхронизацию slave базы данных и $this->config["resource"][$resource]["db"]
-                    // Это мягкая синхронизация которая запишет очередной id из основной базы
+                    // Запускаем синхронизацию из $this->config["resource"][$resource]["db"] в базу данных slave
+                    // Это мягкая синхронизация которая запишет очередной id из основной базы  
                     // Таким образом все последующие записи в slave будут иметь id больше чем в основной базе
                     // Выполнять саму синхронизацию (копирование) записей будет по несколько при каждом запросе
-                    $queue->synchronize();
+                    // Выполнит указанное в $this->config["db"]["queue"]["limit"] колличество записей за один проход
+                    $queue->synchronize($resource);
                 }
  
                 // Возвращаем ответ
@@ -213,15 +207,9 @@ class Db
     {
         // Если база данных и ресурс не равняются null
         if ($this->db !== null && $resource !== null) {
-            // Получаем конфигурацию
-            $configArr["settings"]["http-codes"] = $this->config["settings"]["http-codes"];
-            $configArr["db"][$this->db] = $this->config["db"][$this->db];
-            if ($this->db != "json"){
-                $configArr["db"]["json"] = $this->config["db"]["json"];
-            }
  
             // Подключаем контроллер очереди запросов
-            $queue = new Queue($this->config);
+            $queue = new Queue($this->config, $this->package);
  
             // Проверяем наличие невыполненных запросов в очереди
             // Выполнит до 5 запросов, самых давних по дате если нужная таблица в выбранной базе доступна
@@ -229,11 +217,10 @@ class Db
             $count = $queue->run();
             if ($count === null) {
  
-                // Выполняем необходимый запрос
                 // Формируем класс через который будем работать
                 $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
                 // Полключаемся к базе
-                $db = new $class($configArr);
+                $db = new $class($this->config);
                 // Отправляем запрос и получаем ответ
                 $response = $db->put($resource, $arr, $id);
  
@@ -301,15 +288,9 @@ class Db
     {
         // Если база данных и ресурс не равняются null
         if ($this->db !== null && $resource !== null) {
-            // Получаем конфигурацию
-            $configArr["settings"]["http-codes"] = $this->config["settings"]["http-codes"];
-            $configArr["db"][$this->db] = $this->config["db"][$this->db];
-            if ($this->db != "json"){
-                $configArr["db"]["json"] = $this->config["db"]["json"];
-            }
  
             // Подключаем контроллер очереди запросов
-            $queue = new Queue($this->config);
+            $queue = new Queue($this->config, $this->package);
  
             // Проверяем наличие невыполненных запросов в очереди
             // Выполнит до 5 запросов, самых давних по дате если нужная таблица в выбранной базе доступна
@@ -317,11 +298,10 @@ class Db
             $count = $queue->run();
             if ($count === null) {
  
-                // Выполняем необходимый запрос
                 // Формируем класс через который будем работать
                 $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
                 // Полключаемся к базе
-                $db = new $class($configArr);
+                $db = new $class($this->config);
                 // Отправляем запрос и получаем ответ
                 $response = $db->patch($resource, $arr, $id);
  
@@ -389,15 +369,9 @@ class Db
     {
         // Если база данных и ресурс не равняются null
         if ($this->db !== null && $resource !== null) {
-            // Получаем конфигурацию
-            $configArr["settings"]["http-codes"] = $this->config["settings"]["http-codes"];
-            $configArr["db"][$this->db] = $this->config["db"][$this->db];
-            if ($this->db != "json"){
-                $configArr["db"]["json"] = $this->config["db"]["json"];
-            }
  
             // Подключаем контроллер очереди запросов
-            $queue = new Queue($this->config);
+            $queue = new Queue($this->config, $this->package);
  
             // Проверяем наличие невыполненных запросов в очереди
             // Выполнит до 5 запросов, самых давних по дате если нужная таблица в выбранной базе доступна
@@ -405,11 +379,10 @@ class Db
             $count = $queue->run();
             if ($count === null) {
  
-                // Выполняем необходимый запрос
                 // Формируем класс через который будем работать
                 $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
                 // Полключаемся к базе
-                $db = new $class($configArr);
+                $db = new $class($this->config);
                 // Отправляем запрос и получаем ответ
                 $response = $db->delete($resource, $arr, $id);
  
@@ -473,5 +446,20 @@ class Db
         }
     }
  
+    // Получить последний идентификатор
+    public function last_id($resource)
+    {
+        // Если база данных и ресурс не равняются null
+        if ($this->db !== null && $resource !== null) {
+            // Формируем класс через который будем работать
+            $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            // Полключаемся к базе
+            $db = new $class($this->config);
+            // Отправляем запрос и получаем ответ
+            return $db->last_id($resource);
+        } else {
+            return null;
+        }
+    }
 }
  

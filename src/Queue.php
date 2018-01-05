@@ -14,6 +14,7 @@
 /**
  * Поля ресурса queue
  *
+ * "db": "string"
  * "resource": "string"
  * "resource_id": "integer"
  * "request": "string"
@@ -76,7 +77,6 @@ class Queue
  
     public function run()
     {
- 
         $class_db = $this->class_db;
         $db = new $class_db($this->config);
         $response = $db->get("queue", ["sort" => "id", "order" => "ASC", "offset" => 0, "limit" => $this->limit]);
@@ -161,9 +161,9 @@ class Queue
             }
  
             // Повторно проверяем колличество запросов в очереди
-            $limit_get = $this->limit * 2;
-            // Чтобы уменьшить нагрузку выставляем лимит в два раза больше лимита на обработку
-            $response = $db->get("queue", ["offset" => 0, "limit" => $limit_get]);
+            // Чтобы уменьшить нагрузку выставляем лимит из конфигурации
+            // Чтобы ускорить копирование увеличьте лимит в $config["db"]["queue"]["limit"]
+            $response = $db->get("queue", ["offset" => 0, "limit" => $this->limit]);
             $count = count($response["body"]["items"]);
             if ($count >= 1) {
                 // Возвращаем колличество запросов оставшихся в очереди
@@ -177,11 +177,29 @@ class Queue
  
     }
  
-    public function synchronize()
+    // Синхронизация основной базы и slave
+    // Запускаем синхронизацию из $this->config["resource"][$resource]["db"] в базу данных slave
+    // Это мягкая синхронизация которая запишет очередной id из основной базы  
+    // Все последующие записи в slave будут иметь id больше чем в основной базе
+    // Выполнять саму синхронизацию (копирование) записей будет по несколько при каждом запросе
+    // Выполнит указанное в $this->config["db"]["queue"]["limit"] колличество записей за один проход
+    // Синхронизация работает по принципу чем чаще ресурс опрашивается тем важнее в нем данные
+    public function synchronize($resource)
     {
+        if (isset($resource)) {
+            // Получаем название базы для необходимого ресурса
+            $resource_db = $this->config["resource"][$resource]["db"];
+            $class = "\RouterDb\\".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
+ 
+            $db = new $class($this->config);
+            // Получить последний идентификатор
+            $last_id = $db->last_id($resource);
+ 
+        }
  
     }
  
+    // Создаем запись в ресурсе queue база slave
     public function add($request, $db = null, $resource = null, array $arr = array(), $id = null)
     {
  

@@ -15,6 +15,7 @@ namespace RouterDb\Elasticsearch;
 
 use RouterDb\Utility;
 use GuzzleHttp\Client as Guzzle;
+use Elasticsearch\ClientBuilder as Elastic;
  
 /**
  * ElasticsearchDb
@@ -60,25 +61,81 @@ class ElasticsearchDb
     
     public function get($resource = null, array $arr = array(), $id = null)
     {
+        $client = Elastic::create()->build();
+ 
+        $params["index"] = $this->index;
+        $params["type"] = $this->type;
+        if (isset($id)) {
+            $params["id"] = $id;
+        }
+        $params["client"] = ['ignore' => [400, 404, 500]];
 
+        $get = $client->get($params);
     }
 
     // Создаем одну запись
     public function post($resource = null, array $arr = array())
     {
+        $client = Elastic::create()->build();
         
+        $params = [
+            "index" => ''.$elasticsearch_index.'',
+            "type" => "marketplace_item",
+            "id" => ''.$id.'',
+            'client' => ['ignore' => [400, 404, 500]],
+            "body" => [
+                "site_id" => ''.$site_id.'',
+                "price_id" => ''.$price_id.'',
+                "item_id" => ''.$item_id.'',
+                "seller_id" => ''.$seller_id.'',
+                "state" => '1'
+            ]
+        ];
+ 
+        $client->index($params);
+ 
     }
     
     // Обновляем
     public function put($resource = null, array $arr = array(), $id = null)
     {
+        $client = Elastic::create()->build();
         
+        $params = [
+            "index" => ''.$elasticsearch_index.'',
+            "type" => "marketplace_item",
+            "id" => ''.$id.'',
+            'client' => [ 'ignore' => [400, 404, 500] ],
+            "body" => [
+                "doc" => [
+                    "site_id" => ''.$site_id.'',
+                    "price_id"                => ''.$price_id.'',
+                    "product_articul"        => ''.$articul.'',
+                    "alias"                    => ''.$alias.'',
+                    "activation"            => '1',
+                    "moderation"            => ''.$moderation.'',
+                    "state"                    => '1'
+                ]
+            ]
+        ];
+ 
+        $client->update($params);
+ 
     }
     
     // Удаляем
     public function delete($resource = null, array $arr = array(), $id = null)
     {
-        
+        $client = Elastic::create()->build();
+        $client->delete($params);
+    }
+
+    public function search($resource = null, array $arr = array(), $search = null)
+    {
+        // Новый запрос, аналог get рассчитан на полнотекстовый поиск
+        // Должен возвращать count для пагинации в параметре ["response"]["total"]
+        $client = Elastic::create()->build();
+        $client->search($params);
     }
  
 }
