@@ -45,7 +45,7 @@ class Router
             $db = new $class($this->config);
             $ping = $db->ping($resource);
             // Вернет название ресурса или null
-            if ($ping == $resource) {
+            if ($ping == $this->config["resource"][$resource]["db"]) {
                 // Если все ок вернет название $resource
                 return $this->config["resource"][$resource]["db"];
             } else {

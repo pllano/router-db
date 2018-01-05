@@ -42,10 +42,11 @@ class ApiPing
                 }
                 $guzzle = new Guzzle();
                 $response = $guzzle->request("GET", $url."".$resource."".$public_key."&limit=1&offset=0");
+				
                 $output = $response->getBody();
                 $output = (new Utility())->clean_json($output);
                 $records = json_decode($output, true);
-                if (isset($records["headers"]["code"])) {
+                if (isset($records["headers"]["code"]) || isset($records["header"]["code"])) {
                     $this->db = "api";
                     return $this->db;
                 }

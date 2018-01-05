@@ -130,17 +130,19 @@ class Queue
                     } else {
                         $resource_db = null;
                     }
-                
+ 
                     if ($item_db != null && $resource != null) {
+ 
                         // Пингуем ресурс в указанной базе данных
                         $pingClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Ping";
                         $pingDb = new $pingClass($this->config);
                         $ping = $pingDb->ping($resource);
-                        // Вернет название ресурса если он доступен или null
-                        if ($ping == $resource) {
+                        // Вернет название базы если ресурс он доступен или null
+                        if ($ping == $resource_db) {
                             // Если ресурс снова доступен, работаем
                             // Обработка в зависимости от типа запроса
                             if ($request == "POST" && $resource_id != null) {
+ 
                                 $queueClass = "\RouterDb\\".ucfirst($item_db)."\\".ucfirst($item_db)."Db";
                                 $queueDb = new $queueClass($this->config);
                                 $resp = $queueDb->get($resource, [], $resource_id);
@@ -159,7 +161,9 @@ class Queue
                                         }
                                     }
                                 }
+ 
                             } elseif ($request == "PUT" || $request == "PATCH") {
+ 
                                 if (isset($resource_db)) {
                                     // Обновляем запись в основной базе
                                     $queueClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
@@ -176,7 +180,9 @@ class Queue
                                         $db->delete("queue", [], $id);
                                     }
                                 }
+ 
                             } elseif ($request == "DELETE") {
+ 
                                 if (isset($resource_db)) {
                                     // Удаляем запись в основной базе
                                     $queueClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
@@ -190,8 +196,10 @@ class Queue
                                         $db->delete("queue", [], $id);
                                     }
                                 }
+ 
                             }
                         }
+ 
                     }
                 }
                 // Повторно проверяем колличество запросов в очереди
@@ -200,8 +208,10 @@ class Queue
                 $response = $db->get("queue", ["offset" => 0, "limit" => $this->limit]);
                 $count = count($response["body"]["items"]);
                 if ($count >= 1) {
+ 
                     // Возвращаем колличество запросов оставшихся в очереди
                     return $count;
+ 
                 } else {
                     return null;
                 }
@@ -223,8 +233,8 @@ class Queue
             $pingClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Ping";
             $pingDb = new $pingClass($this->config);
             $ping = $pingDb->ping($resource);
-            // Вернет название ресурса если он доступен или null
-            if ($ping == $resource) {
+            // Вернет название базы если ресурс он доступен или null
+            if ($ping == $resource_db) {
                 $class = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
                 $db = new $class($this->config);
                 // Получить последний идентификатор
