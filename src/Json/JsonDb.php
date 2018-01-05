@@ -32,7 +32,7 @@ class JsonDb
  
     public function __construct(array $config = array())
     {
-        if (count($config) >= 1){
+        if (count($config) >= 1) {
             $this->config = $config;
         }
     }
@@ -223,18 +223,9 @@ class JsonDb
                             $resp["headers"]["message"] = "OK";
                             $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
                                 
-                                foreach($query as $key => $value){
-                                    if(!in_array($key, ['andWhere',
-                                    'orWhere',
-                                    'asArray',
-                                    'LIKE',
-                                    'relation',
-                                    'order',
-                                    'sort',
-                                    'limit',
-                                    'offset'
-                                    ], true)){
-                                        
+                                foreach($query as $key => $value)
+                                {
+                                    if(!in_array($key, ['andWhere', 'orWhere', 'asArray', 'LIKE', 'relation', 'order', 'sort', 'limit', 'offset' ], true)) {
                                         if (isset($key) && isset($value)) {
                                             if (array_key_exists($key, $table_config["schema"])) {
                                                 // Убираем пробелы и одинарные кавычки
@@ -558,25 +549,19 @@ class JsonDb
     // Создаем одну запись
     public function post($resource = null, array $arr = array())
     {
-        
+ 
     }
  
     // Обновляем
     public function put($resource = null, array $arr = array(), $id = null)
     {
-        
+ 
     }
  
     // Удаляем
     public function delete($resource = null, array $arr = array(), $id = null)
     {
-        
-    }
  
-    // count для пагинатора
-    public function count($resource = null, array $arr = array(), $id = null)
-    {
-        
     }
  
     // Получить последний идентификатор

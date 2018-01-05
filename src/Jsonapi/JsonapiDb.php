@@ -201,7 +201,39 @@ class JsonapiDb
     // Получить последний идентификатор
     public function last_id($resource)
     {
-        
+        $guzzle = new Guzzle();
+        $public_key = "";
+        if ($resource != null) {
+            $this->resource = $resource;
+        }
+        if ($this->auth == "QueryKeyAuth") {
+            if ($this->auth != null) {
+                $public_key = "?public_key=".$this->public_key;
+            }
+            $response = $guzzle->request("GET", $this->url."".$this->resource."/_last_id".$public_key);
+        } elseif ($this->auth == "CryptoAuth") {
+ 
+        } elseif ($this->auth == "HttpTokenAuth") {
+ 
+        } elseif ($this->auth == "LoginPasswordAuth") {
+ 
+        } else {
+            $response = $guzzle->request("GET", $this->url."".$this->resource."/_last_id");
+        }
+        if ($response != null) {
+            $get_body = $response->getBody();
+            $output = (new Utility())->clean_json($get_body);
+            $records = json_decode($output, true);
+            if (isset($records["headers"]["code"])) {
+                if ($records["headers"]["code"] == 200 || $records["headers"]["code"] == "200") {
+                    return $records["response"]["last_id"];
+                }
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }  
     }
 }
  

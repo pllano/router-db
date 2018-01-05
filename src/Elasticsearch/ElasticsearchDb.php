@@ -138,5 +138,11 @@ class ElasticsearchDb
         $client->search($params);
     }
  
+    // Получить последний идентификатор
+    public function last_id($resource)
+    {
+ 
+    }
+ 
 }
  
