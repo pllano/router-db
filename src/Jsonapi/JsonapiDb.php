@@ -198,5 +198,10 @@ class JsonapiDb
         
     }
  
+    // Получить последний идентификатор
+    public function last_id($resource)
+    {
+        
+    }
 }
  

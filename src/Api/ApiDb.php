@@ -204,5 +204,11 @@ class ApiDb
         
     }
  
+    // Получить последний идентификатор
+    public function last_id($resource)
+    {
+        
+    }
+ 
 }
  

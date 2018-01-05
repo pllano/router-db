@@ -81,100 +81,103 @@ class Queue
         $db = new $class_db($this->config);
         $response = $db->get("queue", ["sort" => "id", "order" => "ASC", "offset" => 0, "limit" => $this->limit]);
  
-        // Получаем необходимое колличество записей для выполнения указанных в limit
-        $count = count($response["body"]["items"]);
-        if ($count >= 1) {
-            foreach($response["body"]["items"] as $item)
-            {
-                // id в queue нужен для удаления записи после выполнения запроса
-                if (isset($item["item"]["id"])) {
-                    $id = $item["item"]["id"];
-                } else {
-                    $id = null;
-                }
-                // Название базы данных в которую попала запись
-                if (isset($item["item"]["db"])) {
-                    $item_db = $item["item"]["db"];
-                } else {
-                    $item_db = null;
-                }
-                // Название ресурса в базе
-                if (isset($item["item"]["resource"])) {
-                    $resource = $item["item"]["resource"];
-                } else {
-                    $resource = null;
-                }
-                // id записи полученной при создании
-                if (isset($item["item"]["resource_id"])) {
-                    $resource_id = $item["item"]["resource_id"];
-                } else {
-                    $resource_id = null;
-                }
-                // Тип запроса POST, PUT, PATCH, DELETE
-                if (isset($item["item"]["request"])) {
-                    $request = $item["item"]["request"];
-                } else {
-                    $request = "NULL";
-                }
-                // Копия array запроса
-                if (isset($item["item"]["request_body"])) {
-                    $request_body = json_encode(base64_encode($item["item"]["request_body"]), true);
-                } else {
-                    $request_body = null;
-                }
-                
-                // Получаем название базы для необходимого ресурса
-                if (isset($resource)) {
-                    $resource_db = $this->config["resource"][$resource]["db"];
-                } else {
-                    $resource_db = null;
-                }
-                
-                if ($item_db != null && $resource != null) {
-                    if ($request == "POST" && $resource_id != null) {
-                        $queueClass = "\RouterDb\\".ucfirst($item_db)."\\".ucfirst($item_db)."Db";
-                        $queueDb = new $queueClass($this->config);
-                        $resp = $queueDb->get($resource, [], $resource_id);
-                        if ($resp["headers"]["code"] == 200){
-                            // Получаем все данные записи
-                            $arr = $resp["body"]["items"]["0"]["item"];
-                            // Получаем класс базы для записи
-                            if (isset($resource_db)) {
-                                $postClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
-                                $postDb = new $postClass($this->config);
-                                // Создаем запись в основной базе
-                                $postResp = $postDb->post($resource, $arr);
-                                if ($postResp["request"]["id"] >= 1){
-                                    // После выполнения запроса удаляем запись в queue
-                                    $db->delete("queue", [], $id);
-                                }
-                            }
-                        }
-                    } elseif ($request == "PUT" || $request == "PATCH") {
-                        // Еще в разработке ...
-                    } elseif ($request == "DELETE") {
-                        // Еще в разработке ...
-                    }
-                
-                }
- 
-            }
- 
-            // Повторно проверяем колличество запросов в очереди
-            // Чтобы уменьшить нагрузку выставляем лимит из конфигурации
-            // Чтобы ускорить копирование увеличьте лимит в $config["db"]["queue"]["limit"]
-            $response = $db->get("queue", ["offset" => 0, "limit" => $this->limit]);
+        if (isset($response["header"]["code"])) {
+            // Получаем необходимое колличество записей для выполнения указанных в limit
             $count = count($response["body"]["items"]);
             if ($count >= 1) {
-                // Возвращаем колличество запросов оставшихся в очереди
-                return $count;
+                foreach($response["body"]["items"] as $item)
+                {
+                    // id в queue нужен для удаления записи после выполнения запроса
+                    if (isset($item["item"]["id"])) {
+                        $id = $item["item"]["id"];
+                    } else {
+                        $id = null;
+                    }
+                    // Название базы данных в которую попала запись
+                    if (isset($item["item"]["db"])) {
+                        $item_db = $item["item"]["db"];
+                    } else {
+                        $item_db = null;
+                    }
+                    // Название ресурса в базе
+                    if (isset($item["item"]["resource"])) {
+                        $resource = $item["item"]["resource"];
+                    } else {
+                        $resource = null;
+                    }
+                    // id записи полученной при создании
+                    if (isset($item["item"]["resource_id"])) {
+                        $resource_id = $item["item"]["resource_id"];
+                    } else {
+                        $resource_id = null;
+                    }
+                    // Тип запроса POST, PUT, PATCH, DELETE
+                    if (isset($item["item"]["request"])) {
+                        $request = $item["item"]["request"];
+                    } else {
+                        $request = "NULL";
+                    }
+                    // Копия array запроса
+                    if (isset($item["item"]["request_body"])) {
+                        $request_body = json_encode(base64_encode($item["item"]["request_body"]), true);
+                    } else {
+                        $request_body = null;
+                    }
+                
+                    // Получаем название базы для необходимого ресурса
+                    if (isset($resource)) {
+                        $resource_db = $this->config["resource"][$resource]["db"];
+                    } else {
+                        $resource_db = null;
+                    }
+                
+                    if ($item_db != null && $resource != null) {
+                        if ($request == "POST" && $resource_id != null) {
+                            $queueClass = "\RouterDb\\".ucfirst($item_db)."\\".ucfirst($item_db)."Db";
+                            $queueDb = new $queueClass($this->config);
+                            $resp = $queueDb->get($resource, [], $resource_id);
+                            if ($resp["headers"]["code"] == 200){
+                                // Получаем все данные записи
+                                $arr = $resp["body"]["items"]["0"]["item"];
+                                // Получаем класс базы для записи
+                                if (isset($resource_db)) {
+                                    $postClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
+                                    $postDb = new $postClass($this->config);
+                                    // Создаем запись в основной базе
+                                    $postResp = $postDb->post($resource, $arr);
+                                    if ($postResp["request"]["id"] >= 1){
+                                        // После выполнения запроса удаляем запись в queue
+                                        $db->delete("queue", [], $id);
+                                    }
+                                }
+                            }
+                        } elseif ($request == "PUT" || $request == "PATCH") {
+                            // Еще в разработке ...
+                        } elseif ($request == "DELETE") {
+                            // Еще в разработке ...
+                        }
+                
+                    }
+ 
+                }
+ 
+                // Повторно проверяем колличество запросов в очереди
+                // Чтобы уменьшить нагрузку выставляем лимит из конфигурации
+                // Чтобы ускорить копирование увеличьте лимит в $config["db"]["queue"]["limit"]
+                $response = $db->get("queue", ["offset" => 0, "limit" => $this->limit]);
+                $count = count($response["body"]["items"]);
+                if ($count >= 1) {
+                    // Возвращаем колличество запросов оставшихся в очереди
+                    return $count;
+                } else {
+                    return null;
+                }
             } else {
                 return null;
             }
         } else {
             return null;
         }
- 
     }
  
     // Синхронизация основной базы и slave
@@ -189,12 +192,13 @@ class Queue
         if (isset($resource)) {
             // Получаем название базы для необходимого ресурса
             $resource_db = $this->config["resource"][$resource]["db"];
-            $class = "\RouterDb\\".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
- 
+            $class = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
             $db = new $class($this->config);
             // Получить последний идентификатор
             $last_id = $db->last_id($resource);
             // Еще в разработке ...
+            // Нужно получить last_id в обоих базах ?
+            // Нужно записать полученный last_id в базу slave
  
         }
  

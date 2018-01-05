@@ -429,7 +429,7 @@ class MysqlDb
         // Возвращаем колличество обновленных записей
         return $resp;
     }
-	
+    
     // Обновляем
     public function patch($resource = null, array $arr = array(), $id = null)
     {

@@ -79,15 +79,15 @@ class ElasticsearchDb
         $client = Elastic::create()->build();
         
         $params = [
-            "index" => ''.$elasticsearch_index.'',
+            "index" => $elasticsearch_index,
             "type" => "marketplace_item",
-            "id" => ''.$id.'',
+            "id" => $id,
             'client' => ['ignore' => [400, 404, 500]],
             "body" => [
-                "site_id" => ''.$site_id.'',
-                "price_id" => ''.$price_id.'',
-                "item_id" => ''.$item_id.'',
-                "seller_id" => ''.$seller_id.'',
+                "site_id" => $site_id,
+                "price_id" => $price_id,
+                "item_id" => $item_id,
+                "seller_id" => $seller_id,
                 "state" => '1'
             ]
         ];
@@ -102,19 +102,19 @@ class ElasticsearchDb
         $client = Elastic::create()->build();
         
         $params = [
-            "index" => ''.$elasticsearch_index.'',
+            "index" => $elasticsearch_index,
             "type" => "marketplace_item",
-            "id" => ''.$id.'',
+            "id" => $id,
             'client' => [ 'ignore' => [400, 404, 500] ],
             "body" => [
                 "doc" => [
-                    "site_id" => ''.$site_id.'',
-                    "price_id"                => ''.$price_id.'',
-                    "product_articul"        => ''.$articul.'',
-                    "alias"                    => ''.$alias.'',
-                    "activation"            => '1',
-                    "moderation"            => ''.$moderation.'',
-                    "state"                    => '1'
+                    "site_id" => $site_id,
+                    "price_id" => $price_id,
+                    "product_articul" => $articul,
+                    "alias" => $alias,
+                    "activation" => '1',
+                    "moderation" => $moderation,
+                    "state" => '1'
                 ]
             ]
         ];
