@@ -361,22 +361,24 @@ $config["resource"]["user"]["charset"] = "utf8";
 $config["resource"]["user"]["connect_timeout"] = 30;
 $config["resource"]["user"]["user"] = "";
 $config["resource"]["user"]["password"] = "";
-
+ 
 // Включать кеширование для каждого ресурса индивидуально
 $config["resource"]["user"]["cached"] = true;
-
+ 
 // Включать шифрование для каждого ресурса индивидуально
 $config["resource"]["user"]["crypt"] = true;
 $config["resource"]["user"]["key"] = true;
-
+ 
 // Отдавать в ответе только указанные поля
 $config["resource"]["user"]["fields"] = "phone,email,iname,fname";
-
+ 
 // Запретить или разрешить отдавать связанные данные из других ресурсов через параметр relations
 $config["resource"]["user"]["relations"] = false;
-
-// Переключатся на slave базу
+ 
+// Запретить или разрешить переключатся на slave базу
 $config["resource"]["user"]["slave"] = false;
+// Или указать slave базу индивидуально для этого ресурса
+$config["resource"]["user"]["slave"] = "api";
 ```
 
 ### Конфигурация баз данных
