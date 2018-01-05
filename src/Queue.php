@@ -132,55 +132,63 @@ class Queue
                     }
                 
                     if ($item_db != null && $resource != null) {
-                        // Обработка в зависимости от типа запроса
-                        if ($request == "POST" && $resource_id != null) {
-                            $queueClass = "\RouterDb\\".ucfirst($item_db)."\\".ucfirst($item_db)."Db";
-                            $queueDb = new $queueClass($this->config);
-                            $resp = $queueDb->get($resource, [], $resource_id);
-                            if ($resp["headers"]["code"] == 200){
-                                // Получаем все данные записи
-                                $arr = $resp["body"]["items"]["0"]["item"];
-                                // Получаем класс базы для записи
+                        // Пингуем ресурс в указанной базе данных
+                        $pingClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Ping";
+                        $pingDb = new $pingClass($this->config);
+                        $ping = $pingDb->ping($resource);
+                        // Вернет название ресурса если он доступен или null
+                        if ($ping == $resource) {
+                            // Если ресурс снова доступен, работаем
+                            // Обработка в зависимости от типа запроса
+                            if ($request == "POST" && $resource_id != null) {
+                                $queueClass = "\RouterDb\\".ucfirst($item_db)."\\".ucfirst($item_db)."Db";
+                                $queueDb = new $queueClass($this->config);
+                                $resp = $queueDb->get($resource, [], $resource_id);
+                                if ($resp["headers"]["code"] == 200){
+                                    // Получаем все данные записи
+                                    $arr = $resp["body"]["items"]["0"]["item"];
+                                    // Получаем класс базы для записи
+                                    if (isset($resource_db)) {
+                                        $postClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
+                                        $postDb = new $postClass($this->config);
+                                        // Создаем запись в основной базе
+                                        $postResp = $postDb->post($resource, $arr);
+                                        if ($postResp["request"]["id"] >= 1){
+                                            // После выполнения запроса удаляем запись в queue
+                                            $db->delete("queue", [], $id);
+                                        }
+                                    }
+                                }
+                            } elseif ($request == "PUT" || $request == "PATCH") {
                                 if (isset($resource_db)) {
-                                    $postClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
-                                    $postDb = new $postClass($this->config);
-                                    // Создаем запись в основной базе
-                                    $postResp = $postDb->post($resource, $arr);
-                                    if ($postResp["request"]["id"] >= 1){
-                                        // После выполнения запроса удаляем запись в queue
+                                    // Обновляем запись в основной базе
+                                    $queueClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
+                                    $queueDb = new $queueClass($this->config);
+                                    // Повторяем копию запроса
+                                    if ($request == "PUT") {
+                                        $resp = $queueDb->put($resource, $request_body, $resource_id);
+                                    } elseif ($request == "PATCH") {
+                                        $resp = $queueDb->patch($resource, $request_body, $resource_id);
+                                    }
+                                    // Если все прошло успешно
+                                    if (isset($resp["headers"]["code"])) {
+                                        // Удаляем запись в queue в не зависимости какой код ответа пришол
                                         $db->delete("queue", [], $id);
                                     }
                                 }
-                            }
-                        } elseif ($request == "PUT" || $request == "PATCH") {
-                            if (isset($resource_db)) {
-                                // Обновляем запись в основной базе
-                                $queueClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
-                                $queueDb = new $queueClass($this->config);
-                                // Повторяем копию запроса
-                                if ($request == "PUT") {
-                                    $resp = $queueDb->put($resource, $request_body, $resource_id);
-                                } elseif ($request == "PATCH") {
-                                    $resp = $queueDb->patch($resource, $request_body, $resource_id);
-                                }
-                                // Если все прошло успешно
-                                if (isset($resp["headers"]["code"])) {
-                                    // Удаляем запись в queue в не зависимости какой код ответа пришол
-                                    $db->delete("queue", [], $id);
-                                }
-                            }
-                        } elseif ($request == "DELETE") {
-                            if (isset($resource_db)) {
-                                // Удаляем запись в основной базе
-                                $queueClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
-                                $queueDb = new $queueClass($this->config);
-                                // Повторяем копию запроса на удаление
-                                $resp = $queueDb->delete($resource, $request_body, $resource_id);
-                                // Если удаление прошло успешно
-                                if (isset($resp["headers"]["code"])) {
-                                    // Возможно записи уже были удалены другим запросом который прошел напрямую в основную базу
-                                    // Удаляем запись в queue в не зависимости какой код ответа пришол
-                                    $db->delete("queue", [], $id);
+                            } elseif ($request == "DELETE") {
+                                if (isset($resource_db)) {
+                                    // Удаляем запись в основной базе
+                                    $queueClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
+                                    $queueDb = new $queueClass($this->config);
+                                    // Повторяем копию запроса на удаление
+                                    $resp = $queueDb->delete($resource, $request_body, $resource_id);
+                                    // Если удаление прошло успешно
+                                    if (isset($resp["headers"]["code"])) {
+                                        // Возможно записи уже были удалены другим запросом который прошел напрямую в основную базу
+                                        // Удаляем запись в queue в не зависимости какой код ответа пришол
+                                        $db->delete("queue", [], $id);
+                                    }
                                 }
                             }
                         }
@@ -205,26 +213,27 @@ class Queue
         }
     }
  
-    // Синхронизация основной базы и slave
-    // Запускаем синхронизацию из $this->config["resource"][$resource]["db"] в базу данных slave
-    // Это мягкая синхронизация которая запишет очередной id из основной базы  
-    // Все последующие записи в slave будут иметь id больше чем в основной базе
-    // Выполнять саму синхронизацию (копирование) записей будет по несколько при каждом запросе
-    // Выполнит указанное в $this->config["db"]["queue"]["limit"] колличество записей за один проход
-    // Синхронизация работает по принципу чем чаще ресурс опрашивается тем важнее в нем данные
+    // Синхронизация основного хранилища ресурса и slave
     public function synchronize($resource)
     {
         if (isset($resource)) {
             // Получаем название базы для необходимого ресурса
             $resource_db = $this->config["resource"][$resource]["db"];
-            $class = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
-            $db = new $class($this->config);
-            // Получить последний идентификатор
-            $last_id = $db->last_id($resource);
-            // Еще в разработке ...
-            // Нужно получить last_id в обоих базах ?
-            // Нужно записать полученный last_id в базу slave ?
-            // Есть большая проблема с NoSql базами так как в них id не является целым числом
+            // Пингуем ресурс в указанной базе данных
+            $pingClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Ping";
+            $pingDb = new $pingClass($this->config);
+            $ping = $pingDb->ping($resource);
+            // Вернет название ресурса если он доступен или null
+            if ($ping == $resource) {
+                $class = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
+                $db = new $class($this->config);
+                // Получить последний идентификатор
+                $last_id = $db->last_id($resource);
+                // Еще в разработке ...
+                // Нужно получить last_id в обоих базах ?
+                // Нужно записать полученный last_id в базу slave ?
+                // Есть большая проблема с NoSql базами так как в них id не является целым числом
+            }
         }
     }
  
