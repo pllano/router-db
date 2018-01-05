@@ -344,23 +344,36 @@ $config["resource"]["description"]["db"] = "mysql";
 $config["resource"]["contact"]["db"] = "mysql";
 $config["resource"]["role"]["db"] = "mysql";
 ```
-В конфигурации ресурсов на будущее заложена возможность расширять конфигурацию ресурса.
+На будущее в конфигурации ресурсов заложена возможность расширять индивидуальную конфигурацию. В будущем мы хотим доработать возможность индивидуальных настроек для каждого ресурса.
+
+Например:
 ```php
-// Сейчас используется один параметр для каждого ресурса
-$config["resource"]["site"]["db"] = "mysql";
-// В будущем мы хотим доработать возможность индивидуальных настроек
-// Например подключится к другой базе mysql нежели указана в конфигурации
-$config["resource"]["site"]["host"] = "mysql";
-$config["resource"]["site"]["dbname"] = "mysql";
-$config["resource"]["site"]["port"] = "mysql";
-$config["resource"]["site"]["charset"] = "mysql";
-$config["resource"]["site"]["connect_timeout"] = "mysql";
-$config["resource"]["site"]["user"] = "mysql";
-$config["resource"]["site"]["password"] = "mysql";
-// Также например можно включать кеширование для каждого ресурса индивидуально
-$config["resource"]["site"]["cached"] = true;
-// Или шифрование
-$config["resource"]["site"]["crypt"] = true;
+// Сейчас используется только один параметр для каждого ресурса
+$config["resource"]["user"]["db"] = "mysql";
+```
+Мы хотим дать возможность:
+```php
+// Подключится к другой базе mysql
+$config["resource"]["user"]["host"] = "mysql";
+$config["resource"]["user"]["dbname"] = "mysql";
+$config["resource"]["user"]["port"] = "mysql";
+$config["resource"]["user"]["charset"] = "mysql";
+$config["resource"]["user"]["connect_timeout"] = "mysql";
+$config["resource"]["user"]["user"] = "mysql";
+$config["resource"]["user"]["password"] = "mysql";
+
+// Включать кеширование для каждого ресурса индивидуально
+$config["resource"]["user"]["cached"] = true;
+
+// Включать шифрование для каждого ресурса индивидуально
+$config["resource"]["user"]["crypt"] = true;
+$config["resource"]["user"]["key"] = true;
+
+// Отдавать в ответе только указанные поля
+$config["resource"]["user"]["fields"] = "phone,email,iname,fname";
+
+// Запретить или разрешить отдавать связанные данные через параметр relations
+$config["resource"]["user"]["relations"] = false;
 ```
 
 ### Конфигурация баз данных
