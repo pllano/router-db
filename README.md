@@ -66,7 +66,8 @@ $getArr = [
     "offset" => 0,
     "order" => "DESC",
     "sort" => "created",
-    "state" => 1
+    "state" => 1,
+    "iname" => "Alex"
 ];
 
 $response = $db->get($resource, $getArr);
@@ -83,6 +84,13 @@ foreach($items as $value)
 }
 
 ```
+Поддерживается следующие параметры в запросе:
+- `limit` - лимит записей на страницу
+- `offset` - смещение (с какой записи выводим)
+- `order` - сотрировка DESC или ASC
+- `sort` - поле по которому сортируем
+- `field` - любое поле которое есть в ресурсе. Параметров `field` может быть несколько
+
 #### Получение данных `GET` по `id`
 ```php
 $id = 1;
@@ -100,15 +108,52 @@ $phone = $item["phone"];
 $iname = $item["iname"];
 $fname = $item["fname"];
 ```
+#### Поиск `GET` в режиме `search`
+Добавлен новый вид GET запроса который заточен исключительно на полнотекстовый поиск.
+
+Не поддерживает параметр `relations` и получение данных по `id`
+
+Потдерживаются параметры
+- `query_fields` - Поля через запятую, по которым будем проходить поиск. По умолчанию по всем полям с типом `string`
+- `search_type` - Тип поиска (В разработке !)
+
+```php
+// Ресурс
+$resource = "product";
+// Параметры поиска
+$query_arr = [
+    "query_fields" => "iname,fname,oname,text",
+];
+// Ключевое слово
+$keyword = "anna";
+ 
+$response = $db->search($resource, $query_arr, $keyword);
+ 
+// Вернет массив
+$code = $response["headers"]["code"]; // 200 или другой в зависимости от ошибки
+$count = $response["response"]["total"]; // колличество найденых записей, или null при ошибке
+$items = $response["body"]["items"]; // массив с данными
+ 
+foreach($items as $value)
+{
+  $id = items["item"]["id"];
+  $iname = items["item"]["iname"];
+}
+
+```
+Самый простой пример поискового запроса
+```php
+$response = $db->search("product", [], "laptops");
+```
 #### Создание `POST`
 ```php
 // Массив с данными запроса
 $postArr["role"] = 1;
 $postArr["name"] = "Admin";
 $postArr["email"] = "admin@example.com";
-
+ 
 $response = $db->post($resource, $postArr);
-
+ 
 // Вернет массив
 $code = $response["headers"]["code"]; // 201 или другой в зависимости от ошибки
 $count = $response["response"]["total"]; // 1 если все ок, или null при ошибке
@@ -126,9 +171,9 @@ $id = 1;
 // Массив с данными запроса
 $putArr["name"] = "Admin2";
 $putArr["email"] = "admin2@example.com";
-
+ 
 $response = $db->put($resource, $putArr, $id);
-
+ 
 // Вернет массив
 $code = $response["headers"]["code"]; // 202 или другой в зависимости от ошибки
 $count = $response["response"]["total"]; // колличество обновленных записей, или null при ошибке
@@ -171,27 +216,6 @@ $response = $db->delete($resource, [["id" => 10], ["id" => 11]]);
 - Удаление всех записей
 ```php
 $response = $db->delete($resource);
-```
-#### Поиск `GET` в режиме `search`
-Добавлен новый вид GET запроса который заточен исключительно на полнотекстовый поиск.
-
-Не поддерживает параметр `relations` и получение данных по `id`
-```php
-$resource = "product"; // Ресурс
-$arr = []; // Параметры запроса
-$search = ""; // Ключевое слово
-$response = $db->search($resource, $arr, $search);
-
-// Вернет массив
-$code = $response["headers"]["code"]; // 200 или другой в зависимости от ошибки
-$count = $response["response"]["total"]; // колличество найденых записей, или null при ошибке
-$items = $response["body"]["items"]; // массив с данными
-
-foreach($items as $value)
-{
-  $id = items["item"]["id"];
-  $iname = items["item"]["iname"];
-}
 ```
 
 ## Поддерживает сторонние пакеты
