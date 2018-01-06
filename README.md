@@ -114,6 +114,11 @@ $code = $response["headers"]["code"]; // 201 или другой в зависи
 $count = $response["response"]["total"]; // 1 если все ок, или null при ошибке
 $id = $response["response"]["id"]; // id новой записи, или null при ошибке
 ```
+Поддерживается один метод создания:
+- Создание одной записи с передачей данных в параметрах
+```php
+$response = $db->post($resource, ["name" => "Alex"]);
+```
 #### Обновление `PUT`
 ```php
 // id записи
@@ -128,6 +133,18 @@ $response = $db->put($resource, $putArr, $id);
 $code = $response["headers"]["code"]; // 202 или другой в зависимости от ошибки
 $count = $response["response"]["total"]; // колличество обновленных записей, или null при ошибке
 ```
+Поддерживается несколько методов обновления:
+- Обновление одной записи по id с параметрами
+```php
+$response = $db->put($resource, ["name" => "Alex"], $id);
+```
+- Обновление нескольких записей по id который передается в параметрах
+```php
+$response = $db->put($resource, [
+    ["id" => 10, "name" => "Alex"],
+    ["id" => 11, "name" => "Viktor"]
+]);
+```
 #### Удаление `DELETE`
 ```php
 // id записи
@@ -137,6 +154,23 @@ $response = $db->delete($resource, [], $id);
 // Вернет массив
 $code = $response["headers"]["code"]; // 200 или другой в зависимости от ошибки
 $count = $response["response"]["total"]; // колличество удаленных записей, или null при ошибке
+```
+Поддерживается несколько методов удаления:
+- Удаление одной записи по id
+```php
+$response = $db->delete($resource, [], $id);
+```
+- Удаление нескольких записей по совпадению параметров
+```php
+$response = $db->delete($resource, ["name" => "Alex"]);
+```
+- Удаление нескольких записей по id который передается в параметрах
+```php
+$response = $db->delete($resource, [["id" => 10], ["id" => 11]]);
+```
+- Удаление всех записей
+```php
+$response = $db->delete($resource);
 ```
 #### Поиск `GET` в режиме `search`
 Добавлен новый вид GET запроса который заточен исключительно на полнотекстовый поиск.
