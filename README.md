@@ -115,7 +115,7 @@ $fname = $item["fname"];
 
 Потдерживаются параметры
 - `fields` - Через запятую поля, по которым нужен поиск. По умолчанию все поля с типом `string`
-- `delimiter` - Разделитель AND или OR
+- `delimiter` - Разделитель AND или OR. По умолчанию OR
 - `type` - Тип поиска (В разработке !)
 ```php
 // Ресурс
@@ -143,7 +143,7 @@ foreach($items as $value)
 ```
 Самый простой пример поискового запроса
 ```php
-$response = $db->search("product", [], "laptops");
+$response = $db->search("product", ["fields" => "type"], "laptops");
 ```
 #### Создание `POST`
 ```php
