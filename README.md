@@ -127,7 +127,7 @@ $fname = $item["fname"];
 $resource = "product";
 // Параметры поиска
 $query_arr = [
-    "fields" => "iname,fname,oname,text",
+    "fields" => "name,type,note",
     "operator" => "AND",
     "type" => "LIKE",
     "limit" => 10,
@@ -136,7 +136,7 @@ $query_arr = [
     "sort" => "iname"
 ];
 // Ключевое слово
-$keyword = "anna";
+$keyword = "laptops";
  
 $response = $db->search($resource, $query_arr, $keyword);
  
