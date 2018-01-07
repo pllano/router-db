@@ -267,7 +267,7 @@ class NamedatabaseDb
                 $resp["headers"]["status"] = '404 Not Found';
                 $resp["headers"]["code"] = 404;
                 $resp["headers"]["message"] = 'Resource Not Found';
-                $resp["headers"]["message_id"] = "https://github.com/pllano/APIS-2018/blob/master/http-codes/".$resp["headers"]["code"].".md";
+                $resp["headers"]["message_id"] = $this->config[db][http_codes]."".$resp["headers"]["code"].".md";
                 $resp["response"]["total"] = 0;
                 $resp["request"]["query"] = "GET";
                 $resp["request"]["resource"] = null;
@@ -277,7 +277,7 @@ class NamedatabaseDb
             $resp["headers"]["status"] = '400 Bad Request';
             $resp["headers"]["code"] = 400;
             $resp["headers"]["message"] = 'Missing resource name';
-            $resp["headers"]["message_id"] = "https://github.com/pllano/APIS-2018/blob/master/http-codes/".$resp["headers"]["code"].".md";
+            $resp["headers"]["message_id"] = $this->config[db][http_codes]."".$resp["headers"]["code"].".md";
             $resp["response"]["total"] = 0;
             $resp["request"]["query"] = "GET";
             $resp["request"]["resource"] = null;
