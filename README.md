@@ -257,7 +257,6 @@ class NamedatabaseDb
     public function get($resource = null, array $arr = array(), $id = null)
     {
         if (isset($resource)) {
-            // Проверяем наличие главной базы
             try {
  
                     // Здесь должен быть код обработки запроса
