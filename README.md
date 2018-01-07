@@ -154,7 +154,7 @@ foreach($items as $value)
 ```
 Самый простой пример поискового запроса
 ```php
-$response = $db->search("product", ["fields" => "type"], "laptops");
+$response = $db->search("product", [], "laptops");
 ```
 #### Создание `POST`
 ```php
