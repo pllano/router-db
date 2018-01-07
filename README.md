@@ -259,10 +259,10 @@ class NamedatabaseDb
         if (isset($resource)) {
             try {
  
-                    // Здесь должен быть код обработки запроса
+                    // Здесь должен быть код проверки доступности ресурса и обработки запроса
                     // Должен возвращать count для пагинации в параметре ["response"]["total"]
  
-            } catch(dbException $e) {
+            } catch(Exception $e) {
                 // Такого ресурса не существует
                 $resp["headers"]["status"] = '404 Not Found';
                 $resp["headers"]["code"] = 404;
