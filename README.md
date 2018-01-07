@@ -268,7 +268,7 @@ class NamedatabaseDb
         // Должен возвращать колличество удаленных записей в параметре ["response"]["total"]
     }
  
-    public function search($resource = null, array $arr = array(), $search = null)
+    public function search($resource = null, array $arr = array(), $keyword = null)
     {
         // Новый запрос, аналог get рассчитан на полнотекстовый поиск
         // Должен возвращать count для пагинации в параметре ["response"]["total"]
