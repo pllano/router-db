@@ -239,7 +239,10 @@ require __DIR__ . '/NamedatabasePing.php';
 #### NamedatabaseDb.php - Обрабатывает запросы к базе данных
 Структура запросов и ответов описана в стандарте [APIS-2018](https://github.com/pllano/APIS-2018/) только возвращать необходимо массив PHP
 ```php
-namespace YourPackage\Namedatabase;
+// VendorPackage - производитель пакета
+// Namedatabase - название подключаемого вами пакета
+ 
+namespace VendorPackage\Namedatabase;
  
 class NamedatabaseDb
 {
