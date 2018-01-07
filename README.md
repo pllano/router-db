@@ -256,8 +256,33 @@ class NamedatabaseDb
     
     public function get($resource = null, array $arr = array(), $id = null)
     {
-        // Получение данных
-        // Должен возвращать count для пагинации в параметре ["response"]["total"]
+        if (isset($resource)) {
+            // Проверяем наличие главной базы
+            try {
+ 
+                    // Здесь должен быть код обработки запроса
+                    // Должен возвращать count для пагинации в параметре ["response"]["total"]
+ 
+            } catch(dbException $e) {
+                // Такого ресурса не существует
+                $resp["headers"]["status"] = '404 Not Found';
+                $resp["headers"]["code"] = 404;
+                $resp["headers"]["message"] = 'Resource Not Found';
+                $resp["headers"]["message_id"] = "https://github.com/pllano/APIS-2018/blob/master/http-codes/".$resp["headers"]["code"].".md";
+                $resp["response"]["total"] = 0;
+                $resp["request"]["query"] = "GET";
+                $resp["request"]["resource"] = null;
+            }  
+        } else {
+            // Плохой, неверный запрос. Не указано название ресурса.
+            $resp["headers"]["status"] = '400 Bad Request';
+            $resp["headers"]["code"] = 400;
+            $resp["headers"]["message"] = 'Missing resource name';
+            $resp["headers"]["message_id"] = "https://github.com/pllano/APIS-2018/blob/master/http-codes/".$resp["headers"]["code"].".md";
+            $resp["response"]["total"] = 0;
+            $resp["request"]["query"] = "GET";
+            $resp["request"]["resource"] = null;
+        }
     }
  
     public function post($resource = null, array $arr = array())
