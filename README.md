@@ -147,8 +147,8 @@ $items = $response["body"]["items"]; // массив с данными
  
 foreach($items as $value)
 {
-  $id = items["item"]["id"];
-  $iname = items["item"]["iname"];
+  $id = $items["item"]["id"];
+  $iname = $items["item"]["iname"];
 }
 
 ```
