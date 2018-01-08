@@ -32,10 +32,11 @@ class MysqlDb
         if (count($config) >= 1){
             $this->config = $config;
             PdoDb::set($config);
+			$this->db = PdoDb::getInstance();
         }
-        $this->db = PdoDb::getInstance();
     }
  
+    // Загрузить
     public function get($resource = null, array $arr = array(), $id = null)
     {
         $count = $this->count($resource, $arr, $id);
@@ -109,7 +110,7 @@ class MysqlDb
             $resp["headers"]["status"] = "200 OK";
             $resp["headers"]["code"] = 200;
             $resp["headers"]["message"] = "OK";
-            $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
             $resp["response"]["source"] = "mysql";
             $resp["response"]["total"] = $count["0"]["COUNT(*)"];
             $resp["request"]["query"] = "GET";
@@ -119,7 +120,7 @@ class MysqlDb
             $resp["headers"]["status"] = "404 Not Found";
             $resp["headers"]["code"] = 404;
             $resp["headers"]["message"] = "Not Found";
-            $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
             $resp["response"]["source"] = "mysql";
             $resp["response"]["total"] = 0;
             $resp["request"]["query"] = "GET";
@@ -267,6 +268,15 @@ class MysqlDb
  
     }
  
+    // Искать
+    public function search($resource = null, array $query_arr = array(), $keyword = null)
+    {
+        // Новый запрос, аналог get рассчитан на полнотекстовый поиск
+        // Должен возвращать count для пагинации в параметре ["response"]["total"]
+ 
+        // Еще в разработке ...
+    }
+ 
     // Создаем одну запись
     public function post($resource = null, array $arr = array())
     {
@@ -295,7 +305,7 @@ class MysqlDb
                 $resp["headers"]["status"] = "201 Created";
                 $resp["headers"]["code"] = 201;
                 $resp["headers"]["message"] = "Created";
-                $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
                 $resp["response"]["total"] = 1;
                 $resp["response"]["id"] = $response;
                 $resp["response"]["source"] = "mysql";
@@ -308,7 +318,7 @@ class MysqlDb
                 $resp["headers"]["status"] = '400 Bad Request';
                 $resp["headers"]["code"] = 400;
                 $resp["headers"]["message"] = 'Bad Request';
-                $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
                 $resp["response"]["total"] = $response;
                 $resp["response"]["id"] = null;
                 $resp["response"]["source"] = "mysql";
@@ -321,7 +331,7 @@ class MysqlDb
             $resp["headers"]["status"] = '400 Bad Request';
             $resp["headers"]["code"] = 400;
             $resp["headers"]["message"] = 'Bad Request';
-            $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
             $resp["response"]["total"] = $response;
             $resp["response"]["id"] = null;
             $resp["response"]["source"] = "mysql";
@@ -364,7 +374,7 @@ class MysqlDb
                 $resp["headers"]["status"] = "202 Accepted";
                 $resp["headers"]["code"] = 202;
                 $resp["headers"]["message"] = "Accepted";
-                $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
                 $resp["response"]["total"] = $response;
                 $resp["response"]["id"] = $id;
                 $resp["request"]["query"] = "PUT";
@@ -375,7 +385,7 @@ class MysqlDb
                 $resp["headers"]["status"] = '400 Bad Request';
                 $resp["headers"]["code"] = 400;
                 $resp["headers"]["message"] = 'Bad Request';
-                $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
                 $resp["response"]["total"] = $response;
                 $resp["response"]["id"] = $id;
                 $resp["response"]["source"] = "mysql";
@@ -420,7 +430,7 @@ class MysqlDb
             $resp["headers"]["status"] = '400 Bad Request';
             $resp["headers"]["code"] = 400;
             $resp["headers"]["message"] = 'Bad Request';
-            $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
             $resp["response"]["total"] = $response;
             $resp["response"]["source"] = "mysql";
             $resp["request"]["query"] = "PUT";
@@ -462,7 +472,7 @@ class MysqlDb
                 $resp["headers"]["status"] = "202 Accepted";
                 $resp["headers"]["code"] = 202;
                 $resp["headers"]["message"] = "Accepted";
-                $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
                 $resp["response"]["total"] = $response;
                 $resp["response"]["id"] = $id;
                 $resp["request"]["query"] = "PATCH";
@@ -473,7 +483,7 @@ class MysqlDb
                 $resp["headers"]["status"] = '400 Bad Request';
                 $resp["headers"]["code"] = 400;
                 $resp["headers"]["message"] = 'Bad Request';
-                $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
                 $resp["response"]["total"] = $response;
                 $resp["response"]["id"] = $id;
                 $resp["response"]["source"] = "mysql";
@@ -518,7 +528,7 @@ class MysqlDb
             $resp["headers"]["status"] = '400 Bad Request';
             $resp["headers"]["code"] = 400;
             $resp["headers"]["message"] = 'Bad Request';
-            $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
             $resp["response"]["total"] = $response;
             $resp["response"]["source"] = "mysql";
             $resp["request"]["query"] = "PATCH";
@@ -547,7 +557,7 @@ class MysqlDb
                     $resp["headers"]["status"] = "200 Removed";
                     $resp["headers"]["code"] = 200;
                     $resp["headers"]["message"] = "Removed";
-                    $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                    $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
                     $resp["response"]["total"] = $response;
                     $resp["response"]["id"] = $id;
                     $resp["request"]["query"] = "DELETE";
@@ -558,7 +568,7 @@ class MysqlDb
                     $resp["headers"]["status"] = '404 Not Found';
                     $resp["headers"]["code"] = 404;
                     $resp["headers"]["message"] = 'Not Found';
-                    $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                    $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
                     $resp["response"]["total"] = $response;
                     $resp["response"]["id"] = $id;
                     $resp["request"]["id"] = $response;
@@ -574,7 +584,7 @@ class MysqlDb
                         {
                             if ($key == ""){$key = null;}
                             if (isset($key) && isset($value)) {
-                                $key_id = $key;
+                                $resource_id = $key;
                                 $id = $value;
                             }
                         }
@@ -582,7 +592,7 @@ class MysqlDb
                         $sql = "
                             DELETE
                             FROM `".$resource."` 
-                            WHERE `".$key_id."` =".$id."
+                            WHERE `".$resource_id."` =".$id."
                         ";
                         // Отправляем запрос в базу
                         $stmt = $this->db->dbh->prepare($sql);
@@ -598,7 +608,7 @@ class MysqlDb
                     $resp["headers"]["status"] = "200 Removed";
                     $resp["headers"]["code"] = 200;
                     $resp["headers"]["message"] = "Deleted all rows";
-                    $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                    $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
                     $resp["response"]["total"] = $response;
                     $resp["request"]["query"] = "DELETE";
                     $resp["request"]["resource"] = $resource;
@@ -607,7 +617,7 @@ class MysqlDb
                     $resp["headers"]["status"] = '400 Bad Request';
                     $resp["headers"]["code"] = 400;
                     $resp["headers"]["message"] = 'Bad Request';
-                    $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+                    $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
                     $resp["response"]["total"] = $response;
                     $resp["request"]["query"] = "DELETE";
                     $resp["request"]["resource"] = $resource;
@@ -619,21 +629,13 @@ class MysqlDb
             $resp["headers"]["status"] = '404 Not Found';
             $resp["headers"]["code"] = 404;
             $resp["headers"]["message"] = 'Not Found';
-            $resp["headers"]["message_id"] = $this->config["settings"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
             $resp["response"]["total"] = $response;
             $resp["request"]["query"] = "DELETE";
             $resp["request"]["resource"] = null;
         }
         // Возвращаем ответ
         return $resp;
-    }
- 
-    public function search($resource = null, array $arr = array(), $search = null)
-    {
-        // Новый запрос, аналог get рассчитан на полнотекстовый поиск
-        // Должен возвращать count для пагинации в параметре ["response"]["total"]
- 
-        // Еще в разработке ...
     }
  
     // count для пагинатора

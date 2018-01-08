@@ -60,23 +60,26 @@ class Db
  
             // Формируем название транзитного класса базы данных
             $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            // $class = "\Package\Nameclass\NameclassDb";
             // Подключаемся к базе данных
             $db = new $class($this->config);
             // Отправляем запрос и получаем ответ
             $response = $db->get($resource, $arr, $id);
 
-            // Подключаем контроллер очереди запросов
-            $queue = new Queue($this->config, $this->package);
-            $count = $queue->run();
-            if ($count === null) {
-                // Запускаем синхронизацию из $this->config["resource"][$resource]["db"] в базу данных slave
-                // Это мягкая синхронизация которая запишет очередной id из основной базы  
-                // Все последующие записи в slave будут иметь id больше чем в основной базе
-                // Выполнять саму синхронизацию (копирование) записей будет по несколько при каждом запросе
-                // Выполнит указанное в $this->config["db"]["queue"]["limit"] колличество записей за один проход
-                // Синхронизация работает по принципу чем чаще ресурс опрашивается тем важнее в нем данные
-                $queue->synchronize($resource);
-            }
+            if ($this->config["db"]["slave"] != false && $this->config["db"]["queue"]["status"] === true) {
+				// Подключаем контроллер очереди запросов
+            	$queue = new Queue($this->config, $this->package);
+            	$count = $queue->run();
+            	if ($count === null) {
+                	// Запускаем синхронизацию из $this->config["resource"][$resource]["db"] в базу данных slave
+                	// Это мягкая синхронизация которая запишет очередной id из основной базы  
+                	// Все последующие записи в slave будут иметь id больше чем в основной базе
+                	// Выполнять саму синхронизацию (копирование) записей будет по несколько при каждом запросе
+                	// Выполнит указанное в $this->config["db"]["queue"]["limit"] колличество записей за один проход
+                	// Синхронизация работает по принципу чем чаще ресурс опрашивается тем важнее в нем данные
+                	$queue->synchronize($resource);
+            	}
+			}
  
             // Возвращаем ответ
             return $response;
@@ -88,7 +91,7 @@ class Db
         }
     }
  
-    public function search($resource = null, array $arr = array(), $search = null)
+    public function search($resource = null, array $query_arr = array(), $keyword = null)
     {
  
         // Новый запрос, аналог get рассчитан на полнотекстовый поиск
@@ -99,10 +102,11 @@ class Db
  
             // Формируем название транзитного класса базы данных
             $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            // $class = "\Package\Nameclass\NameclassDb";
             // Подключаемся к базе данных
             $db = new $class($this->config);
             // Отправляем запрос и получаем ответ
-            $response = $db->search($resource, $arr, $search);
+            $response = $db->search($resource, $query_arr, $keyword);
  
             // Возвращаем ответ
             return $response;
@@ -131,6 +135,7 @@ class Db
  
                 // Формируем класс через который будем работать
                 $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+                // $class = "\Package\Nameclass\NameclassDb";
                 // Полключаемся к базе
                 $db = new $class($this->config);
                 // Отправляем запрос и получаем ответ
@@ -138,7 +143,7 @@ class Db
  
                 // Проверяем совпадает ли база полученная от Router с записанной в конфиге
                 // Получаем название базы для $resource из конфига
-                $resource_db = $this->config["resource"][$resource]["db"];
+                $resource_db = $this->config["db"]["resource"][$resource]["db"];
                 // Если название базы не совпадает с основной, пишем копию запроса в очередь
                 if ($this->db != $resource_db) {
                     // Получаем id созданной записи
@@ -155,7 +160,7 @@ class Db
                 // Если в ресурсе queue будут записи то мы выбираем баланс между стабильностью работы и скоростью
                 $count = $queue->run();
                 if ($count === null) {
-                    // Запускаем синхронизацию из $this->config["resource"][$resource]["db"] в базу данных slave
+                    // Запускаем синхронизацию из $this->config["db"]["resource"][$resource]["db"] в базу данных slave
                     // Это мягкая синхронизация которая запишет очередной id из основной базы  
                     // Таким образом все последующие записи в slave будут иметь id больше чем в основной базе
                     // Выполнять саму синхронизацию (копирование) записей будет по несколько при каждом запросе
@@ -219,6 +224,7 @@ class Db
  
                 // Формируем класс через который будем работать
                 $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+                // $class = "\Package\Nameclass\NameclassDb";
                 // Полключаемся к базе
                 $db = new $class($this->config);
                 // Отправляем запрос и получаем ответ
@@ -226,7 +232,7 @@ class Db
  
                 // Проверяем совпадает ли база полученная от Router с записанной в конфиге
                 // Получаем название базы для $resource из конфига
-                $resource_db = $this->config["resource"][$resource]["db"];
+                $resource_db = $this->config["db"]["resource"][$resource]["db"];
                 // Если название базы не совпадает пишем копию запроса в очередь
                 if ($this->db != $resource_db) {
  
@@ -239,7 +245,7 @@ class Db
                 // Проверим очередь повторно
                 $count = $queue->run();
                 if ($count === null) {
-                    // Запускаем синхронизацию slave базы данных и $this->config["resource"][$resource]["db"]
+                    // Запускаем синхронизацию slave базы данных и $this->config["db"]["resource"][$resource]["db"]
                     // Это мягкая синхронизация которая запишет очередной id из основной базы
                     // Таким образом все последующие записи в slave будут иметь id больше чем в основной базе
                     // Выполнять саму синхронизацию (копирование) записей будет по несколько при каждом запросе
@@ -262,6 +268,7 @@ class Db
  
                 // Формируем название класса slave базы
                 $slaveClass = "\RouterDb\\".ucfirst($this->config["db"]["slave"])."\\".ucfirst($this->config["db"]["slave"])."Db";
+                // $class = "\Package\Nameclass\NameclassDb";
                 // Подключаемся к базе
                 $slave = new $slaveClass($configSlave);
                 // Отправляем запрос и получаем ответ
@@ -300,6 +307,7 @@ class Db
  
                 // Формируем класс через который будем работать
                 $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+                // $class = "\Package\Nameclass\NameclassDb";
                 // Полключаемся к базе
                 $db = new $class($this->config);
                 // Отправляем запрос и получаем ответ
@@ -307,7 +315,7 @@ class Db
  
                 // Проверяем совпадает ли база полученная от Router с записанной в конфиге
                 // Получаем название базы для $resource из конфига
-                $resource_db = $this->config["resource"][$resource]["db"];
+                $resource_db = $this->config["db"]["resource"][$resource]["db"];
                 // Если название базы не совпадает пишем копию запроса в очередь
                 if ($this->db != $resource_db) {
  
@@ -320,7 +328,7 @@ class Db
                 // Проверим очередь повторно
                 $count = $queue->run();
                 if ($count === null) {
-                    // Запускаем синхронизацию slave базы данных и $this->config["resource"][$resource]["db"]
+                    // Запускаем синхронизацию slave базы данных и $this->config["db"]["resource"][$resource]["db"]
                     // Это мягкая синхронизация которая запишет очередной id из основной базы
                     // Таким образом все последующие записи в slave будут иметь id больше чем в основной базе
                     // Выполнять саму синхронизацию (копирование) записей будет по несколько при каждом запросе
@@ -343,6 +351,7 @@ class Db
  
                 // Формируем название класса slave базы
                 $slaveClass = "\RouterDb\\".ucfirst($this->config["db"]["slave"])."\\".ucfirst($this->config["db"]["slave"])."Db";
+                // $class = "\Package\Nameclass\NameclassDb";
                 // Подключаемся к базе
                 $slave = new $slaveClass($configSlave);
                 // Отправляем запрос и получаем ответ
@@ -381,6 +390,7 @@ class Db
  
                 // Формируем класс через который будем работать
                 $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+                // $class = "\Package\Nameclass\NameclassDb";
                 // Полключаемся к базе
                 $db = new $class($this->config);
                 // Отправляем запрос и получаем ответ
@@ -388,7 +398,7 @@ class Db
  
                 // Проверяем совпадает ли база полученная от Router с записанной в конфиге
                 // Получаем название базы для $resource из конфига
-                $resource_db = $this->config["resource"][$resource]["db"];
+                $resource_db = $this->config["db"]["resource"][$resource]["db"];
                 // Если название базы не совпадает пишем копию запроса в очередь
                 if ($this->db != $resource_db) {
  
@@ -401,7 +411,7 @@ class Db
                 // Проверим очередь повторно
                 $count = $queue->run();
                 if ($count === null) {
-                    // Запускаем синхронизацию slave базы данных и $this->config["resource"][$resource]["db"]
+                    // Запускаем синхронизацию slave базы данных и $this->config["db"]["resource"][$resource]["db"]
                     // Это мягкая синхронизация которая запишет очередной id из основной базы
                     // Таким образом все последующие записи в slave будут иметь id больше чем в основной базе
                     // Выполнять саму синхронизацию (копирование) записей будет по несколько при каждом запросе
@@ -424,6 +434,7 @@ class Db
  
                 // Формируем название класса slave базы
                 $slaveClass = "\RouterDb\\".ucfirst($this->config["db"]["slave"])."\\".ucfirst($this->config["db"]["slave"])."Db";
+                // $class = "\Package\Nameclass\NameclassDb";
                 // Подключаемся к базе
                 $slave = new $slaveClass($configSlave);
                 // Отправляем запрос и получаем ответ
@@ -453,6 +464,7 @@ class Db
         if ($this->db !== null && $resource !== null) {
             // Формируем класс через который будем работать
             $class = $this->package."".ucfirst($this->db)."\\".ucfirst($this->db)."Db";
+            // $class = "\Package\Nameclass\NameclassDb";
             // Полключаемся к базе
             $db = new $class($this->config);
             // Отправляем запрос и получаем last_id

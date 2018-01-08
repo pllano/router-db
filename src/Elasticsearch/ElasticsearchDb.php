@@ -58,8 +58,55 @@ class ElasticsearchDb
             }
         }
     }
-    
+ 
+    // Загрузить
     public function get($resource = null, array $arr = array(), $id = null)
+    {
+        if (isset($resource)) {
+ 
+			$client = Elastic::create()->build();
+ 
+			if ($this->type === true) {
+				$type = $resource;
+			    $index = $this->index;
+			} else {
+			    $index = $this->index."_".$resource;
+				$type = null;
+			}
+ 
+            // если $id определен то это обычный get
+			if (isset($id)) {
+ 
+                $params["index"] = $index;
+                $params["type"] = $type;
+                $params["id"] = $id;
+                $params["client"] = ['ignore' => [400, 404, 500]];
+
+                $get = $client->get($params);
+ 
+			} elseif (count($arr) >= 1 && $id === null) {
+			    // Если мы получили массив $arr то это search
+			    
+			    $client->search($params);
+ 
+			} else {
+		        return null;
+		    }
+		} else {
+		    return null;
+		}
+    }
+ 
+    // Искать
+    public function search($resource = null, array $query_arr = array(), $keyword = null)
+    {
+        $client = Elastic::create()->build();
+        // Здесь будет много кода с маневрами :)
+        $client->search($params);
+    }
+ 
+    // Создаем одну запись
+    public function post($resource = null, array $arr = array())
     {
         $client = Elastic::create()->build();
  
@@ -69,75 +116,133 @@ class ElasticsearchDb
             $params["id"] = $id;
         }
         $params["client"] = ['ignore' => [400, 404, 500]];
-
-        $get = $client->get($params);
-    }
-
-    // Создаем одну запись
-    public function post($resource = null, array $arr = array())
-    {
-        $client = Elastic::create()->build();
-        
-        $params = [
-            "index" => $elasticsearch_index,
-            "type" => "marketplace_item",
-            "id" => $id,
-            'client' => ['ignore' => [400, 404, 500]],
-            "body" => [
-                "site_id" => $site_id,
-                "price_id" => $price_id,
-                "item_id" => $item_id,
-                "seller_id" => $seller_id,
-                "state" => '1'
-            ]
-        ];
+		
+        if (count($arr) >= 1) {
+            foreach($arr as $key => $value)
+            {
+                if (isset($key) && isset($unit)) {
+                    $params["body"][$key] = $value;
+                }
+            }
+        }
  
         $client->index($params);
  
     }
-    
+ 
     // Обновляем
     public function put($resource = null, array $arr = array(), $id = null)
     {
-        $client = Elastic::create()->build();
-        
-        $params = [
-            "index" => $elasticsearch_index,
-            "type" => "marketplace_item",
-            "id" => $id,
-            'client' => [ 'ignore' => [400, 404, 500] ],
-            "body" => [
-                "doc" => [
-                    "site_id" => $site_id,
-                    "price_id" => $price_id,
-                    "product_articul" => $articul,
-                    "alias" => $alias,
-                    "activation" => '1',
-                    "moderation" => $moderation,
-                    "state" => '1'
-                ]
-            ]
-        ];
+        if (isset($resource)) {
+			$client = Elastic::create()->build();
+			
+			if ($this->type === true) {
+				$type = $resource;
+			    $index = $this->index;
+			} else {
+			    $index = $this->index."_".$resource;
+				$type = null;
+			}
  
-        $client->update($params);
+            if (isset($id)) {
+                $params["index"] = $index;
+                $params["type"] = $type;
+                $params["id"] = $id;
+                $params["client"] = ['ignore' => [400, 404, 500]];
+		
+                if (count($arr) >= 1) {
+                    foreach($arr as $key => $value)
+                    {
+                        if (isset($key) && isset($unit)) {
+                            $params["body"]["doc"][$key] = $value;
+                        }
+                    }
+                }
  
+                $client->update($params);
+		    }
+		}
     }
-    
+	
+    // Обновляем
+    public function patch($resource = null, array $arr = array(), $id = null)
+    {
+        if (isset($resource)) {
+			$client = Elastic::create()->build();
+			
+			if ($this->type === true) {
+				$type = $resource;
+			    $index = $this->index;
+			} else {
+			    $index = $this->index."_".$resource;
+				$type = null;
+			}
+ 
+            if (isset($id)) {
+                $params["index"] = $index;
+                $params["type"] = $type;
+                $params["id"] = $id;
+                $params["client"] = ['ignore' => [400, 404, 500]];
+		
+                if (count($arr) >= 1) {
+                    foreach($arr as $key => $value)
+                    {
+                        if (isset($key) && isset($unit)) {
+                            $params["body"]["doc"][$key] = $value;
+                        }
+                    }
+                }
+ 
+                $client->update($params);
+		    }
+		}
+    }
+ 
     // Удаляем
     public function delete($resource = null, array $arr = array(), $id = null)
     {
-        $client = Elastic::create()->build();
-        
-        $client->delete($params);
-    }
-
-    public function search($resource = null, array $arr = array(), $search = null)
-    {
-        // Новый запрос, аналог get рассчитан на полнотекстовый поиск
-        // Должен возвращать count для пагинации в параметре ["response"]["total"]
-        $client = Elastic::create()->build();
-        // Здесь будет много кода с маневрами :)
-        $client->search($params);
+        if (isset($resource)) {
+			$client = Elastic::create()->build();
+			
+			if ($this->type === true) {
+				$type = $resource;
+			    $index = $this->index;
+			} else {
+			    $index = $this->index."_".$resource;
+				$type = null;
+			}
+ 
+		    if ($id >= 1) {
+		        $params["index"] = $index;
+		        if (isset($type)) {
+					$params["type"] = $type;
+				}
+		        $params["id"] = $id;
+		        $params["client"] = ['ignore' => [400, 404, 500]];
+ 
+		        $client->delete($params);
+ 
+            } elseif (count($arr) >= 1) {
+                foreach($arr as $value)
+                {
+					// ПЕРЕПИСАТЬ !!!!!!
+                    if (isset($value["id"])) {
+		    		    $params["index"] = $index;
+		    		    if (isset($type)) {
+							$params["type"] = $type;
+						}
+		    		    $params["id"] = $value["id"];
+		    		    $params["client"] = ['ignore' => [400, 404, 500]];
+ 
+		    		    $client->delete($params);
+                    }
+                }
+		    } else {
+		       return null;
+		    }
+		} else {
+		    return null;
+		}
     }
  
     // Получить последний идентификатор

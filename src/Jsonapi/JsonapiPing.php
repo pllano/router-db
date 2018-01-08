@@ -34,7 +34,6 @@ class JsonapiPing
         if ($resource != null) {
             try {
                 $url = $this->config["db"]["jsonapi"]["url"];
-                //print_r($this->config);
                 $public_key = "?";
                 if ($this->config["db"]["jsonapi"]["auth"] == "QueryKeyAuth") {
                     $public_key = "?public_key=".$this->config["db"]["jsonapi"]["public_key"];

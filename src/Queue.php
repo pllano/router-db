@@ -43,14 +43,14 @@ class Queue
      * @var integer
     */
     private $limit = 5;
- 
+	
     /**
      * @param $package
      * @var string
     */
     private $package = "\RouterDb\\";
  
-    public function __construct(array $config = array(), $package)
+    public function __construct(array $config = array(), $package = null)
     {
         if (count($config) >= 1){
  
@@ -77,7 +77,8 @@ class Queue
  
     public function run()
     {
-        $class_db = $this->class_db;
+        if ($this->config["db"]["slave"] != false && $this->config["db"]["queue"]["status"] === true) {
+		$class_db = $this->class_db;
         $db = new $class_db($this->config);
         $response = $db->get("queue", ["sort" => "id", "order" => "ASC", "offset" => 0, "limit" => $this->limit]);
  
@@ -221,28 +222,31 @@ class Queue
         } else {
             return null;
         }
+		}
     }
  
-    // Синхронизация основного хранилища ресурса и slave
-    public function synchronize($resource)
+    // Синхронизация основного хранилища ресурса и slave базы
+    public function synchronize($resource = null)
     {
-        if (isset($resource)) {
+        if (isset($resource) && $this->config["db"]["synchronize"] === true) {
             // Получаем название базы для необходимого ресурса
             $resource_db = $this->config["resource"][$resource]["db"];
             // Пингуем ресурс в указанной базе данных
             $pingClass = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Ping";
             $pingDb = new $pingClass($this->config);
             $ping = $pingDb->ping($resource);
-            // Вернет название базы если ресурс он доступен или null
+            // Вернет название базы если ресурс доступен или null
             if ($ping == $resource_db) {
                 $class = $this->package."".ucfirst($resource_db)."\\".ucfirst($resource_db)."Db";
                 $db = new $class($this->config);
                 // Получить последний идентификатор
                 $last_id = $db->last_id($resource);
+ 
                 // Еще в разработке ...
                 // Нужно получить last_id в обоих базах ?
                 // Нужно записать полученный last_id в базу slave ?
                 // Есть большая проблема с NoSql базами так как в них id не является целым числом
+ 
             }
         }
     }
@@ -250,35 +254,37 @@ class Queue
     // Создаем запись в ресурсе queue база slave
     public function add($request, $db = null, $resource = null, array $arr = array(), $id = null)
     {
+        if ($this->config["db"]["slave"] != false && $this->config["db"]["queue"]["status"] === true) {
  
-        if (isset($db)) {
-            $array["db"] = $db;
-        }
+		    if (isset($db)) {
+                $array["db"] = $db;
+            }
  
-        if (isset($request)) {
-            $array["request"] = $request;
-        }
+            if (isset($request)) {
+                $array["request"] = $request;
+            }
  
-        if (isset($resource)) {
-            $array["resource"] = $resource;
-        }
+            if (isset($resource)) {
+                $array["resource"] = $resource;
+            }
  
-        if (isset($id)) {
-            $array["resource_id"] = $id;
-        } else {
-            $array["resource_id"] = 0;
-        }
+            if (isset($id)) {
+                $array["resource_id"] = $id;
+            } else {
+                $array["resource_id"] = 0;
+            }
  
-        if (count($arr) >= 1){
-            $array["request_body"] = base64_encode(json_encode($arr));
-        } else {
-            $array["request_body"] = null;
-        }
+            if (count($arr) >= 1){
+                $array["request_body"] = base64_encode(json_encode($arr));
+            } else {
+                $array["request_body"] = null;
+            }
  
-        $class_db = $this->class_db;
-        $queueDb = new $class_db($this->config);
-        $queueDb->post("queue", $array);
+            $class_db = $this->class_db;
+            $queueDb = new $class_db($this->config);
+            $queueDb->post("queue", $array);
  
+		}
     }
 }
  
