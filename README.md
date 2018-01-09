@@ -1,7 +1,7 @@
 # routerDb
 Мы выделили routerDb в отдельный репозиторий потому что его можно использовать независимо от наших других разработок. Работа с несколькими базами данных через один простой интерфейс уже сейчас актуальна для многих проектов.
 ## routerDb — Один интерфейс для работы со всеми базами данных
-Подключить с помощью Composer
+Подключить с помощью [Composer](https://getcomposer.org/)
 ```diff
 "require" {
     ...
@@ -9,6 +9,19 @@
 +    "pllano/router-db": "1.0.4",
     ...
 }
+```
+Подключить с помощью [AutoRequire](https://github.com/pllano/auto-require)
+```json
+"require" [
+    {
+        "namespace": "RouterDb",
+        "dir": "/pllano/router-db/src",
+        "link": "https://github.com/pllano/router-db/archive/master.zip",
+        "name": "router-db",
+        "version": "master",
+        "vendor": "pllano"
+    }
+]
 ```
 ## Один код для работы со всеми базами данных
 С `routerDb` вы можете писать один код для работы со всеми базами данных `mysql`  `elasticsearch` `json` и даже при работе через `api`
