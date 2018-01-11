@@ -36,7 +36,7 @@ class ApiPing
             try {
                 $url = $this->config["db"]["api"]["url"];
                 $public_key = "?";
-                if ($this->config["db"]["api"]["auth"] == "QueryKeyAuth") {
+                if ($this->config["db"]["api"]["auth"] == "QueryKeyAuth" && $this->config["db"]["api"]["public_key"] != null) {
                     $public_key = "?public_key=".$this->config["db"]["api"]["public_key"];
                 }
                 $guzzle = new Guzzle();

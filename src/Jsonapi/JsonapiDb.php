@@ -52,7 +52,7 @@ class JsonapiDb
         if ($id != null) {
             $resource_id = "/".$id;
         }
-        if ($this->auth == "QueryKeyAuth") {
+        if ($this->auth == "QueryKeyAuth" && $this->public_key != null) {
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }
@@ -106,7 +106,7 @@ class JsonapiDb
         if ($resource != null) {
             $this->resource = $resource;
         }
-        if ($this->auth == "QueryKeyAuth") {
+        if ($this->auth == "QueryKeyAuth" && $this->public_key != null) {
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }
@@ -159,7 +159,7 @@ class JsonapiDb
         if ($id >= 1) {
             $resource_id = "/".$id;
         }
-        if ($this->auth == "QueryKeyAuth") {
+        if ($this->auth == "QueryKeyAuth" && $this->public_key != null) {
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }
@@ -215,7 +215,7 @@ class JsonapiDb
         if ($id >= 1) {
             $resource_id = "/".$id;
         }
-        if ($this->auth == "QueryKeyAuth") {
+        if ($this->auth == "QueryKeyAuth" && $this->public_key != null) {
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }
@@ -271,7 +271,7 @@ class JsonapiDb
         if ($id >= 1) {
             $resource_id = "/".$id;
         }
-        if ($this->auth == "QueryKeyAuth") {
+        if ($this->auth == "QueryKeyAuth" && $this->public_key != null) {
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }
@@ -321,7 +321,7 @@ class JsonapiDb
         if ($resource != null) {
             $this->resource = $resource;
         }
-        if ($this->auth == "QueryKeyAuth") {
+        if ($this->auth == "QueryKeyAuth" && $this->public_key != null) {
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }

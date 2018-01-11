@@ -35,7 +35,7 @@ class JsonapiPing
             try {
                 $url = $this->config["db"]["jsonapi"]["url"];
                 $public_key = "?";
-                if ($this->config["db"]["jsonapi"]["auth"] == "QueryKeyAuth") {
+                if ($this->config["db"]["jsonapi"]["auth"] == "QueryKeyAuth" && $this->config["db"]["jsonapi"]["public_key"] != null) {
                     $public_key = "?public_key=".$this->config["db"]["jsonapi"]["public_key"];
                 }
                 $guzzle = new Guzzle();
