@@ -177,11 +177,11 @@ class JsonapiDb
         } else {
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
-                //$response = $guzzle->request("GET", $this->url."_put/".$this->resource."".$resource_id."".$array);
                 $response = $guzzle->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);
+                
                 return $records;
             }
         }

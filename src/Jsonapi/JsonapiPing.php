@@ -34,12 +34,12 @@ class JsonapiPing
         if ($resource != null) {
             try {
                 $url = $this->config["db"]["jsonapi"]["url"];
-                $public_key = "?";
+                $query = "?limit=1&offset=0";
                 if ($this->config["db"]["jsonapi"]["auth"] == "QueryKeyAuth" && $this->config["db"]["jsonapi"]["public_key"] != null) {
-                    $public_key = "?public_key=".$this->config["db"]["jsonapi"]["public_key"];
+                    $query = "?public_key=".$this->config["db"]["jsonapi"]["public_key"]."&limit=1&offset=0";
                 }
                 $guzzle = new Guzzle();
-                $response = $guzzle->request("GET", $url."".$resource."".$public_key."&limit=1&offset=0");
+                $response = $guzzle->request("GET", $url."".$resource."".$query);
                 $output = $response->getBody();
                 $output = (new Utility())->clean_json($output);
                 $records = json_decode($output, true);

@@ -45,7 +45,9 @@ class JsonDb
             try {Validate::table($resource)->exists();
  
                 // Конфигурация таблицы
-                $table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].'/'.$resource.'.config.json'), true);
+                $table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].''.$resource.'.config.json'), true);
+				
+				//print_r($query);
                 
                 // Формируем набор параметров для работы с кешем
                 $CacheID = http_build_query($query);
@@ -56,7 +58,6 @@ class JsonDb
                     // Если указан id
                     if ($id >= 1) {
                         $res = Database::table($resource)->where('id', '=', $id)->findAll();
-                        
                         $resCount = count($res);
                         if ($resCount == 1) {
                             
@@ -92,7 +93,6 @@ class JsonDb
                                         if (isset($key) && isset($arr)) {
                                             $id = $arr->{$resource_id};
                                             $newArr = (array)$arr;
-                                            //print_r($newdArr);
                                             if (isset($id)) {
                                                 if ($foreach == 1) {
                                                     foreach($relation as $key => $value) {
@@ -120,8 +120,6 @@ class JsonDb
                                                             $ex_new = explode(":", $ex_val);
                                                             $val = $ex_new["0"];
                                                             unset($ex_new["0"]);
-                                                            //print_r($ex_new);
-                                                            //print("<br>");
                                                             $new_ex = array_flip($ex_new);
                                                             $c = 1;
                                                         }
@@ -155,16 +153,13 @@ class JsonDb
                                                         if (count($rel) >= 1) {
                                                             $r = array();
                                                             foreach($rel as $k => $v) {
-																$vv = is_array($v) ? $v : (array)$v;
+                                                                $vv = is_array($v) ? $v : (array)$v;
                                                                 $ar = array();
                                                                 foreach($vv as $key => $va) {
                                                                     if (array_key_exists($key, $control) && $key != "password" && $key != "cookie") {
                                                                         $ar[$key] = $va;
                                                                     }
                                                                 }
-                                                            //$arr = 
-                                                            //print_r($v);
-                                                            //print("<br>");
                                                                 $a = array($k, $ar);
                                                                 unset($a["0"]);
                                                                 $a = $a["1"];
@@ -184,17 +179,14 @@ class JsonDb
                                         $items['items'][] = $item;
                                     }
                                     $resp['body'] = $items;
-                                } else {
-                                    foreach($res as $key => $arr){
-                                        if (isset($key) && isset($arr)) {
-                                            $array = array($key, $arr);
-                                            unset($array["0"]);
-                                            $array = $array["1"];
-                                            $item["item"] = $array;
-                                            $items['items'][] = $item;
-                                        }
-                                    }
+                                }
+                                else {
+                                    $reset = reset($res);
+                                    $array = (array)$reset["0"];
+                                    $item["item"] = $array;
+                                    $items['items'][] = $item;
                                     $resp['body'] = $items;
+                                    //print_r($resp);
                                 }
                             
                         } else {
@@ -368,7 +360,7 @@ class JsonDb
                                     foreach($res as $key => $arr){
                                         if (isset($key) && isset($arr)) {
                                             $id = $arr->{$resource_id};
-											$newArr = is_array($arr) ? $arr : (array)$arr;
+                                            $newArr = is_array($arr) ? $arr : (array)$arr;
                                             if (isset($id)) {
                                                 if ($foreach == 1) {
                                                     foreach($relation as $key => $value) {
@@ -556,7 +548,7 @@ class JsonDb
         // Еще в разработке ...
     }
  
-	// Создаем одну запись
+    // Создаем одну запись
     public function post($resource = null, array $arr = array())
     {
         if (isset($resource)) {
@@ -567,7 +559,7 @@ class JsonDb
                 $table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].'/'.$resource.'.config.json'), true);
  
                 // Подключаем таблицу
-                $row = jsonDb::table($resource);
+                $row = Database::table($resource);
                 // Разбираем параметры полученные в теле запроса
                 foreach($arr as $key => $value){
                    if (isset($key) && isset($value)) {
@@ -617,7 +609,7 @@ class JsonDb
  
                 if ($row->id >= 1) {
                     // Добавляем вротой id
-                    $update = jsonDb::table($resource)->find($row->id);
+                    $update = Database::table($resource)->find($row->id);
                     $update->{$resource."_id"} = $row->id;
                     $update->save();
                         
@@ -667,12 +659,12 @@ class JsonDb
             // Проверяем наличие главной базы если нет даем ошибку
             try {
                 Validate::table($resource)->exists();
-                $table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].'/'.$resource.'.config.json'), true);
+                $table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].''.$resource.'.config.json'), true);
 
                 // Если указан id обновляем одну запись
                 if ($id >= 1) {
                     // Подключаем таблицу
-                    $row = jsonDb::table($resource)->find($id);
+                    $row = Database::table($resource)->find($id);
                     // Разбираем параметры полученные в теле запроса
                     foreach($arr as $key => $value){
                         if (isset($key) && isset($value)) {
@@ -724,8 +716,9 @@ class JsonDb
                     }
                     // Сохраняем изменения
                     $row->save();
+                    //print_r($row->id);
  
-                    if ($row == 1) {
+                    if ($row->id == $id) {
                         // Все ок. 202 Accepted «принято»
                         $resp["headers"]["status"] = "202 Accepted";
                         $resp["headers"]["code"] = 202;
@@ -743,7 +736,8 @@ class JsonDb
                         $resp["response"]["total"] = 0;
                     }
  
-                } else {
+                }
+                else {
                     // Обновляем несколько записей
                     // Разбираем параметры полученные в теле запроса
                     foreach($arr as $key => $value){
@@ -804,7 +798,7 @@ class JsonDb
                         $resp["headers"]["message"] = "Accepted";
                         $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
                         $resp["response"]["total"] = 1;
-                        $resp["response"]["id"] = '';
+                        $resp["response"]["id"] = $row->id;
                         $resp["request"]["query"] = "PUT";
                         $resp["request"]["resource"] = $resource;
  
@@ -852,7 +846,7 @@ class JsonDb
                 // Если указан id обновляем одну запись
                 if ($id >= 1) {
                     // Подключаем таблицу
-                    $row = jsonDb::table($resource)->find($id);
+                    $row = Database::table($resource)->find($id);
                     // Разбираем параметры полученные в теле запроса
                     foreach($arr as $key => $value){
                         if (isset($key) && isset($value)) {
@@ -1035,7 +1029,7 @@ class JsonDb
                 if ($id >= 1) {
     
                     // Удаляем запись из таблицы
-                    $row = jsonDb::table($resource)->find($id)->delete();
+                    $row = Database::table($resource)->find($id)->delete();
 
                     if ($row == 1) {
                     
