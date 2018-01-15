@@ -32,7 +32,7 @@ class MysqlDb
         if (count($config) >= 1){
             $this->config = $config;
             PdoDb::set($config);
-			$this->db = PdoDb::getInstance();
+            $this->db = PdoDb::getInstance();
         }
     }
  
@@ -41,6 +41,21 @@ class MysqlDb
     {
         $count = $this->count($resource, $arr, $id);
         $this->resource = $resource;
+        
+        if ($resource != null && $id >= 1) {
+            $show = null;
+            $resource_id = "id";
+            $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+            if ($show == "id") {
+                $resource_id = "id";
+            } else {
+                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                if ($show == $resource."_id") {
+                    $resource_id = $resource."_id";
+                }
+            }
+        }
+        
         $i=0;
         if ($id >= 1) {
             if (count($arr) >= 1) {
@@ -55,10 +70,11 @@ class MysqlDb
             $sql = "
                 SELECT * 
                 FROM  `".$resource."` 
-                WHERE  `".$resource."_id` ='".$id."' 
+                WHERE  `".$resource_id."` ='".$id."' 
                 LIMIT 1
             ";
-        } else {
+        } 
+        else {
             $query = "";
             if (count($arr) >= 1) {
                 foreach($arr as $key => $value)
@@ -68,13 +84,13 @@ class MysqlDb
                         $i=+1;
                         if ($key == "sort") {
                             $this->sort = $value; $i-=1;
-                        } if ($key == "order") {
+                        } elseif ($key == "order") {
                             $this->order = $value; $i-=1;
-                        } if ($key == "offset") {
+                        } elseif ($key == "offset") {
                             $this->offset = $value; $i-=1;
-                        } if ($key == "limit") {
+                        } elseif ($key == "limit") {
                             $this->limit = $value; $i-=1;
-                        } if ($key == "relations") {
+                        } elseif ($key == "relations") {
                             $this->relations = $value; $i-=1;
                         } else {
                             if ($i == 1) {
@@ -98,6 +114,8 @@ class MysqlDb
                 ORDER BY `".$this->sort."` ".$this->order." 
                 LIMIT ".$this->offset." , ".$this->limit." 
             ";
+            
+            //print_r($sql);
         }
         // Отправляем запрос в базу
         $stmt = $this->db->dbh->prepare($sql);
@@ -132,6 +150,18 @@ class MysqlDb
         }
         if (isset($this->relations)) {
             $resp["request"]["relation"] = $this->relations;
+        }
+        if (isset($this->sort)) {
+            $resp["request"]["sort"] = $this->sort;
+        }
+        if (isset($this->order)) {
+            $resp["request"]["order"] = $this->order;
+        }
+        if (isset($this->offset)) {
+            $resp["request"]["offset"] = $this->offset;
+        }
+        if (isset($this->limit)) {
+            $resp["request"]["limit"] = $this->limit;
         }
 
             if (count($response) >= 1) {
@@ -248,7 +278,8 @@ class MysqlDb
                     }
                     $resp['body'] = $items;
  
-                } else {
+                } 
+                else {
                     foreach($response as $key => $arr){
                         if (isset($key) && isset($arr)) {
                             $array = array($key, $arr);
@@ -346,6 +377,19 @@ class MysqlDb
     public function put($resource = null, array $arr = array(), $id = null)
     {
         $this->resource = $resource;
+        if ($resource != null && $id >= 1) {
+            $show = null;
+            $resource_id = "id";
+            $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+            if ($show == "id") {
+                $resource_id = "id";
+            } else {
+                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                if ($show == $resource."_id") {
+                    $resource_id = $resource."_id";
+                }
+            }
+        }
         // Задаем пустое значение $query чтобы не выдавало ошибок
         $query = '';
         // если есть id, тогда в массиве $arr данные для одной записи
@@ -363,7 +407,7 @@ class MysqlDb
             $sql = "
                 UPDATE `".$resource."` 
                 SET ".$query." 
-                WHERE `".$resource."_id` =".$id."
+                WHERE `".$resource_id."` =".$id."
             ";
             // Отправляем запрос в базу
             $stmt = $this->db->dbh->prepare($sql);
@@ -540,14 +584,27 @@ class MysqlDb
  
     // Удаляем
     public function delete($resource = null, array $arr = array(), $id = null)
-    {  
+    {
         if ($resource != null) {
+            if ($id >= 1) {
+                $show = null;
+                $resource_id = "id";
+                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                if ($show == "id") {
+                    $resource_id = "id";
+                } else {
+                    $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                    if ($show == $resource."_id") {
+                        $resource_id = $resource."_id";
+                    }
+                }
+            }
             if ($id >= 1) {
                 // Формируем запрос к базе данных
                 $sql = "
                     DELETE 
                     FROM `".$resource."` 
-                    WHERE `".$resource."_id` ='".$id."'
+                    WHERE `".$resource_id."` ='".$id."'
                     ";
                 // Отправляем запрос в базу
                 $stmt = $this->db->dbh->prepare($sql);
@@ -642,6 +699,21 @@ class MysqlDb
     public function count($resource = null, array $arr = array(), $id = null)
     {
         $this->resource = $resource;
+ 
+        if ($resource != null && $id >= 1) {
+            $show = null;
+            $resource_id = "id";
+            $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+            if ($show == "id") {
+                $resource_id = "id";
+            } else {
+                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                if ($show == $resource."_id") {
+                    $resource_id = $resource."_id";
+                }
+            }
+        }
+ 
         $i=0;
         // Приходится делать запрос и при наличии id, так как может отдать null
         if ($id >= 1) {
@@ -649,7 +721,7 @@ class MysqlDb
             $sql = "
                 SELECT COUNT(*) 
                 FROM  `".$resource."` 
-                WHERE  `".$resource."_id` ='".$id."' 
+                WHERE  `".$resource_id."` ='".$id."' 
                 LIMIT 1
             ";
         } else {
@@ -662,13 +734,13 @@ class MysqlDb
                         $i=+1;
                         if ($key == "sort") {
                             $this->sort = $value; $i-=1;
-                        } if ($key == "order") {
+                        } elseif ($key == "order") {
                             $this->order = $value; $i-=1;
-                        } if ($key == "offset") {
+                        } elseif ($key == "offset") {
                             $this->offset = $value; $i-=1;
-                        } if ($key == "limit") {
+                        } elseif ($key == "limit") {
                             $this->limit = $value; $i-=1;
-                        } if ($key == "relations") {
+                        } elseif ($key == "relations") {
                             $i-=1;
                         } else {
                             if ($i == 1) {
