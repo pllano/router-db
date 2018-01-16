@@ -52,9 +52,8 @@ class Db
         }
     }
  
-    public function get($resource = null, array $arr = array(), $id = null)
+    public function get($resource = null, array $arr = array(), $id = null, $field_id = null)
     {
- 
         // Если база данных и ресурс не равняются null
         if ($this->db !== null && $resource !== null) {
  
@@ -64,7 +63,7 @@ class Db
             // Подключаемся к базе данных
             $db = new $class($this->config);
             // Отправляем запрос и получаем ответ
-            $response = $db->get($resource, $arr, $id);
+            $response = $db->get($resource, $arr, $id, $field_id);
  
             if ($this->config["db"]["slave"] != false && $this->config["db"]["queue"]["status"] === true) {
                 // Подключаем контроллер очереди запросов
@@ -91,9 +90,8 @@ class Db
         }
     }
  
-    public function search($resource = null, array $query_arr = array(), $keyword = null)
+    public function search($resource = null, array $query_arr = array(), $keyword = null, $field_id = null)
     {
- 
         // Новый запрос, аналог get рассчитан на полнотекстовый поиск
         // Должен возвращать count для пагинации в параметре ["response"]["total"]
  
@@ -208,7 +206,7 @@ class Db
         }
     }
     
-    public function put($resource = null, array $arr = array(), $id = null)
+    public function put($resource = null, array $arr = array(), $id = null, $field_id = null)
     {
         // Если база данных и ресурс не равняются null
         if ($this->db !== null && $resource !== null) {
@@ -228,7 +226,7 @@ class Db
                 // Полключаемся к базе
                 $db = new $class($this->config);
                 // Отправляем запрос и получаем ответ
-                $response = $db->put($resource, $arr, $id);
+                $response = $db->put($resource, $arr, $id, $field_id);
  
                 // Проверяем совпадает ли база полученная от Router с записанной в конфиге
                 // Получаем название базы для $resource из конфига
@@ -291,7 +289,7 @@ class Db
         }
     }
     
-    public function patch($resource = null, array $arr = array(), $id = null)
+    public function patch($resource = null, array $arr = array(), $id = null, $field_id = null)
     {
         // Если база данных и ресурс не равняются null
         if ($this->db !== null && $resource !== null) {
@@ -374,7 +372,7 @@ class Db
         }
     }
  
-    public function delete($resource = null, array $arr = array(), $id = null)
+    public function delete($resource = null, array $arr = array(), $id = null, $field_id = null)
     {
         // Если база данных и ресурс не равняются null
         if ($this->db !== null && $resource !== null) {

@@ -46,8 +46,8 @@ class JsonDb
  
                 // Конфигурация таблицы
                 $table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].''.$resource.'.config.json'), true);
-				
-				//print_r($query);
+                
+                //print_r($query);
                 
                 // Формируем набор параметров для работы с кешем
                 $CacheID = http_build_query($query);

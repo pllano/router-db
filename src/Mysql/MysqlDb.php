@@ -26,6 +26,8 @@ class MysqlDb
     private $relations = null;
     private $resource = null;
     private $config = null;
+    private $key_null = null;
+	private $resource_id = "id";
  
     function __construct(array $config = array())
     {
@@ -37,26 +39,39 @@ class MysqlDb
     }
  
     // Загрузить
-    public function get($resource = null, array $arr = array(), $id = null)
+    public function get($resource = null, array $arr = array(), $id = null, $field_id = null)
     {
-        $count = $this->count($resource, $arr, $id);
         $this->resource = $resource;
-        
-        if ($resource != null && $id >= 1) {
-            $show = null;
-            $resource_id = "id";
-            $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
-            if ($show == "id") {
+        if ($resource != null) {
+            if ($field_id == null) {
+                
+                $show = null;
                 $resource_id = "id";
-            } else {
-                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
-                if ($show == $resource."_id") {
-                    $resource_id = $resource."_id";
+				$this->resource_id = "id";
+                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                if ($show == "id") {
+					$this->resource_id = "id";
+                    $resource_id = "id";
+                    $this->sort = "id"; 
+                } else {
+                    $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                    if ($show == $resource."_id") {
+                        $this->resource_id = $resource."_id";
+						$resource_id = $resource."_id";
+                        $this->sort = $resource."_id";
+                    }
                 }
+            } else {
+                $this->resource_id = $field_id;
+				$resource_id = $field_id;
+                $this->sort = $field_id;
             }
         }
         
-        $i=0;
+        $count = $this->count($resource, $arr, $id, $resource_id);
+        //print_r($count["0"]["COUNT(*)"]);
+        
+        
         if ($id >= 1) {
             if (count($arr) >= 1) {
                 foreach($arr as $key => $value)
@@ -81,26 +96,32 @@ class MysqlDb
                 {
                     if ($key == ""){$key = null;}
                     if (isset($key) && isset($value)) {
-                        $i=+1;
                         if ($key == "sort") {
-                            $this->sort = $value; $i-=1;
+                            if ($value == "uid" || $value == "id" || $value == $resource."_id") {
+                                $this->sort = $resource_id;
+                            } else {
+                                $this->sort = $value;
+                            }
                         } elseif ($key == "order") {
-                            $this->order = $value; $i-=1;
+                            $this->order = $value;
                         } elseif ($key == "offset") {
-                            $this->offset = $value; $i-=1;
+                            $this->offset = $value;
                         } elseif ($key == "limit") {
-                            $this->limit = $value; $i-=1;
+                            $this->limit = $value;
                         } elseif ($key == "relations") {
-                            $this->relations = $value; $i-=1;
+                            $this->relations = $value;
                         } else {
-                            if ($i == 1) {
-                            $query .= "WHERE `".$key."` ='".$value."' ";
+                            if ($this->key_null == $key || $this->key_null == null) {
+                                $query .= "WHERE `".$key."` ='".$value."' ";
+                                $this->key_null = $key;
+                                    $resp["request"][$key] = $value;
                             } else {
                                 if (is_int($value)) {
                                     $query .= "AND `".$key."` ='".$value."' ";
                                 } else {
                                     $query .= "AND `".$key."` LIKE '%".$value."%' ";
                                 }
+                                    $resp["request"][$key] = $value;
                             }
                         }
                     }
@@ -131,6 +152,7 @@ class MysqlDb
             $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
             $resp["response"]["source"] = "mysql";
             $resp["response"]["total"] = $count["0"]["COUNT(*)"];
+            $resp["response"]["pages"] = ceil($count["0"]["COUNT(*)"] / $this->limit);
             $resp["request"]["query"] = "GET";
         } else {
             // Если ничего не нашли отдаем 404
@@ -148,20 +170,23 @@ class MysqlDb
         if (isset($id)) {
             $resp["request"]["id"] = $id;
         }
-        if (isset($this->relations)) {
-            $resp["request"]["relation"] = $this->relations;
-        }
-        if (isset($this->sort)) {
-            $resp["request"]["sort"] = $this->sort;
-        }
-        if (isset($this->order)) {
-            $resp["request"]["order"] = $this->order;
-        }
-        if (isset($this->offset)) {
-            $resp["request"]["offset"] = $this->offset;
-        }
-        if (isset($this->limit)) {
-            $resp["request"]["limit"] = $this->limit;
+        if ($id === null) {
+            if (isset($this->relations)) {
+                $resp["request"]["relation"] = $this->relations;
+            }
+            if (isset($this->sort)) {
+                $resp["request"]["sort"] = $this->sort;
+            }
+            if (isset($this->order)) {
+                $resp["request"]["order"] = $this->order;
+            }
+            if (isset($this->offset)) {
+                $resp["request"]["offset"] = $this->offset;
+            }
+            if (isset($this->limit)) {
+                $resp["request"]["limit"] = $this->limit;
+            }
+
         }
 
             if (count($response) >= 1) {
@@ -300,7 +325,7 @@ class MysqlDb
     }
  
     // Искать
-    public function search($resource = null, array $query_arr = array(), $keyword = null)
+    public function search($resource = null, array $query_arr = array(), $keyword = null, $field_id = null)
     {
         // Новый запрос, аналог get рассчитан на полнотекстовый поиск
         // Должен возвращать count для пагинации в параметре ["response"]["total"]
@@ -374,7 +399,7 @@ class MysqlDb
     }
  
     // Обновляем
-    public function put($resource = null, array $arr = array(), $id = null)
+    public function put($resource = null, array $arr = array(), $id = null, $field_id = null)
     {
         $this->resource = $resource;
         if ($resource != null && $id >= 1) {
@@ -485,7 +510,7 @@ class MysqlDb
     }
     
     // Обновляем
-    public function patch($resource = null, array $arr = array(), $id = null)
+    public function patch($resource = null, array $arr = array(), $id = null, $field_id = null)
     {
         $this->resource = $resource;
         // Задаем пустое значение $query чтобы не выдавало ошибок
@@ -583,7 +608,7 @@ class MysqlDb
     }
  
     // Удаляем
-    public function delete($resource = null, array $arr = array(), $id = null)
+    public function delete($resource = null, array $arr = array(), $id = null, $field_id = null)
     {
         if ($resource != null) {
             if ($id >= 1) {
@@ -696,24 +721,8 @@ class MysqlDb
     }
  
     // count для пагинатора
-    public function count($resource = null, array $arr = array(), $id = null)
+    public function count($resource = null, array $arr = array(), $id = null, $field_id = null)
     {
-        $this->resource = $resource;
- 
-        if ($resource != null && $id >= 1) {
-            $show = null;
-            $resource_id = "id";
-            $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
-            if ($show == "id") {
-                $resource_id = "id";
-            } else {
-                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
-                if ($show == $resource."_id") {
-                    $resource_id = $resource."_id";
-                }
-            }
-        }
- 
         $i=0;
         // Приходится делать запрос и при наличии id, так как может отдать null
         if ($id >= 1) {
@@ -721,7 +730,7 @@ class MysqlDb
             $sql = "
                 SELECT COUNT(*) 
                 FROM  `".$resource."` 
-                WHERE  `".$resource_id."` ='".$id."' 
+                WHERE  `".$this->resource_id."` ='".$id."' 
                 LIMIT 1
             ";
         } else {
@@ -731,20 +740,11 @@ class MysqlDb
                 {
                     if ($key == ""){$key = null;}
                     if (isset($key) && isset($value)) {
-                        $i=+1;
-                        if ($key == "sort") {
-                            $this->sort = $value; $i-=1;
-                        } elseif ($key == "order") {
-                            $this->order = $value; $i-=1;
-                        } elseif ($key == "offset") {
-                            $this->offset = $value; $i-=1;
-                        } elseif ($key == "limit") {
-                            $this->limit = $value; $i-=1;
-                        } elseif ($key == "relations") {
-                            $i-=1;
-                        } else {
-                            if ($i == 1) {
-                            $query .= "WHERE `".$key."` ='".$value."' ";
+                        
+                        if ($key != "sort" && $key != "order" && $key != "offset" && $key != "limit" && $key != "relations") {
+                            if ($this->key_null == $key || $this->key_null == null) {
+                                $query .= "WHERE `".$key."` ='".$value."' ";
+                                $this->key_null = $key;
                             } else {
                                 if (is_int($value)) {
                                     $query .= "AND `".$key."` ='".$value."' ";
@@ -756,6 +756,7 @@ class MysqlDb
                     }
                 }
             }
+ 
             // Формируем запрос к базе данных
             $sql = "
                 SELECT COUNT(*) 
