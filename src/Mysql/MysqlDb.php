@@ -18,6 +18,7 @@ use PDO;
  
 class MysqlDb
 {
+ 
     protected $db;
     private $sort = "id";
     private $order = "DESC";
@@ -27,7 +28,7 @@ class MysqlDb
     private $resource = null;
     private $config = null;
     private $key_null = null;
-	private $resource_id = "id";
+    private $resource_id = "id";
  
     function __construct(array $config = array())
     {
@@ -47,23 +48,23 @@ class MysqlDb
                 
                 $show = null;
                 $resource_id = "id";
-				$this->resource_id = "id";
+                $this->resource_id = "id";
                 $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
                 if ($show == "id") {
-					$this->resource_id = "id";
+                    $this->resource_id = "id";
                     $resource_id = "id";
                     $this->sort = "id"; 
                 } else {
                     $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
                     if ($show == $resource."_id") {
                         $this->resource_id = $resource."_id";
-						$resource_id = $resource."_id";
+                        $resource_id = $resource."_id";
                         $this->sort = $resource."_id";
                     }
                 }
             } else {
                 $this->resource_id = $field_id;
-				$resource_id = $field_id;
+                $resource_id = $field_id;
                 $this->sort = $field_id;
             }
         }
@@ -164,6 +165,7 @@ class MysqlDb
             $resp["response"]["source"] = "mysql";
             $resp["response"]["total"] = 0;
             $resp["request"]["query"] = "GET";
+            return $resp;
         }
         
         $resp["request"]["resource"] = $resource;
@@ -172,7 +174,7 @@ class MysqlDb
         }
         if ($id === null) {
             if (isset($this->relations)) {
-                $resp["request"]["relation"] = $this->relations;
+                $resp["request"]["relations"] = $this->relations;
             }
             if (isset($this->sort)) {
                 $resp["request"]["sort"] = $this->sort;
@@ -193,7 +195,6 @@ class MysqlDb
                 if (isset($this->relations)) {
                     // Получаем связи
                     $id = null;
-                    $resource_id = $resource.'_id';
                     $relation = null;
                     $foreach = 0;
                     if (base64_decode($this->relations, true) != false){
@@ -207,9 +208,8 @@ class MysqlDb
                     } else {
                         $relation = $this->relations;
                     }
-                    $resp["request"]["relations"] = $this->relations;
  
-                    foreach($res as $key => $arr)
+                    foreach($relation as $key => $arr)
                     {
                         if (isset($key) && isset($arr)) {
                             $id = $arr->{$resource_id};
@@ -334,13 +334,33 @@ class MysqlDb
     }
  
     // Создаем одну запись
-    public function post($resource = null, array $arr = array())
+    public function post($resource = null, array $arr = array(), $field_id = null)
     {
-        // Задаем пустые значения чтобы не выдавало ошибок
+        if ($field_id == null) {
+            $show = null;
+            $resource_id = "id";
+            $this->resource_id = "id";
+            $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+            if ($show == "id") {
+                $this->resource_id = "id";
+                $resource_id = "id";
+            } else {
+                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                if ($show == $resource."_id") {
+                    $this->resource_id = $resource."_id";
+                    $resource_id = $resource."_id";
+                }
+            }
+        } else {
+                $this->resource_id = $field_id;
+                $resource_id = $field_id;
+        }
+            
+            // Задаем пустые значения чтобы не выдавало ошибок
         $insert = "";
         $values = "";
         if (count($insert) >= 1) {
-            foreach($insert as $key => $unit)
+            foreach($arr as $key => $unit)
             {
                 if ($key == ""){$key = null;}
                 if (isset($key) && isset($unit)) {
@@ -351,7 +371,7 @@ class MysqlDb
         }
         if ($resource != null) {
             // Формируем запрос к базе данных
-            $sql = "INSERT INTO `".$resource."` (`id`".$insert.") VALUES ('NULL'".$values.");";
+            $sql = "INSERT INTO `".$resource."` (`".$resource_id."`".$insert.") VALUES ('NULL'".$values.");";
             // Отправляем запрос в базу
             $stmt = $this->db->dbh->prepare($sql);
             if ($stmt->execute()) {
@@ -402,17 +422,25 @@ class MysqlDb
     public function put($resource = null, array $arr = array(), $id = null, $field_id = null)
     {
         $this->resource = $resource;
-        if ($resource != null && $id >= 1) {
-            $show = null;
-            $resource_id = "id";
-            $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
-            if ($show == "id") {
+        if ($resource != null) {
+            if ($field_id == null) {
+                $show = null;
                 $resource_id = "id";
-            } else {
-                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
-                if ($show == $resource."_id") {
-                    $resource_id = $resource."_id";
+                $this->resource_id = "id";
+                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                if ($show == "id") {
+                    $this->resource_id = "id";
+                    $resource_id = "id";
+                } else {
+                    $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                    if ($show == $resource."_id") {
+                        $this->resource_id = $resource."_id";
+                        $resource_id = $resource."_id";
+                    }
                 }
+            } else {
+                $this->resource_id = $field_id;
+                $resource_id = $field_id;
             }
         }
         // Задаем пустое значение $query чтобы не выдавало ошибок
@@ -439,27 +467,28 @@ class MysqlDb
 
             if ($stmt->execute()) {
                 // Если все ок отдаем 1
-                $response = 1;
+                $total = 1;
                 $resp["headers"]["status"] = "202 Accepted";
                 $resp["headers"]["code"] = 202;
                 $resp["headers"]["message"] = "Accepted";
                 $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
-                $resp["response"]["total"] = $response;
+                $resp["response"]["total"] = $total;
                 $resp["response"]["id"] = $id;
                 $resp["request"]["query"] = "PUT";
-                $resp["request"]["resource"] = $resource;
+                $resp["request"]["resource"] = $this->resource;
             } else {
                 // Если нет отдаем 0
-                $response = null;
+                $total = null;
                 $resp["headers"]["status"] = '400 Bad Request';
                 $resp["headers"]["code"] = 400;
                 $resp["headers"]["message"] = 'Bad Request';
                 $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
-                $resp["response"]["total"] = $response;
+                $resp["response"]["total"] = $total;
                 $resp["response"]["id"] = $id;
                 $resp["response"]["source"] = "mysql";
                 $resp["request"]["query"] = "PUT";
-                $resp["request"]["resource"] = $resource;
+                $resp["request"]["resource"] = $this->resource;
+                return $resp;
             }
         } else {
             $i=0;
@@ -470,7 +499,7 @@ class MysqlDb
                     {
                         if ($key == ""){$key = null;}
                         if (isset($key) && isset($value)) {
-                            if ($key == $resource."_id"){
+                            if ($key == $resource_id){
                                 $key_id = $key;
                                 $id = $value;
                             } else {
@@ -480,7 +509,7 @@ class MysqlDb
                     }
                     // Формируем запрос к базе данных
                     $sql = "
-                        UPDATE `".$resource."` 
+                        UPDATE `".$this->resource."` 
                         SET ".$query." 
                         WHERE `".$key_id."` =".$id."
                     ";
@@ -495,24 +524,47 @@ class MysqlDb
                     }
                 }
             }
-            $response = $i;
+            $total = $i;
             $resp["headers"]["status"] = '400 Bad Request';
             $resp["headers"]["code"] = 400;
             $resp["headers"]["message"] = 'Bad Request';
             $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
-            $resp["response"]["total"] = $response;
+            $resp["response"]["total"] = $total;
             $resp["response"]["source"] = "mysql";
             $resp["request"]["query"] = "PUT";
-            $resp["request"]["resource"] = $resource;
+            $resp["request"]["resource"] = $this->resource;
         }
+ 
         // Возвращаем колличество обновленных записей
         return $resp;
+ 
     }
     
     // Обновляем
     public function patch($resource = null, array $arr = array(), $id = null, $field_id = null)
     {
         $this->resource = $resource;
+        if ($this->resource == null) {
+            if ($field_id == null) {
+                $show = null;
+                $resource_id = "id";
+                $this->resource_id = "id";
+                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$this->resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                if ($show == "id") {
+                    $this->resource_id = "id";
+                    $resource_id = "id";
+                } else {
+                    $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$this->resource."` where `Field` = '".$this->resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                    if ($show == $this->resource."_id") {
+                        $this->resource_id = $this->resource."_id";
+                        $resource_id = $this->resource."_id";
+                    }
+                }
+            } else {
+                $this->resource_id = $field_id;
+                $resource_id = $field_id;
+            }
+        }
         // Задаем пустое значение $query чтобы не выдавало ошибок
         $query = '';
         // если есть id, тогда в массиве $arr данные для одной записи
@@ -528,36 +580,37 @@ class MysqlDb
             }
             // Формируем запрос к базе данных
             $sql = "
-                UPDATE `".$resource."` 
+                UPDATE `".$this->resource."` 
                 SET ".$query." 
-                WHERE `".$resource."_id` =".$id."
+                WHERE `".$resource_id."` =".$id."
             ";
             // Отправляем запрос в базу
             $stmt = $this->db->dbh->prepare($sql);
 
             if ($stmt->execute()) {
                 // Если все ок отдаем 1
-                $response = 1;
+                $total = 1;
                 $resp["headers"]["status"] = "202 Accepted";
                 $resp["headers"]["code"] = 202;
                 $resp["headers"]["message"] = "Accepted";
                 $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
-                $resp["response"]["total"] = $response;
+                $resp["response"]["total"] = $total;
                 $resp["response"]["id"] = $id;
                 $resp["request"]["query"] = "PATCH";
-                $resp["request"]["resource"] = $resource;
+                $resp["request"]["resource"] = $this->resource;
             } else {
                 // Если нет отдаем 0
-                $response = null;
+                $total = null;
                 $resp["headers"]["status"] = '400 Bad Request';
                 $resp["headers"]["code"] = 400;
                 $resp["headers"]["message"] = 'Bad Request';
                 $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
-                $resp["response"]["total"] = $response;
+                $resp["response"]["total"] = $total;
                 $resp["response"]["id"] = $id;
                 $resp["response"]["source"] = "mysql";
                 $resp["request"]["query"] = "PATCH";
-                $resp["request"]["resource"] = $resource;
+                $resp["request"]["resource"] = $this->resource;
+                return $resp;
             }
         } else {
             $i=0;
@@ -568,7 +621,7 @@ class MysqlDb
                     {
                         if ($key == ""){$key = null;}
                         if (isset($key) && isset($value)) {
-                            if ($key == $resource."_id"){
+                            if ($key == $resource_id){
                                 $key_id = $key;
                                 $id = $value;
                             } else {
@@ -578,7 +631,7 @@ class MysqlDb
                     }
                     // Формируем запрос к базе данных
                     $sql = "
-                        UPDATE `".$resource."` 
+                        UPDATE `".$this->resource."` 
                         SET ".$query." 
                         WHERE `".$key_id."` =".$id."
                     ";
@@ -593,18 +646,21 @@ class MysqlDb
                     }
                 }
             }
-            $response = $i;
+ 
+            $total = $i;
             $resp["headers"]["status"] = '400 Bad Request';
             $resp["headers"]["code"] = 400;
             $resp["headers"]["message"] = 'Bad Request';
             $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
-            $resp["response"]["total"] = $response;
+            $resp["response"]["total"] = $total;
             $resp["response"]["source"] = "mysql";
             $resp["request"]["query"] = "PATCH";
-            $resp["request"]["resource"] = $resource;
+            $resp["request"]["resource"] = $this->resource;
         }
+ 
         // Возвращаем колличество обновленных записей
         return $resp;
+ 
     }
  
     // Удаляем
@@ -656,6 +712,7 @@ class MysqlDb
                     $resp["request"]["id"] = $response;
                     $resp["request"]["query"] = "DELETE";
                     $resp["request"]["resource"] = $resource;
+                    return $resp;
                 }
             } else {
                 $i=0;
