@@ -133,16 +133,16 @@ class PllanoapiDb
  
                 // Сохраняем запрос в файл для проверки
                 //file_put_contents(__DIR__ . "/post_request.json", json_encode($arr + array("url" => $this->url."".$resource)));
-				//file_put_contents(__DIR__ . "/url.json", $this->url."".$resource);
+                //file_put_contents(__DIR__ . "/url.json", $this->url."".$resource);
  
                 $response = $guzzle->request("POST", $this->url."".$resource, ['form_params' => $arr]);
             }
         }
         if ($response != null) {
             $get_body = $response->getBody();
-			//file_put_contents(__DIR__ . "/post_get_body.json", json_decode($get_body));
+            //file_put_contents(__DIR__ . "/post_get_body.json", json_decode($get_body));
             $output = (new Utility())->clean_json($get_body);
-			$records = json_decode($output, true);
+            $records = json_decode($output, true);
  
             if (isset($records["headers"]["code"])) {
                 if ($records["headers"]["code"] == 201 || $records["headers"]["code"] == "201") {
