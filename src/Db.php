@@ -65,7 +65,7 @@ class Db
             // Отправляем запрос и получаем ответ
             $response = $db->get($resource, $arr, $id, $field_id);
  
-            if ($this->config["db"]["slave"] != false && $this->config["db"]["queue"]["status"] === true) {
+            if ($this->config["db"]["slave"] != '0' && $this->config["db"]["queue"]["status"] == '1') {
                 // Подключаем контроллер очереди запросов
                 $queue = new Queue($this->config, $this->package);
                 $count = $queue->run();

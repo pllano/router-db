@@ -31,14 +31,6 @@ class Structure {
  
     public function start()
     {
-        // Функция контроля структур баз данных
-        // Проверяет структуру в файле db.json
-        // Создает ресурсы (таблицы) если их нет
-        // Добавляет поля или меняет их тип
-    }
- 
-    public function start()
-    {
         $uri_db = "db.json";
         if (file_exists($uri_db)) {
             // Загрузить файл db.json

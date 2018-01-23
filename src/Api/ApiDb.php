@@ -143,12 +143,12 @@ class ApiDb
             if (isset($records["headers"]["code"])) {
                 if ($records["headers"]["code"] == 201 || $records["headers"]["code"] == "201") {
                     if (isset($records["response"]["id"])) {
-						if ($resource == "registration") {
-							// Для registration возвращаем весь ответ
-							return $records;
-						} else {
-						    return $records["response"]["id"];
-						}
+                        if ($resource == "registration") {
+                            // Для registration возвращаем весь ответ
+                            return $records;
+                        } else {
+                            return $records["response"]["id"];
+                        }
                     } else {
                         return null;
                     }

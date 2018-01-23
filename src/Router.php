@@ -33,9 +33,9 @@ class Router
     public function ping($resource = null)
     {
         // Проверяем наличие slave базы и включен ли роутинг
-        if ($this->config["db"]["slave"] != false && $this->config["db"]["router"] === true) {
+        if ($this->config["db"]["slave"] != null && $this->config["db"]["router"] == '1') {
  
-		    if ($resource !== null && isset($this->config["db"]["resource"][$resource]["db"])) {
+            if ($resource !== null && isset($this->config["db"]["resource"][$resource]["db"])) {
                 $this->db = $this->config["db"]["resource"][$resource]["db"];
             } else {
                 $this->db = $this->config["db"]["master"];
@@ -77,19 +77,19 @@ class Router
             } else {
                 return null;
             }
-		} else {
-		    // Если в конфигурации не указана slave база ["db"]["slave"] = false
-		    // Если выключен роутинг ["db"]["router"] = false, Ping также отключен
-		    // Берем название базы из конфигурации ресурса, если она не указанна берем название master базы.
-		    if ($resource !== null && isset($this->config["db"]["resource"][$resource]["db"])) {
+        } else {
+            // Если в конфигурации не указана slave база ["db"]["slave"] = false
+            // Если выключен роутинг ["db"]["router"] = false, Ping также отключен
+            // Берем название базы из конфигурации ресурса, если она не указанна берем название master базы.
+            if ($resource !== null && isset($this->config["db"]["resource"][$resource]["db"])) {
                 $this->db = $this->config["db"]["resource"][$resource]["db"];
             } else {
                 $this->db = $this->config["db"]["master"];
             }
  
-		    return $this->db;
+            return $this->db;
  
-		}
+        }
     }
  
 }

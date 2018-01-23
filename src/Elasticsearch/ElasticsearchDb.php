@@ -64,18 +64,18 @@ class ElasticsearchDb
     {
         if (isset($resource)) {
  
-			$client = Elastic::create()->build();
+            $client = Elastic::create()->build();
  
-			if ($this->type === true) {
-				$type = $resource;
-			    $index = $this->index;
-			} else {
-			    $index = $this->index."_".$resource;
-				$type = null;
-			}
+            if ($this->type === true) {
+                $type = $resource;
+                $index = $this->index;
+            } else {
+                $index = $this->index."_".$resource;
+                $type = null;
+            }
  
             // если $id определен то это обычный get
-			if (isset($id)) {
+            if (isset($id)) {
  
                 $params["index"] = $index;
                 $params["type"] = $type;
@@ -84,17 +84,17 @@ class ElasticsearchDb
 
                 $get = $client->get($params);
  
-			} elseif (count($arr) >= 1 && $id === null) {
-			    // Если мы получили массив $arr то это search
-			    
-			    $client->search($params);
+            } elseif (count($arr) >= 1 && $id === null) {
+                // Если мы получили массив $arr то это search
+                
+                $client->search($params);
  
-			} else {
-		        return null;
-		    }
-		} else {
-		    return null;
-		}
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
  
     // Искать
@@ -116,7 +116,7 @@ class ElasticsearchDb
             $params["id"] = $id;
         }
         $params["client"] = ['ignore' => [400, 404, 500]];
-		
+        
         if (count($arr) >= 1) {
             foreach($arr as $key => $value)
             {
@@ -134,22 +134,22 @@ class ElasticsearchDb
     public function put($resource = null, array $arr = array(), $id = null)
     {
         if (isset($resource)) {
-			$client = Elastic::create()->build();
-			
-			if ($this->type === true) {
-				$type = $resource;
-			    $index = $this->index;
-			} else {
-			    $index = $this->index."_".$resource;
-				$type = null;
-			}
+            $client = Elastic::create()->build();
+            
+            if ($this->type === true) {
+                $type = $resource;
+                $index = $this->index;
+            } else {
+                $index = $this->index."_".$resource;
+                $type = null;
+            }
  
             if (isset($id)) {
                 $params["index"] = $index;
                 $params["type"] = $type;
                 $params["id"] = $id;
                 $params["client"] = ['ignore' => [400, 404, 500]];
-		
+        
                 if (count($arr) >= 1) {
                     foreach($arr as $key => $value)
                     {
@@ -160,30 +160,30 @@ class ElasticsearchDb
                 }
  
                 $client->update($params);
-		    }
-		}
+            }
+        }
     }
-	
+    
     // Обновляем
     public function patch($resource = null, array $arr = array(), $id = null)
     {
         if (isset($resource)) {
-			$client = Elastic::create()->build();
-			
-			if ($this->type === true) {
-				$type = $resource;
-			    $index = $this->index;
-			} else {
-			    $index = $this->index."_".$resource;
-				$type = null;
-			}
+            $client = Elastic::create()->build();
+            
+            if ($this->type === true) {
+                $type = $resource;
+                $index = $this->index;
+            } else {
+                $index = $this->index."_".$resource;
+                $type = null;
+            }
  
             if (isset($id)) {
                 $params["index"] = $index;
                 $params["type"] = $type;
                 $params["id"] = $id;
                 $params["client"] = ['ignore' => [400, 404, 500]];
-		
+        
                 if (count($arr) >= 1) {
                     foreach($arr as $key => $value)
                     {
@@ -194,55 +194,55 @@ class ElasticsearchDb
                 }
  
                 $client->update($params);
-		    }
-		}
+            }
+        }
     }
  
     // Удаляем
     public function delete($resource = null, array $arr = array(), $id = null)
     {
         if (isset($resource)) {
-			$client = Elastic::create()->build();
-			
-			if ($this->type === true) {
-				$type = $resource;
-			    $index = $this->index;
-			} else {
-			    $index = $this->index."_".$resource;
-				$type = null;
-			}
+            $client = Elastic::create()->build();
+            
+            if ($this->type === true) {
+                $type = $resource;
+                $index = $this->index;
+            } else {
+                $index = $this->index."_".$resource;
+                $type = null;
+            }
  
-		    if ($id >= 1) {
-		        $params["index"] = $index;
-		        if (isset($type)) {
-					$params["type"] = $type;
-				}
-		        $params["id"] = $id;
-		        $params["client"] = ['ignore' => [400, 404, 500]];
+            if ($id >= 1) {
+                $params["index"] = $index;
+                if (isset($type)) {
+                    $params["type"] = $type;
+                }
+                $params["id"] = $id;
+                $params["client"] = ['ignore' => [400, 404, 500]];
  
-		        $client->delete($params);
+                $client->delete($params);
  
             } elseif (count($arr) >= 1) {
                 foreach($arr as $value)
                 {
-					// ПЕРЕПИСАТЬ !!!!!!
+                    // ПЕРЕПИСАТЬ !!!!!!
                     if (isset($value["id"])) {
-		    		    $params["index"] = $index;
-		    		    if (isset($type)) {
-							$params["type"] = $type;
-						}
-		    		    $params["id"] = $value["id"];
-		    		    $params["client"] = ['ignore' => [400, 404, 500]];
+                        $params["index"] = $index;
+                        if (isset($type)) {
+                            $params["type"] = $type;
+                        }
+                        $params["id"] = $value["id"];
+                        $params["client"] = ['ignore' => [400, 404, 500]];
  
-		    		    $client->delete($params);
+                        $client->delete($params);
                     }
                 }
-		    } else {
-		       return null;
-		    }
-		} else {
-		    return null;
-		}
+            } else {
+               return null;
+            }
+        } else {
+            return null;
+        }
     }
  
     // Получить последний идентификатор
