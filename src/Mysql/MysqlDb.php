@@ -128,7 +128,7 @@ class MysqlDb
                     }
                 }
             }
-			
+            
             if($this->offset >= 1){
                 $this->offset = $this->offset * $this->limit;
             }

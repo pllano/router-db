@@ -670,22 +670,22 @@ class JsonDb
                         if (isset($key) && isset($value)) {
                             if ($key != "id") {
                                 if (array_key_exists($key, $table_config["schema"])) {
-									if ($table_config["schema"][$key] == "integer") {
-										$value = str_replace(array('"', "'", " "), '', $value);
+                                    if ($table_config["schema"][$key] == "integer") {
+                                        $value = str_replace(array('"', "'", " "), '', $value);
                                         if (is_numeric($value)) {
                                             $value = intval($value);
                                         } else {
                                             $value = intval($value);
                                         }
                                     } elseif ($table_config["schema"][$key] == "double") {
-										$value = str_replace(array('"', "'", " "), '', $value);
+                                        $value = str_replace(array('"', "'", " "), '', $value);
                                         if (is_float($value * 1)) {
                                             $value = (float)$value;
                                         } else {
                                             $value = (float)$value;
                                         }
                                     } elseif ($table_config["schema"][$key] == "boolean") {
-										$value = str_replace(array('"', "'", " "), '', $value);
+                                        $value = str_replace(array('"', "'", " "), '', $value);
                                         if (is_bool($value)) {
                                             $value = boolval($value);
                                         } else {
