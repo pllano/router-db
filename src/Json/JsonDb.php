@@ -670,37 +670,35 @@ class JsonDb
                         if (isset($key) && isset($value)) {
                             if ($key != "id") {
                                 if (array_key_exists($key, $table_config["schema"])) {
- 
-                                    if ($table_config["schema"][$key] == "integer") {
+									if ($table_config["schema"][$key] == "integer") {
+										$value = str_replace(array('"', "'", " "), '', $value);
                                         if (is_numeric($value)) {
                                             $value = intval($value);
                                         } else {
-                                            $value = 0;
+                                            $value = intval($value);
                                         }
-                                    }
-                                    if ($table_config["schema"][$key] == "double") {
+                                    } elseif ($table_config["schema"][$key] == "double") {
+										$value = str_replace(array('"', "'", " "), '', $value);
                                         if (is_float($value * 1)) {
                                             $value = (float)$value;
                                         } else {
                                             $value = (float)$value;
                                         }
-                                    }
-                                    if ($table_config["schema"][$key] == "boolean") {
+                                    } elseif ($table_config["schema"][$key] == "boolean") {
+										$value = str_replace(array('"', "'", " "), '', $value);
                                         if (is_bool($value)) {
                                             $value = boolval($value);
                                         } else {
-                                            $value = false;
+                                            $value = boolval($value);
                                         }
-                                    }
-                                    if ($table_config["schema"][$key] == "string") {
+                                    } elseif ($table_config["schema"][$key] == "string") {
                                         if (is_string($value)) {
                                             $value = strval($value);
                                         } else {
-                                            $value = null;
+                                            $value = strval($value);
                                         }
                                         
-                                    }
-                                    else {
+                                    } else {
                                         $value = null;
                                     }
  

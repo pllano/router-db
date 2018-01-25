@@ -128,6 +128,10 @@ class MysqlDb
                     }
                 }
             }
+			
+            if($this->offset >= 1){
+                $this->offset = $this->offset * $this->limit;
+            }
             // Формируем запрос к базе данных
             $sql = "
                 SELECT * 
