@@ -12,22 +12,22 @@
  */
  
 namespace RouterDb\Api;
-
+ 
 use RouterDb\Utility;
-use GuzzleHttp\Client as Guzzle;
-
+ 
 class ApiDb
 {
- 
     private $resource = null;
     private $url = null;
     private $auth = null;
     private $api = null;
     private $public_key = null;
+    private $config;
  
     public function __construct(array $config = array())
     {
         if (count($config) >= 1){
+            $this->config = $config;
             if (isset($config["db"]["api"]["config"])) {
                 $this->api = $config["db"]["api"]["config"];
             }
@@ -46,7 +46,7 @@ class ApiDb
     // Загрузить
     public function get($resource = null, array $arr = array(), $id = null)
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -64,9 +64,9 @@ class ApiDb
             }
             if ($id != null) {
                 $resource_id = "/".$id;
-                $response = $guzzle->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key);
+                $response = $http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key);
             } else {
-                $response = $guzzle->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key."".$array);
+                $response = $http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key."".$array);
             }
         } elseif ($this->auth == "CryptoAuth") {
             
@@ -78,7 +78,7 @@ class ApiDb
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
             }
-            $response = $guzzle->request("GET", $this->url."".$this->resource."".$resource_id."".$array);
+            $response = $http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$array);
         }
  
         if ($response != null) {
@@ -110,7 +110,7 @@ class ApiDb
     // Создаем одну запись
     public function post($resource = null, array $arr = array())
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $public_key = "";
         $array = "";
         if ($resource != null) {
@@ -124,7 +124,7 @@ class ApiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
-            $response = $guzzle->request("POST", $this->url."".$this->resource, $array);
+            $response = $http_client->request("POST", $this->url."".$this->resource, $array);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -133,7 +133,7 @@ class ApiDb
             
         } else {
             if (count($arr) >= 1){
-                $response = $guzzle->request("POST", $this->url."".$this->resource, ['form_params' => $arr]);
+                $response = $http_client->request("POST", $this->url."".$this->resource, ['form_params' => $arr]);
             }
         }
         if ($response != null) {
@@ -164,7 +164,7 @@ class ApiDb
     // Обновляем
     public function put($resource = null, array $arr = array(), $id = null)
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -182,7 +182,7 @@ class ApiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
-            $response = $guzzle->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
+            $response = $http_client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -192,7 +192,7 @@ class ApiDb
         } else {
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
-                $response = $guzzle->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
+                $response = $http_client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);
@@ -219,7 +219,7 @@ class ApiDb
     // Обновляем
     public function patch($resource = null, array $arr = array(), $id = null)
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -237,7 +237,7 @@ class ApiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
-            $response = $guzzle->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
+            $response = $http_client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -247,7 +247,7 @@ class ApiDb
         } else {
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
-                $response = $guzzle->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
+                $response = $http_client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);

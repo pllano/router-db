@@ -20,7 +20,6 @@ use jsonDB\dbException;
 
 class JsonDb
 {
- 
     private $resource = null;
     private $dir = null;
     private $cached = null;

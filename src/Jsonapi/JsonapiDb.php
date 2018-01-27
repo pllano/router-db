@@ -14,7 +14,6 @@
 namespace RouterDb\Jsonapi;
  
 use RouterDb\Utility;
-use GuzzleHttp\Client as Guzzle;
  
 class JsonapiDb
 {
@@ -23,10 +22,12 @@ class JsonapiDb
     private $url = null;
     private $auth = null;
     private $public_key = null;
+    private $config;
  
     public function __construct(array $config = array())
     {
         if (count($config) >= 1) {
+            $this->config = $config;
             if (isset($config["db"]["jsonapi"]["url"])) {
                 $this->url = $config["db"]["jsonapi"]["url"];
             }
@@ -42,7 +43,7 @@ class JsonapiDb
     // Загрузить
     public function get($resource = null, array $arr = array(), $id = null)
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -59,7 +60,7 @@ class JsonapiDb
             if (count($arr) >= 1){
                 $array = "&".http_build_query($arr);
             }
-            $response = $guzzle->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key."".$array);
+            $response = $http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key."".$array);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -70,7 +71,7 @@ class JsonapiDb
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
             }
-            $response = $guzzle->request("GET", $this->url."".$this->resource."".$resource_id."".$array);
+            $response = $http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$array);
         }
         if ($response != null) {
             $get_body = $response->getBody();
@@ -100,7 +101,7 @@ class JsonapiDb
     // Создаем одну запись
     public function post($resource = null, array $arr = array())
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $public_key = "";
         $array = "";
         if ($resource != null) {
@@ -114,7 +115,7 @@ class JsonapiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
-            $response = $guzzle->request("POST", $this->url."".$this->resource, $array);
+            $response = $http_client->request("POST", $this->url."".$this->resource, $array);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -123,7 +124,7 @@ class JsonapiDb
             
         } else {
             if (count($arr) >= 1){
-                $response = $guzzle->request("POST", $this->url."".$this->resource, ['form_params' => $arr]);
+                $response = $http_client->request("POST", $this->url."".$this->resource, ['form_params' => $arr]);
             }
         }
         if ($response != null) {
@@ -149,7 +150,7 @@ class JsonapiDb
     // Обновляем
     public function put($resource = null, array $arr = array(), $id = null)
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -167,7 +168,7 @@ class JsonapiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
-            $response = $guzzle->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
+            $response = $http_client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -177,7 +178,7 @@ class JsonapiDb
         } else {
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
-                $response = $guzzle->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
+                $response = $http_client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);
@@ -205,7 +206,7 @@ class JsonapiDb
     // Обновляем
     public function patch($resource = null, array $arr = array(), $id = null)
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -223,7 +224,7 @@ class JsonapiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
-            $response = $guzzle->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
+            $response = $http_client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -233,8 +234,8 @@ class JsonapiDb
         } else {
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
-                //$response = $guzzle->request("GET", $this->url."_put/".$this->resource."".$resource_id."".$array);
-                $response = $guzzle->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
+                //$response = $http_client->request("GET", $this->url."_put/".$this->resource."".$resource_id."".$array);
+                $response = $http_client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);
@@ -261,7 +262,7 @@ class JsonapiDb
     // Удаляем
     public function delete($resource = null, array $arr = array(), $id = null)
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -279,7 +280,7 @@ class JsonapiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
-            $response = $guzzle->request("DELETE", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
+            $response = $http_client->request("DELETE", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -289,7 +290,7 @@ class JsonapiDb
         } else {
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
-                $response = $guzzle->request("DELETE", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
+                $response = $http_client->request("DELETE", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);
@@ -316,7 +317,7 @@ class JsonapiDb
     // Получить последний идентификатор
     public function last_id($resource)
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $public_key = "";
         if ($resource != null) {
             $this->resource = $resource;
@@ -325,7 +326,7 @@ class JsonapiDb
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }
-            $response = $guzzle->request("GET", $this->url."".$this->resource."/_last_id".$public_key);
+            $response = $http_client->request("GET", $this->url."".$this->resource."/_last_id".$public_key);
         } elseif ($this->auth == "CryptoAuth") {
  
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -333,7 +334,7 @@ class JsonapiDb
         } elseif ($this->auth == "LoginPasswordAuth") {
  
         } else {
-            $response = $guzzle->request("GET", $this->url."".$this->resource."/_last_id");
+            $response = $http_client->request("GET", $this->url."".$this->resource."/_last_id");
         }
         if ($response != null) {
             $get_body = $response->getBody();

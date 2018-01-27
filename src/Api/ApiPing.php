@@ -15,7 +15,6 @@ namespace RouterDb\Api;
  
 use RouterDb\Utility;
 use RouterDb\Ex;
-use GuzzleHttp\Client as Guzzle;
  
 class ApiPing
 {
@@ -24,7 +23,6 @@ class ApiPing
  
     public function __construct(array $config = array())
     {
-        
             if (count($config) >= 1){
             $this->config = $config;
         }
@@ -39,9 +37,10 @@ class ApiPing
                 if ($this->config["db"]["api"]["auth"] == "QueryKeyAuth" && $this->config["db"]["api"]["public_key"] != null) {
                     $public_key = "?public_key=".$this->config["db"]["api"]["public_key"];
                 }
-                $guzzle = new Guzzle();
-                $response = $guzzle->request("GET", $url."".$resource."".$public_key."&limit=1&offset=0");
-                
+ 
+                $http_client = new $this->config['vendor']['http_client']();
+                $response = $http_client->request("GET", $url."".$resource."".$public_key."&limit=1&offset=0");
+ 
                 $output = $response->getBody();
                 $output = (new Utility())->clean_json($output);
                 $records = json_decode($output, true);

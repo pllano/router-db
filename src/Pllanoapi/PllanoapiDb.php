@@ -14,7 +14,6 @@
 namespace RouterDb\Pllanoapi;
  
 use RouterDb\Utility;
-use GuzzleHttp\Client as Guzzle;
  
 class PllanoapiDb
 {
@@ -44,7 +43,7 @@ class PllanoapiDb
     // Загрузить
     public function get($resource = null, array $arr = array(), $id = null)
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -61,7 +60,7 @@ class PllanoapiDb
             if (count($arr) >= 1){
                 $array = "&".http_build_query($arr);
             }
-            $response = $guzzle->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key."".$array);
+            $response = $http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key."".$array);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -72,7 +71,7 @@ class PllanoapiDb
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
             }
-            $response = $guzzle->request("GET", $this->url."".$this->resource."".$resource_id."".$array);
+            $response = $http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$array);
         }
         if ($response != null) {
             $get_body = $response->getBody();
@@ -102,7 +101,7 @@ class PllanoapiDb
     // Создаем одну запись
     public function post($resource = null, array $arr = array())
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $public_key = "";
         $array = "";
         if ($resource != null) {
@@ -116,11 +115,11 @@ class PllanoapiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
- 
+            
             // Сохраняем запрос в файл для проверки
             //file_put_contents(__DIR__ . "/post_request_key.json", json_encode($array + array("url" => $this->url."".$resource)));
                 
-            $response = $guzzle->request("POST", $this->url."".$resource, $array);
+            $response = $http_client->request("POST", $this->url."".$resource, $array);
  
         } elseif ($this->auth == "CryptoAuth" && $this->public_key != null && $this->config["db"]["resource"][$resource]["authorization"] == true) {
             
@@ -135,7 +134,7 @@ class PllanoapiDb
                 //file_put_contents(__DIR__ . "/post_request.json", json_encode($arr + array("url" => $this->url."".$resource)));
                 //file_put_contents(__DIR__ . "/url.json", $this->url."".$resource);
  
-                $response = $guzzle->request("POST", $this->url."".$resource, ['form_params' => $arr]);
+                $response = $http_client->request("POST", $this->url."".$resource, ['form_params' => $arr]);
             }
         }
         if ($response != null) {
@@ -163,7 +162,7 @@ class PllanoapiDb
     // Обновляем
     public function put($resource = null, array $arr = array(), $id = null)
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -181,7 +180,7 @@ class PllanoapiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
-            $response = $guzzle->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
+            $response = $http_client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -191,7 +190,7 @@ class PllanoapiDb
         } else {
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
-                $response = $guzzle->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
+                $response = $http_client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);
@@ -219,7 +218,7 @@ class PllanoapiDb
     // Обновляем
     public function patch($resource = null, array $arr = array(), $id = null)
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -237,7 +236,7 @@ class PllanoapiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
-            $response = $guzzle->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
+            $response = $http_client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -247,8 +246,8 @@ class PllanoapiDb
         } else {
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
-                //$response = $guzzle->request("GET", $this->url."_put/".$this->resource."".$resource_id."".$array);
-                $response = $guzzle->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
+                //$response = $http_client->request("GET", $this->url."_put/".$this->resource."".$resource_id."".$array);
+                $response = $http_client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);
@@ -275,7 +274,7 @@ class PllanoapiDb
     // Удаляем
     public function delete($resource = null, array $arr = array(), $id = null)
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -293,7 +292,7 @@ class PllanoapiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
-            $response = $guzzle->request("DELETE", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
+            $response = $http_client->request("DELETE", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -303,7 +302,7 @@ class PllanoapiDb
         } else {
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
-                $response = $guzzle->request("DELETE", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
+                $response = $http_client->request("DELETE", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);
@@ -330,7 +329,7 @@ class PllanoapiDb
     // Получить последний идентификатор
     public function last_id($resource)
     {
-        $guzzle = new Guzzle();
+        $http_client = new $this->config['vendor']['http_client']();
         $public_key = "";
         if ($resource != null) {
             $this->resource = $resource;
@@ -339,7 +338,7 @@ class PllanoapiDb
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }
-            $response = $guzzle->request("GET", $this->url."".$this->resource."/_last_id".$public_key);
+            $response = $http_client->request("GET", $this->url."".$this->resource."/_last_id".$public_key);
         } elseif ($this->auth == "CryptoAuth") {
  
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -347,7 +346,7 @@ class PllanoapiDb
         } elseif ($this->auth == "LoginPasswordAuth") {
  
         } else {
-            $response = $guzzle->request("GET", $this->url."".$this->resource."/_last_id");
+            $response = $http_client->request("GET", $this->url."".$this->resource."/_last_id");
         }
         if ($response != null) {
             $get_body = $response->getBody();

@@ -15,7 +15,6 @@ namespace RouterDb\Jsonapi;
  
 use RouterDb\Utility;
 use RouterDb\Ex;
-use GuzzleHttp\Client as Guzzle;
  
 class JsonapiPing
 {
@@ -38,8 +37,8 @@ class JsonapiPing
                 if ($this->config["db"]["jsonapi"]["auth"] == "QueryKeyAuth" && $this->config["db"]["jsonapi"]["public_key"] != null) {
                     $query = "?public_key=".$this->config["db"]["jsonapi"]["public_key"]."&limit=1&offset=0";
                 }
-                $guzzle = new Guzzle();
-                $response = $guzzle->request("GET", $url."".$resource."".$query);
+                $http_client = new $this->config['vendor']['http_client']();
+                $response = $http_client->request("GET", $url."".$resource."".$query);
                 $output = $response->getBody();
                 $output = (new Utility())->clean_json($output);
                 $records = json_decode($output, true);
