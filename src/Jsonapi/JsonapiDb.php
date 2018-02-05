@@ -11,9 +11,9 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb\Jsonapi;
+namespace Pllano\RouterDb\Jsonapi;
  
-use RouterDb\Utility;
+use Pllano\RouterDb\Utility;
  
 class JsonapiDb
 {

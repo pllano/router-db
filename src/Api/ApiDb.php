@@ -11,9 +11,9 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb\Api;
+namespace Pllano\RouterDb\Api;
  
-use RouterDb\Utility;
+use Pllano\RouterDb\Utility;
  
 class ApiDb
 {

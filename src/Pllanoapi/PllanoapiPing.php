@@ -11,10 +11,10 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb\Pllanoapi;
+namespace Pllano\RouterDb\Pllanoapi;
  
-use RouterDb\Utility;
-use RouterDb\Ex;
+use Pllano\RouterDb\Utility;
+use Pllano\RouterDb\Ex;
  
 class PllanoapiPing
 {

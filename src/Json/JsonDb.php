@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb\Json;
+namespace Pllano\RouterDb\Json;
 
 use jsonDB\Db;
 use jsonDB\Database;
@@ -22,8 +22,6 @@ class JsonDb
 {
     private $resource = null;
     private $dir = null;
-    private $cached = null;
-    private $cache_lifetime = null;
     private $temp = null;
     private $api = null;
     private $crypt = null;
@@ -45,15 +43,7 @@ class JsonDb
  
                 // Конфигурация таблицы
                 $table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].''.$resource.'.config.json'), true);
-                
-                //print_r($query);
-                
-                // Формируем набор параметров для работы с кешем
-                $CacheID = http_build_query($query);
-                // Читаем данные в кеше
-                $cacheReader = Db::cacheReader($CacheID);
-                // Если кеш отдал null, формируем запрос к базе
-                if ($cacheReader == null) {
+ 
                     // Если указан id
                     if ($id >= 1) {
                         $res = Database::table($resource)->where('id', '=', $id)->findAll();
@@ -466,10 +456,7 @@ class JsonDb
                                 $resp["request"]["query"] = "GET";
                                 $resp["request"]["resource"] = $resource;
                             }
-                            
-                            // Записываем данные в кеш
-                            Db::cacheWriter($CacheID, $resp);
-                            
+ 
                         } else {
                             // Параметров нет отдаем все записи
                             $res = Database::table($resource)->findAll();
@@ -505,15 +492,9 @@ class JsonDb
                                 $resp["request"]["query"] = "GET";
                                 $resp["request"]["resource"] = $resource;
                             }
-                            
-                            // Записываем данные в кеш
-                            Db::cacheWriter($CacheID, $resp);
+ 
                         }
                     }
-                } else {
-                    // Если нашли в кеше отдаем с кеша
-                    $resp = $cacheReader;
-                }
             } catch(dbException $e) {
                 // Такой таблицы не существует
                 $resp["headers"]["status"] = '404 Not Found';

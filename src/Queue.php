@@ -21,7 +21,7 @@
  * "request_body": "string"
  */
  
-namespace RouterDb;
+namespace Pllano\RouterDb;
  
 class Queue
 {

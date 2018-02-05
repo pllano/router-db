@@ -11,14 +11,14 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb;
+namespace Pllano\RouterDb;
  
 class Router
 {
  
     private $config;
     private $db = null;
-    private $package = "\RouterDb\\";
+    private $package = "\\Pllano\\RouterDb\\";
  
     public function __construct(array $config = array(), $package = null)
     {

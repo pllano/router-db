@@ -11,10 +11,10 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb\Api;
+namespace Pllano\RouterDb\Api;
  
-use RouterDb\Utility;
-use RouterDb\Ex;
+use Pllano\RouterDb\Utility;
+use Pllano\RouterDb\Ex;
  
 class ApiPing
 {

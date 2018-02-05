@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb\Json;
+namespace Pllano\RouterDb\Json;
  
 class JsonPing
 {

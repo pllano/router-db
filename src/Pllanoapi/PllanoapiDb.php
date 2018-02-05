@@ -11,9 +11,9 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb\Pllanoapi;
+namespace Pllano\RouterDb\Pllanoapi;
  
-use RouterDb\Utility;
+use Pllano\RouterDb\Utility;
  
 class PllanoapiDb
 {

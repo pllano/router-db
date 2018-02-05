@@ -11,9 +11,9 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb;
+namespace Pllano\RouterDb;
  
-use RouterDb\Queue;
+use Pllano\RouterDb\Queue;
  
 class Db
 {
@@ -34,7 +34,7 @@ class Db
      * @param $package
      * @var string
     */
-    private $package = "\RouterDb\\";
+    private $package = "\\Pllano\\RouterDb\\";
  
     public function __construct($db = null, array $config = array(), $package = null)
     {
@@ -181,7 +181,7 @@ class Db
                 }
  
                 // Формируем название класса slave базы
-                $slaveClass = "\RouterDb\\".ucfirst($this->config["db"]["slave"])."\\".ucfirst($this->config["db"]["slave"])."Db";
+                $slaveClass = "\\Pllano\\RouterDb\\".ucfirst($this->config["db"]["slave"])."\\".ucfirst($this->config["db"]["slave"])."Db";
                 // Подключаемся к базе
                 $slave = new $slaveClass($configSlave);
                 // Отправляем запрос и получаем ответ
@@ -265,7 +265,7 @@ class Db
                 }
  
                 // Формируем название класса slave базы
-                $slaveClass = "\RouterDb\\".ucfirst($this->config["db"]["slave"])."\\".ucfirst($this->config["db"]["slave"])."Db";
+                $slaveClass = "\\Pllano\\RouterDb\\".ucfirst($this->config["db"]["slave"])."\\".ucfirst($this->config["db"]["slave"])."Db";
                 // $class = "\Package\Nameclass\NameclassDb";
                 // Подключаемся к базе
                 $slave = new $slaveClass($configSlave);
@@ -348,7 +348,7 @@ class Db
                 }
  
                 // Формируем название класса slave базы
-                $slaveClass = "\RouterDb\\".ucfirst($this->config["db"]["slave"])."\\".ucfirst($this->config["db"]["slave"])."Db";
+                $slaveClass = "\\Pllano\\RouterDb\\".ucfirst($this->config["db"]["slave"])."\\".ucfirst($this->config["db"]["slave"])."Db";
                 // $class = "\Package\Nameclass\NameclassDb";
                 // Подключаемся к базе
                 $slave = new $slaveClass($configSlave);
@@ -431,7 +431,7 @@ class Db
                 }
  
                 // Формируем название класса slave базы
-                $slaveClass = "\RouterDb\\".ucfirst($this->config["db"]["slave"])."\\".ucfirst($this->config["db"]["slave"])."Db";
+                $slaveClass = "\\Pllano\\RouterDb\\".ucfirst($this->config["db"]["slave"])."\\".ucfirst($this->config["db"]["slave"])."Db";
                 // $class = "\Package\Nameclass\NameclassDb";
                 // Подключаемся к базе
                 $slave = new $slaveClass($configSlave);

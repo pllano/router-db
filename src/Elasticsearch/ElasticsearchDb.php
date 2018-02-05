@@ -11,9 +11,9 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb\Elasticsearch;
+namespace Pllano\RouterDb\Elasticsearch;
 
-use RouterDb\Utility;
+use Pllano\RouterDb\Utility;
 use GuzzleHttp\Client as Guzzle;
 use Elasticsearch\ClientBuilder as Elastic;
  

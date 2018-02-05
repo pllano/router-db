@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
  
-namespace RouterDb\Elasticsearch;
+namespace Pllano\RouterDb\Elasticsearch;
  
 class ElasticsearchPing
 {
