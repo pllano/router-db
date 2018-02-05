@@ -5,8 +5,8 @@
 ```diff
 "require" {
     ...
--    "pllano/router-db": "1.0.3",
-+    "pllano/router-db": "1.0.4",
+-    "pllano/router-db": "1.1.0",
++    "pllano/router-db": "1.1.1",
     ...
 }
 ```
