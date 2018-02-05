@@ -14,7 +14,7 @@
 ```json
 "require" [
     {
-        "namespace": "RouterDb",
+        "namespace": "Pllano\\RouterDb",
         "dir": "/pllano/router-db/src",
         "link": "https://github.com/pllano/router-db/archive/master.zip",
         "name": "router-db",
@@ -53,10 +53,10 @@
 #### Минимум кода
 ```php
 // Получить данные пользователя id=1 из базы mysql одной строчкой кода
-$user = (new \RouterDb\Db("mysql", $config))->get("user", [], 1);
+$user = (new \Pllano\RouterDb\Db("mysql", $config))->get("user", [], 1);
 
 // Получить расширенные данные пользователя id=1, дополнительно запрашиваем адрес и корзину
-$user = (new \RouterDb\Db("mysql", $config))->get("user", ["relation" => "address,cart"], 1);
+$user = (new \Pllano\RouterDb\Db("mysql", $config))->get("user", ["relation" => "address,cart"], 1);
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 
@@ -64,8 +64,8 @@ $user = (new \RouterDb\Db("mysql", $config))->get("user", ["relation" => "addres
 
 #### Общий код для всех примеров
 ```php
-use RouterDb\Db;
-use RouterDb\Router;
+use Pllano\RouterDb\Db;
+use Pllano\RouterDb\Router;
 
 // Ресурс (таблица) к которому обращаемся
 $resource = "user";
@@ -338,7 +338,7 @@ class NamedatabaseDb
 ```php
 namespace YourPackage\Namedatabase;
 
-use RouterDb\Ex;
+use Pllano\RouterDb\Ex;
  
 class NamedatabasePing
 {
@@ -376,8 +376,8 @@ class NamedatabasePing
 ```
 #### Использование пакета
 ```php
-use RouterDb\Db;
-use RouterDb\Router;
+use Pllano\RouterDb\Db;
+use Pllano\RouterDb\Router;
 
 // В конфигурации необходимо указать название базы данных для ресурса
 $config["resource"]["user"]["db"] = "namedatabase";
