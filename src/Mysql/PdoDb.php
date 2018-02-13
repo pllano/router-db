@@ -23,18 +23,16 @@ class PdoDb {
  
     private function __construct()
     {
-        // building data source name from config
-        $dsn = 'mysql:
-                host='.PdoDb::read('db.host').';
-                dbname='.PdoDb::read('db.basename').';
-                port='.PdoDb::read('db.port').';
-                connect_timeout='.PdoDb::read('db.connect_timeout').';
-                charset='.PdoDb::read('db.charset');
-        // getting DB user from config                
-        $user = PdoDb::read('db.user');
-        // getting DB password from config                
+        $host = PdoDb::read('db.host');
+        $basename = PdoDb::read('db.basename');
+        $port = PdoDb::read('db.port');
+        $timeout = PdoDb::read('db.connect_timeout');
+        $charset = PdoDb::read('db.charset');
+        $charset = PdoDb::read('db.charset');                
+        $user = PdoDb::read('db.user');               
         $password = PdoDb::read('db.password');
  
+        $dsn = 'mysql:host='.$host.';dbname='.$basename.';port='.$port.';connect_timeout='.$timeout.';charset='.$charset;
         $this->dbh = new PDO($dsn, $user, $password);
     }
  
@@ -64,10 +62,10 @@ class PdoDb {
         self::$confArray['db'][$name] = $value;
     }
  
-    public static function set(array $config = array()) 
+    public static function set(array $config = []) 
     {
         PdoDb::write('db.host', $config["db"]["mysql"]["host"]);
-        PdoDb::write('db.port', $config["db"]["mysql"]["port"]);
+        PdoDb::write('db.port', (int)$config["db"]["mysql"]["port"]);
         PdoDb::write('db.basename', $config["db"]["mysql"]["dbname"]);
         PdoDb::write('db.user', $config["db"]["mysql"]["user"]);
         PdoDb::write('db.password', $config["db"]["mysql"]["password"]);

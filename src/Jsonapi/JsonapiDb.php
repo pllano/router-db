@@ -43,7 +43,7 @@ class JsonapiDb
     // Загрузить
     public function get($resource = null, array $arr = array(), $id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']();
+        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -101,7 +101,7 @@ class JsonapiDb
     // Создаем одну запись
     public function post($resource = null, array $arr = array())
     {
-        $http_client = new $this->config['vendor']['http_client']();
+        $http_client = new $this->config['vendor']['http_client']['client']();
         $public_key = "";
         $array = "";
         if ($resource != null) {
@@ -150,7 +150,7 @@ class JsonapiDb
     // Обновляем
     public function put($resource = null, array $arr = array(), $id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']();
+        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -206,7 +206,7 @@ class JsonapiDb
     // Обновляем
     public function patch($resource = null, array $arr = array(), $id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']();
+        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -262,7 +262,7 @@ class JsonapiDb
     // Удаляем
     public function delete($resource = null, array $arr = array(), $id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']();
+        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -317,7 +317,7 @@ class JsonapiDb
     // Получить последний идентификатор
     public function last_id($resource)
     {
-        $http_client = new $this->config['vendor']['http_client']();
+        $http_client = new $this->config['vendor']['http_client']['client']();
         $public_key = "";
         if ($resource != null) {
             $this->resource = $resource;

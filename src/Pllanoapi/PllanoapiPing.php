@@ -37,7 +37,7 @@ class PllanoapiPing
                 if ($this->config["db"]["pllanoapi"]["auth"] == "QueryKeyAuth" && $this->config["db"]["pllanoapi"]["public_key"] != null) {
                     $query = "?public_key=".$this->config["db"]["pllanoapi"]["public_key"]."&limit=1&offset=0";
                 }
-                $http_client = new $this->config['vendor']['http_client']();
+                $http_client = new $this->config['vendor']['http_client']['client']();
                 $response = $http_client->request("GET", $url."".$resource."".$query);
                 $output = $response->getBody();
                 $output = (new Utility())->clean_json($output);

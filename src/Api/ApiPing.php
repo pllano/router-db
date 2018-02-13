@@ -38,7 +38,7 @@ class ApiPing
                     $public_key = "?public_key=".$this->config["db"]["api"]["public_key"];
                 }
  
-                $http_client = new $this->config['vendor']['http_client']();
+                $http_client = new $this->config['vendor']['http_client']['client']();
                 $response = $http_client->request("GET", $url."".$resource."".$public_key."&limit=1&offset=0");
  
                 $output = $response->getBody();

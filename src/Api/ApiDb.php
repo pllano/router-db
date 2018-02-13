@@ -46,7 +46,7 @@ class ApiDb
     // Загрузить
     public function get($resource = null, array $arr = array(), $id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']();
+        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -110,7 +110,7 @@ class ApiDb
     // Создаем одну запись
     public function post($resource = null, array $arr = array())
     {
-        $http_client = new $this->config['vendor']['http_client']();
+        $http_client = new $this->config['vendor']['http_client']['client']();
         $public_key = "";
         $array = "";
         if ($resource != null) {
@@ -164,7 +164,7 @@ class ApiDb
     // Обновляем
     public function put($resource = null, array $arr = array(), $id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']();
+        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -219,7 +219,7 @@ class ApiDb
     // Обновляем
     public function patch($resource = null, array $arr = array(), $id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']();
+        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";

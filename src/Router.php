@@ -20,7 +20,7 @@ class Router
     private $db = null;
     private $package = "\\Pllano\\RouterDb\\";
  
-    public function __construct(array $config = array(), $package = null)
+    public function __construct($config = [], $package = null)
     {
         if (count($config) >= 1){
             $this->config = $config;
