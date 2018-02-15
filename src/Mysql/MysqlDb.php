@@ -32,7 +32,7 @@ class MysqlDb
  
     function __construct(array $config = array())
     {
-        if (count($config) >= 1){
+        if (count($config) >= 1) {
             $this->config = $config;
             PdoDb::set($config);
             $this->db = PdoDb::getInstance();
