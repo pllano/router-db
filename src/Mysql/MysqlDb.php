@@ -276,11 +276,11 @@ class MysqlDb
                                             }
                                         }
                                         if (count($rel) >= 1) {
-                                            $r = array();
+                                            $r = [];
                                             foreach($rel as $k => $v)
                                             {
                                                 $vv = (array)$v;
-                                                $ar = array();
+                                                $ar = [];
                                                 foreach($vv as $key => $va)
                                                 {
                                                     if (array_key_exists($key, $control) && $key != "password" && $key != "cookie") {
