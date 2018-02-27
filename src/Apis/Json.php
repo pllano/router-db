@@ -11,14 +11,14 @@
  * file that was distributed with this source code.
  */
  
-namespace Pllano\RouterDb\Json;
+namespace Pllano\RouterDb\Apis;
 
 use jsonDB\Db;
 use jsonDB\Database;
 use jsonDB\Validate;
 use jsonDB\dbException;
 
-class JsonDb
+class Json
 {
     private $resource = null;
     private $dir = null;
@@ -27,20 +27,33 @@ class JsonDb
     private $crypt = null;
     private $config = null;
  
-    public function __construct(array $config = array())
+    public function __construct(array $config = [], array $options = [])
     {
         if (count($config) >= 1) {
             $this->config = $config;
         }
     }
- 
+
+    public function ping($resource = null)
+    {
+        if ($resource != null) {
+            try {Validate::table($resource)->exists();
+                return "json";
+            } catch(dbException $e){
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
     // Загрузить
-    public function get($resource = null, array $query = array(), $id = null)
+    public function get($resource = null, array $query = [], $id = null)
     {
         if (isset($resource)) {
             // Проверяем наличие главной базы
             try {Validate::table($resource)->exists();
- 
+				
                 // Конфигурация таблицы
                 $table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].''.$resource.'.config.json'), true);
  
@@ -140,10 +153,10 @@ class JsonDb
                                                         }
 
                                                         if (count($rel) >= 1) {
-                                                            $r = array();
+                                                            $r = [];
                                                             foreach($rel as $k => $v) {
                                                                 $vv = is_array($v) ? $v : (array)$v;
-                                                                $ar = array();
+                                                                $ar = [];
                                                                 foreach($vv as $key => $va) {
                                                                     if (array_key_exists($key, $control) && $key != "password" && $key != "cookie") {
                                                                         $ar[$key] = $va;
@@ -402,10 +415,10 @@ class JsonDb
                                                             }
                                                         }
                                                         if (count($rel) >= 1) {
-                                                            $r = array();
+                                                            $r = [];
                                                             foreach($rel as $k => $v) {
                                                                 $vv = (array)$v;
-                                                                $ar = array();
+                                                                $ar = [];
                                                                 foreach($vv as $key => $va) {
                                                                     if (array_key_exists($key, $control) && $key != "password" && $key != "cookie") {
                                                                         $ar[$key] = $va;
@@ -520,7 +533,7 @@ class JsonDb
     }
  
     // Искать
-    public function search($resource = null, array $query_arr = array(), $keyword = null)
+    public function search($resource = null, array $query_arr = [], $keyword = null)
     {
         // Новый запрос, аналог get рассчитан на полнотекстовый поиск
         // Должен возвращать count для пагинации в параметре ["response"]["total"]
@@ -529,7 +542,7 @@ class JsonDb
     }
  
     // Создаем одну запись
-    public function post($resource = null, array $arr = array())
+    public function post($resource = null, array $arr = [])
     {
         if (isset($resource)) {
             // Проверяем наличие главной базы если нет даем ошибку
@@ -633,7 +646,7 @@ class JsonDb
     }
  
     // Обновляем
-    public function put($resource = null, array $arr = array(), $id = null)
+    public function put($resource = null, array $arr = [], $id = null)
     {
         if (isset($resource)) {
             // Проверяем наличие главной базы если нет даем ошибку
@@ -813,7 +826,7 @@ class JsonDb
     }
  
     // Обновляем
-    public function patch($resource = null, array $arr = array(), $id = null)
+    public function patch($resource = null, array $arr = [], $id = null)
     {
         if (isset($resource)) {
             // Проверяем наличие главной базы если нет даем ошибку
@@ -994,7 +1007,7 @@ class JsonDb
  
     // Требует доработки !
     // Удаление
-    public function delete($resource = null, array $arr = array(), $id = null)
+    public function delete($resource = null, array $arr = [], $id = null)
     {
         if (isset($resource)) {
 

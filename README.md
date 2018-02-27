@@ -265,7 +265,7 @@ class NamedatabaseDb
  
     private $config;
  
-    public function __construct(array $config = array())
+    public function __construct(array $config = [])
     {
         // Получить и установить конфигурацию
         if (count($config) >= 1){
@@ -273,7 +273,7 @@ class NamedatabaseDb
         }
     }
     
-    public function get($resource = null, array $arr = array(), $id = null)
+    public function get($resource = null, array $arr = [], $id = null)
     {
         if (isset($resource)) {
             try {
@@ -303,25 +303,25 @@ class NamedatabaseDb
         }
     }
  
-    public function post($resource = null, array $arr = array())
+    public function post($resource = null, array $arr = [])
     {
         // Создание одной записи
         // Должен возвращать id новой записи в параметре ["response"]["id"]
     }
  
-    public function put($resource = null, array $arr = array(), $id = null)
+    public function put($resource = null, array $arr = [], $id = null)
     {
         // Обновление одной или нескольких записей
         // Должен возвращать колличество измененных записей в параметре ["response"]["total"]
     }
  
-    public function delete($resource = null, array $arr = array(), $id = null)
+    public function delete($resource = null, array $arr = [], $id = null)
     {
         // Удаление одной или нескольких записей
         // Должен возвращать колличество удаленных записей в параметре ["response"]["total"]
     }
  
-    public function search($resource = null, array $arr = array(), $keyword = null)
+    public function search($resource = null, array $arr = [], $keyword = null)
     {
         // Новый запрос, аналог get рассчитан на полнотекстовый поиск
         // Должен возвращать count для пагинации в параметре ["response"]["total"]
@@ -345,7 +345,7 @@ class NamedatabasePing
  
     private $config;
  
-    public function __construct(array $config = array())
+    public function __construct(array $config = [])
     {
         if (count($config) >= 1){
             $this->config = $config;

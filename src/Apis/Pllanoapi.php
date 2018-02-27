@@ -10,21 +10,21 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
- 
-namespace Pllano\RouterDb\Pllanoapi;
- 
+
+namespace Pllano\RouterDb\Apis;
+
 use Pllano\RouterDb\Utility;
- 
-class PllanoapiDb
+
+class Pllanoapi
 {
- 
+
     private $resource = null;
     private $url = null;
     private $auth = null;
     private $public_key = null;
     private $config = null;
  
-    public function __construct(array $config = array())
+    public function __construct(array $config = [], array $options = [])
     {
         if (count($config) >= 1) {
              $this->config = $config;
@@ -39,9 +39,35 @@ class PllanoapiDb
             }
         }
     }
- 
+
+    public function ping($resource = null)
+    {
+        if ($resource != null) {
+            try {
+                $url = $this->config["db"]["pllanoapi"]["url"];
+                $query = "?limit=1&offset=0";
+                if ($this->config["db"]["pllanoapi"]["auth"] == "QueryKeyAuth" && $this->config["db"]["pllanoapi"]["public_key"] != null) {
+                    $query = "?public_key=".$this->config["db"]["pllanoapi"]["public_key"]."&limit=1&offset=0";
+                }
+                $http_client = new $this->config['vendor']['http_client']['client']();
+                $response = $http_client->request("GET", $url."".$resource."".$query);
+                $output = $response->getBody();
+                $output = (new Utility())->clean_json($output);
+                $records = json_decode($output, true);
+                if (isset($records["headers"]["code"])) {
+                    $this->db = "pllanoapi";
+                    return $this->db;
+                }
+            } catch (Ex $ex) {
+            return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
     // Загрузить
-    public function get($resource = null, array $arr = array(), $id = null)
+    public function get($resource = null, array $arr = [], $id = null)
     {
         $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
@@ -90,7 +116,7 @@ class PllanoapiDb
     }
  
     // Искать
-    public function search($resource = null, array $query_arr = array(), $keyword = null)
+    public function search($resource = null, array $query_arr = [], $keyword = null)
     {
         // Новый запрос, аналог get рассчитан на полнотекстовый поиск
         // Должен возвращать count для пагинации в параметре ["response"]["total"]
@@ -99,7 +125,7 @@ class PllanoapiDb
     }
  
     // Создаем одну запись
-    public function post($resource = null, array $arr = array())
+    public function post($resource = null, array $arr = [])
     {
         $http_client = new $this->config['vendor']['http_client']['client']();
         $public_key = "";
@@ -160,7 +186,7 @@ class PllanoapiDb
     }
  
     // Обновляем
-    public function put($resource = null, array $arr = array(), $id = null)
+    public function put($resource = null, array $arr = [], $id = null)
     {
         $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
@@ -216,7 +242,7 @@ class PllanoapiDb
     }
  
     // Обновляем
-    public function patch($resource = null, array $arr = array(), $id = null)
+    public function patch($resource = null, array $arr = [], $id = null)
     {
         $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
@@ -272,7 +298,7 @@ class PllanoapiDb
     }
  
     // Удаляем
-    public function delete($resource = null, array $arr = array(), $id = null)
+    public function delete($resource = null, array $arr = [], $id = null)
     {
         $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";

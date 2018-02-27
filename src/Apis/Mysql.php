@@ -4,43 +4,65 @@
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/router-db
- * @version 1.0.1
+ * @version 1.2.0
  * @package pllano/router-db
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
- 
-namespace Pllano\RouterDb\Mysql;
- 
-use Pllano\RouterDb\Mysql\PdoDb;
+
+namespace Pllano\RouterDb\Apis;
+
 use PDO;
- 
-class MysqlDb
+
+class Mysql extends \PDO
 {
- 
-    protected $db;
+
     private $sort = "id";
     private $order = "DESC";
     private $offset = 0;
     private $limit = 10;
     private $relations = null;
     private $resource = null;
-    private $config = null;
     private $key_null = null;
     private $resource_id = "id";
- 
-    function __construct(array $config = array())
+
+    /**
+     * @param $config
+     * @var array
+	 */
+    private $config = [];
+    /**
+     * @param $options
+     * @var array
+	 */
+    private $options = [];
+
+    public function __construct(array $config = [], array $options = [], $other_base = null)
     {
-        if (count($config) >= 1) {
+        if (isset($config)) {
+            // Конфигурация
             $this->config = $config;
-            PdoDb::set($config);
-            $this->db = PdoDb::getInstance();
+			if (isset($other_base)){
+                $db = $config['db'][$other_base];
+			} else {
+			    $db = $config['db']['mysql'];
+			}
+            $default_options = [
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            ];
+            $dsn = "mysql:host={$db['host']};dbname={$db['dbname']};charset={$db['charset']}";
+            $username = $db['user'];
+            $password = $db['password'];
+            $options = array_replace($default_options, $options);
+            parent::__construct($dsn, $username, $password, $options);
         }
     }
- 
+
     // Загрузить
-    public function get($resource = null, array $arr = array(), $id = null, $field_id = null)
+    public function get($resource = null, array $arr = [], $id = null, $field_id = null)
     {
         $this->resource = $resource;
         if ($resource != null) {
@@ -49,13 +71,13 @@ class MysqlDb
                 $show = null;
                 $resource_id = "id";
                 $this->resource_id = "id";
-                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                $show = $this->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
                 if ($show == "id") {
                     $this->resource_id = "id";
                     $resource_id = "id";
                     $this->sort = "id"; 
                 } else {
-                    $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                    $show = $this->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
                     if ($show == $resource."_id") {
                         $this->resource_id = $resource."_id";
                         $resource_id = $resource."_id";
@@ -144,10 +166,10 @@ class MysqlDb
             //print_r($sql);
         }
         // Отправляем запрос в базу
-        $stmt = $this->db->dbh->prepare($sql);
+        $stmt = $this->prepare($sql);
         if ($stmt->execute()) {
             // Ответ будет массивом
-            $response = array();
+            $response = [];
             // Получаем ответ в виде массива
             $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
  
@@ -287,7 +309,7 @@ class MysqlDb
                                                         $ar[$key] = $va;
                                                     }
                                                 }
-                                                $a = array($k, $ar);
+                                                $a = [$k, $ar];
                                                 unset($a["0"]);
                                                 $a = $a["1"];
                                                 $r[$val][] = $a;
@@ -299,7 +321,7 @@ class MysqlDb
                             }
                             $newArr = (object)$newArr;
                         }
-                        $array = array($key, $newArr);
+                        $array = [$key, $newArr];
                         unset($array["0"]);
                         $array = $array["1"];
                         $item["item"] = $array;
@@ -311,7 +333,7 @@ class MysqlDb
                 else {
                     foreach($response as $key => $arr){
                         if (isset($key) && isset($arr)) {
-                            $array = array($key, $arr);
+                            $array = [$key, $arr];
                             unset($array["0"]);
                             $array = $array["1"];
                             $item["item"] = $array;
@@ -329,7 +351,7 @@ class MysqlDb
     }
  
     // Искать
-    public function search($resource = null, array $query_arr = array(), $keyword = null, $field_id = null)
+    public function search($resource = null, array $query_arr = [], $keyword = null, $field_id = null)
     {
         // Новый запрос, аналог get рассчитан на полнотекстовый поиск
         // Должен возвращать count для пагинации в параметре ["response"]["total"]
@@ -338,18 +360,18 @@ class MysqlDb
     }
  
     // Создаем одну запись
-    public function post($resource = null, array $arr = array(), $field_id = null)
+    public function post($resource = null, array $arr = [], $field_id = null)
     {
         if ($field_id == null) {
             $show = null;
             $resource_id = "id";
             $this->resource_id = "id";
-            $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+            $show = $this->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
             if ($show == "id") {
                 $this->resource_id = "id";
                 $resource_id = "id";
             } else {
-                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                $show = $this->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
                 if ($show == $resource."_id") {
                     $this->resource_id = $resource."_id";
                     $resource_id = $resource."_id";
@@ -377,10 +399,10 @@ class MysqlDb
             // Формируем запрос к базе данных
             $sql = "INSERT INTO `".$resource."` (`".$resource_id."`".$insert.") VALUES ('NULL'".$values.");";
             // Отправляем запрос в базу
-            $stmt = $this->db->dbh->prepare($sql);
+            $stmt = $this->prepare($sql);
             if ($stmt->execute()) {
                 // Если все ок отдаем id
-                $response = $this->db->dbh->lastInsertId();
+                $response = $this->lastInsertId();
  
                 $resp["headers"]["status"] = "201 Created";
                 $resp["headers"]["code"] = 201;
@@ -423,7 +445,7 @@ class MysqlDb
     }
  
     // Обновляем
-    public function put($resource = null, array $arr = array(), $id = null, $field_id = null)
+    public function put($resource = null, array $arr = [], $id = null, $field_id = null)
     {
         $this->resource = $resource;
         if ($resource != null) {
@@ -431,12 +453,12 @@ class MysqlDb
                 $show = null;
                 $resource_id = "id";
                 $this->resource_id = "id";
-                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                $show = $this->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
                 if ($show == "id") {
                     $this->resource_id = "id";
                     $resource_id = "id";
                 } else {
-                    $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                    $show = $this->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
                     if ($show == $resource."_id") {
                         $this->resource_id = $resource."_id";
                         $resource_id = $resource."_id";
@@ -467,7 +489,7 @@ class MysqlDb
                 WHERE `".$resource_id."` =".$id."
             ";
             // Отправляем запрос в базу
-            $stmt = $this->db->dbh->prepare($sql);
+            $stmt = $this->prepare($sql);
 
             if ($stmt->execute()) {
                 // Если все ок отдаем 1
@@ -518,7 +540,7 @@ class MysqlDb
                         WHERE `".$key_id."` =".$id."
                     ";
                     // Отправляем запрос в базу
-                    $stmt = $this->db->dbh->prepare($sql);
+                    $stmt = $this->prepare($sql);
                     if ($stmt->execute()) {
                         // Если все ок +1
                         $i+=1;
@@ -543,9 +565,9 @@ class MysqlDb
         return $resp;
  
     }
-    
+
     // Обновляем
-    public function patch($resource = null, array $arr = array(), $id = null, $field_id = null)
+    public function patch($resource = null, array $arr = [], $id = null, $field_id = null)
     {
         $this->resource = $resource;
         if ($this->resource == null) {
@@ -553,12 +575,12 @@ class MysqlDb
                 $show = null;
                 $resource_id = "id";
                 $this->resource_id = "id";
-                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$this->resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                $show = $this->query("SHOW COLUMNS FROM `".$this->resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
                 if ($show == "id") {
                     $this->resource_id = "id";
                     $resource_id = "id";
                 } else {
-                    $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$this->resource."` where `Field` = '".$this->resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                    $show = $this->query("SHOW COLUMNS FROM `".$this->resource."` where `Field` = '".$this->resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
                     if ($show == $this->resource."_id") {
                         $this->resource_id = $this->resource."_id";
                         $resource_id = $this->resource."_id";
@@ -589,7 +611,7 @@ class MysqlDb
                 WHERE `".$resource_id."` =".$id."
             ";
             // Отправляем запрос в базу
-            $stmt = $this->db->dbh->prepare($sql);
+            $stmt = $this->prepare($sql);
 
             if ($stmt->execute()) {
                 // Если все ок отдаем 1
@@ -640,7 +662,7 @@ class MysqlDb
                         WHERE `".$key_id."` =".$id."
                     ";
                     // Отправляем запрос в базу
-                    $stmt = $this->db->dbh->prepare($sql);
+                    $stmt = $this->prepare($sql);
                     if ($stmt->execute()) {
                         // Если все ок +1
                         $i+=1;
@@ -668,17 +690,17 @@ class MysqlDb
     }
  
     // Удаляем
-    public function delete($resource = null, array $arr = array(), $id = null, $field_id = null)
+    public function delete($resource = null, array $arr = [], $id = null, $field_id = null)
     {
         if ($resource != null) {
             if ($id >= 1) {
                 $show = null;
                 $resource_id = "id";
-                $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                $show = $this->query("SHOW COLUMNS FROM `".$resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
                 if ($show == "id") {
                     $resource_id = "id";
                 } else {
-                    $show = $this->db->dbh->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
+                    $show = $this->query("SHOW COLUMNS FROM `".$resource."` where `Field` = '".$resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
                     if ($show == $resource."_id") {
                         $resource_id = $resource."_id";
                     }
@@ -692,7 +714,7 @@ class MysqlDb
                     WHERE `".$resource_id."` ='".$id."'
                     ";
                 // Отправляем запрос в базу
-                $stmt = $this->db->dbh->prepare($sql);
+                $stmt = $this->prepare($sql);
                 if ($stmt->execute()) {
                     // Если все ок отдаем 1
                     $response = 1;
@@ -738,7 +760,7 @@ class MysqlDb
                             WHERE `".$resource_id."` =".$id."
                         ";
                         // Отправляем запрос в базу
-                        $stmt = $this->db->dbh->prepare($sql);
+                        $stmt = $this->prepare($sql);
                         if ($stmt->execute()) {
                             // Если все ок +1
                             $i+=1;
@@ -782,7 +804,7 @@ class MysqlDb
     }
  
     // count для пагинатора
-    public function count($resource = null, array $arr = array(), $id = null, $field_id = null)
+    public function count($resource = null, array $arr = [], $id = null, $field_id = null)
     {
         $i=0;
         // Приходится делать запрос и при наличии id, так как может отдать null
@@ -826,10 +848,10 @@ class MysqlDb
             ";
         }
         // Отправляем запрос в базу
-        $stmt = $this->db->dbh->prepare($sql);
+        $stmt = $this->prepare($sql);
         if ($stmt->execute()) {
             // Ответ будет массивом
-            $response = array();
+            $response = [];
             // Получаем ответ в виде массива
             $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
@@ -848,10 +870,10 @@ class MysqlDb
             WHERE `".$key."` ='".$value."'
         ";
         // Отправляем запрос в базу
-        $stmt = $this->db->dbh->prepare($sql);
+        $stmt = $this->prepare($sql);
         if ($stmt->execute()) {
             // Ответ будет массивом
-            $response = array();
+            $response = [];
             // Получаем ответ в виде массива
             $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
@@ -865,8 +887,13 @@ class MysqlDb
     // Получить последний идентификатор
     public function last_id($resource)
     {
-        return $this->db->dbh->query("SHOW TABLE STATUS LIKE '".$resource."'")->fetch(PDO::FETCH_ASSOC)['Auto_increment'];
+        return $this->query("SHOW TABLE STATUS LIKE '".$resource."'")->fetch(PDO::FETCH_ASSOC)['Auto_increment'];
     }
- 
+
+    public function ping($resource = null)
+    {
+            return "mysql";
+    }
+
 }
-     
+ 

@@ -11,20 +11,23 @@
  * file that was distributed with this source code.
  */
  
-namespace Pllano\RouterDb\Api;
+namespace Pllano\RouterDb\Apis;
  
 use Pllano\RouterDb\Utility;
+use Pllano\RouterDb\Ex;
  
-class ApiDb
+class Api
 {
-    private $resource = null;
+
+    private $client = null;
+	private $resource = null;
     private $url = null;
     private $auth = null;
     private $api = null;
     private $public_key = null;
     private $config;
  
-    public function __construct(array $config = array())
+    public function __construct(array $config = [], array $options = [])
     {
         if (count($config) >= 1){
             $this->config = $config;
@@ -40,13 +43,42 @@ class ApiDb
             if (isset($config["db"]["api"]["public_key"])) {
                 $this->public_key = $config["db"]["api"]["public_key"];
             }
+			
+		$this->client = new $this->config['vendor']['http_client']['client']();
+        }
+    }
+
+    public function ping($resource = null)
+    {
+        if (isset($resource) && isset($this->client)) {
+            try {
+                $url = $this->config["db"]["api"]["url"];
+                $public_key = "?";
+                if ($this->config["db"]["api"]["auth"] == "QueryKeyAuth" && $this->config["db"]["api"]["public_key"] != null) {
+                    $public_key = "?public_key=".$this->config["db"]["api"]["public_key"];
+                }
+ 
+                
+                $response = $this->client->request("GET", $url."".$resource."".$public_key."&limit=1&offset=0");
+ 
+                $output = $response->getBody();
+                $output = (new Utility())->clean_json($output);
+                $records = json_decode($output, true);
+                if (isset($records["headers"]["code"]) || isset($records["header"]["code"])) {
+                    $this->db = "api";
+                    return $this->db;
+                }
+            } catch (Ex $ex) {
+                return null;
+            }
+        } else {
+            return null;
         }
     }
  
     // Загрузить
-    public function get($resource = null, array $arr = array(), $id = null)
+    public function get($resource = null, array $arr = [], $id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -64,9 +96,9 @@ class ApiDb
             }
             if ($id != null) {
                 $resource_id = "/".$id;
-                $response = $http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key);
+                $response = $this->client->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key);
             } else {
-                $response = $http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key."".$array);
+                $response = $this->client->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key."".$array);
             }
         } elseif ($this->auth == "CryptoAuth") {
             
@@ -78,7 +110,7 @@ class ApiDb
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
             }
-            $response = $http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$array);
+            $response = $this->client->request("GET", $this->url."".$this->resource."".$resource_id."".$array);
         }
  
         if ($response != null) {
@@ -99,18 +131,16 @@ class ApiDb
     }
  
     // Искать
-    public function search($resource = null, array $query_arr = array(), $keyword = null)
+    public function search($resource = null, array $query_arr = [], $keyword = null)
     {
         // Новый запрос, аналог get рассчитан на полнотекстовый поиск
         // Должен возвращать count для пагинации в параметре ["response"]["total"]
- 
         // Еще в разработке ...
     }
  
     // Создаем одну запись
-    public function post($resource = null, array $arr = array())
+    public function post($resource = null, array $arr = [])
     {
-        $http_client = new $this->config['vendor']['http_client']['client']();
         $public_key = "";
         $array = "";
         if ($resource != null) {
@@ -124,7 +154,7 @@ class ApiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
-            $response = $http_client->request("POST", $this->url."".$this->resource, $array);
+            $response = $this->client->request("POST", $this->url."".$this->resource, $array);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -133,7 +163,7 @@ class ApiDb
             
         } else {
             if (count($arr) >= 1){
-                $response = $http_client->request("POST", $this->url."".$this->resource, ['form_params' => $arr]);
+                $response = $this->client->request("POST", $this->url."".$this->resource, ['form_params' => $arr]);
             }
         }
         if ($response != null) {
@@ -162,9 +192,8 @@ class ApiDb
     }
  
     // Обновляем
-    public function put($resource = null, array $arr = array(), $id = null)
+    public function put($resource = null, array $arr = [], $id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -182,7 +211,7 @@ class ApiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
-            $response = $http_client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
+            $response = $this->client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -192,7 +221,7 @@ class ApiDb
         } else {
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
-                $response = $http_client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
+                $response = $this->client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);
@@ -217,9 +246,8 @@ class ApiDb
     }
  
     // Обновляем
-    public function patch($resource = null, array $arr = array(), $id = null)
+    public function patch($resource = null, array $arr = [], $id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -237,7 +265,7 @@ class ApiDb
                 $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
                 $array = parse_str($arrKey);
             }
-            $response = $http_client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
+            $response = $this->client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -247,7 +275,7 @@ class ApiDb
         } else {
             if (count($arr) >= 1){
                 $array = "?".http_build_query($arr);
-                $response = $http_client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
+                $response = $this->client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);
@@ -272,15 +300,15 @@ class ApiDb
     }
  
     // Удаляем
-    public function delete($resource = null, array $arr = array(), $id = null)
+    public function delete($resource = null, array $arr = [], $id = null)
     {
- 
+        return null;
     }
  
     // Получить последний идентификатор
     public function last_id($resource)
     {
-        
+        return null;
     }
  
 }

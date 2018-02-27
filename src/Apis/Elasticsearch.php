@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
  
-namespace Pllano\RouterDb\Elasticsearch;
+namespace Pllano\RouterDb\Apis;
 
 use Pllano\RouterDb\Utility;
 use GuzzleHttp\Client as Guzzle;
@@ -20,10 +20,11 @@ use Elasticsearch\ClientBuilder as Elastic;
 /**
  * ElasticsearchDb
 */
-class ElasticsearchDb
+class Elasticsearch
 {
-    
-    private $resource = null;
+
+    private $client;
+	private $resource = null;
     private $host = null;
     private $port = null;
     private $type = null;
@@ -32,7 +33,7 @@ class ElasticsearchDb
     private $user = null;
     private $password = null;
  
-    public function __construct(array $config = array())
+    public function __construct(array $config = [], array $options = [])
     {
         if (count($config) >= 1){
             if (isset($config["host"])) {
@@ -57,15 +58,25 @@ class ElasticsearchDb
                 $this->password = $config["password"];
             }
         }
+
+		$index = $config['db']['elasticsearch']['index'];
+		$user = $config['db']['elasticsearch']['user'];
+		$pass = $config['db']['elasticsearch']['pass'];
+		$hosts = ['http://'.$elasticsearch_user.':'.$elasticsearch_pass.'@localhost:9200'];
+		$this->client = Elastic::create()->setHosts($hosts)->build();
+
     }
- 
+
+    public function ping($resource = null)
+    {
+            return "elasticsearch";
+    }
+
     // Загрузить
-    public function get($resource = null, array $arr = array(), $id = null)
+    public function get($resource = null, array $arr = [], $id = null)
     {
         if (isset($resource)) {
- 
-            $client = Elastic::create()->build();
- 
+
             if ($this->type === true) {
                 $type = $resource;
                 $index = $this->index;
@@ -82,12 +93,12 @@ class ElasticsearchDb
                 $params["id"] = $id;
                 $params["client"] = ['ignore' => [400, 404, 500]];
 
-                $get = $client->get($params);
+                $get = $this->client->get($params);
  
             } elseif (count($arr) >= 1 && $id === null) {
                 // Если мы получили массив $arr то это search
                 
-                $client->search($params);
+                $this->client->search($params);
  
             } else {
                 return null;
@@ -98,18 +109,16 @@ class ElasticsearchDb
     }
  
     // Искать
-    public function search($resource = null, array $query_arr = array(), $keyword = null)
+    public function search($resource = null, array $query_arr = [], $keyword = null)
     {
-        $client = Elastic::create()->build();
         // Здесь будет много кода с маневрами :)
-        $client->search($params);
+        $this->client->search($params);
     }
  
     // Создаем одну запись
-    public function post($resource = null, array $arr = array())
+    public function post($resource = null, array $arr = [])
     {
-        $client = Elastic::create()->build();
- 
+
         $params["index"] = $this->index;
         $params["type"] = $this->type;
         if (isset($id)) {
@@ -126,16 +135,15 @@ class ElasticsearchDb
             }
         }
  
-        $client->index($params);
+        $this->client->index($params);
  
     }
  
     // Обновляем
-    public function put($resource = null, array $arr = array(), $id = null)
+    public function put($resource = null, array $arr = [], $id = null)
     {
         if (isset($resource)) {
-            $client = Elastic::create()->build();
-            
+
             if ($this->type === true) {
                 $type = $resource;
                 $index = $this->index;
@@ -159,17 +167,16 @@ class ElasticsearchDb
                     }
                 }
  
-                $client->update($params);
+                $this->client->update($params);
             }
         }
     }
     
     // Обновляем
-    public function patch($resource = null, array $arr = array(), $id = null)
+    public function patch($resource = null, array $arr = [], $id = null)
     {
         if (isset($resource)) {
-            $client = Elastic::create()->build();
-            
+
             if ($this->type === true) {
                 $type = $resource;
                 $index = $this->index;
@@ -193,17 +200,16 @@ class ElasticsearchDb
                     }
                 }
  
-                $client->update($params);
+                $this->client->update($params);
             }
         }
     }
  
     // Удаляем
-    public function delete($resource = null, array $arr = array(), $id = null)
+    public function delete($resource = null, array $arr = [], $id = null)
     {
         if (isset($resource)) {
-            $client = Elastic::create()->build();
-            
+
             if ($this->type === true) {
                 $type = $resource;
                 $index = $this->index;
@@ -220,7 +226,7 @@ class ElasticsearchDb
                 $params["id"] = $id;
                 $params["client"] = ['ignore' => [400, 404, 500]];
  
-                $client->delete($params);
+                $this->client->delete($params);
  
             } elseif (count($arr) >= 1) {
                 foreach($arr as $value)
@@ -234,7 +240,7 @@ class ElasticsearchDb
                         $params["id"] = $value["id"];
                         $params["client"] = ['ignore' => [400, 404, 500]];
  
-                        $client->delete($params);
+                        $this->client->delete($params);
                     }
                 }
             } else {
@@ -248,11 +254,8 @@ class ElasticsearchDb
     // Получить последний идентификатор
     public function last_id($resource)
     {
-        // Здесь есть проблема !
-        // В Elasticsearch id не являются целым числом
-        // Возникнут проблемы с синхронизацией записей
-        // Сейчас думаем как решить этот вопрос
+        return null;
     }
- 
+
 }
  
