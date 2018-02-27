@@ -42,12 +42,12 @@ $data = $db->get($table, $query, $id);
 ```
 ## Типы запросов
 ```php
-$db->post($table, $query, $field_id);
-$db->last_id($table);
-$db->get($table, $query, $id, $field_id);
-$db->put($table, $query, $id, $field_id);
-$db->del($table, $query, $id, $field_id);
-$db->count($table, $query, $id, $field_id);
+$data = $db->post($table, $query, $field_id);
+$data = $db->get($table, $query, $id, $field_id);
+$data = $db->put($table, $query, $id, $field_id);
+$data = $db->del($table, $query, $id, $field_id);
+$data = $db->count($table, $query, $id, $field_id);
+$last_id = $db->last_id($table);
 
 // Exclusive method
 $db->pdo($sql)->fetchAll(); // $db->prepare($sql)->execute()->fetchAll();
