@@ -160,18 +160,11 @@ Connect using [AutoRequire](https://github.com/pllano/auto-require)
 ]
 ```
 <a name="feedback"></a>
-## Поддержка, обратная связь, новости
+## Support, feedback, news
+feedback: open.source@pllano.com
 
-Общайтесь с нами через почту open.source@pllano.com
+[issues](https://github.com/pllano/router-db/issues) & [commits](https://github.com/pllano/router-db/commits/master) & [RSS](https://github.com/pllano/router-db/commits/master.atom).
 
-Если вы нашли баг в API json DB загляните в [issues](https://github.com/pllano/router-db/issues), возможно, про него мы уже знаем и
-постараемся исправить в ближайшем будущем. Если нет, лучше всего сообщить о нём там. Там же вы можете оставлять свои пожелания и предложения.
-
-За новостями вы можете следить по
-[коммитам](https://github.com/pllano/router-db/commits/master) в этом репозитории.
-[RSS](https://github.com/pllano/router-db/commits/master.atom).
-
-Лицензия
+License
 -------
-
 The MIT License (MIT). Please see [LICENSE](https://github.com/pllano/router-db/blob/master/LICENSE) for more information.
