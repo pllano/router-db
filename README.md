@@ -24,17 +24,6 @@ $data = $db->get($resource, $query, $id);
 // Тоже самое в одну строчку
 $data = ((new \Pllano\RouterDb\Router($config, 'Pdo'))->run("mysql"))->get("user", [], 1);
 ```
-## Типы запросов
-```php
-$db->get($resource, $query, $id, $field_id);
-$db->post($resource, $query, $field_id);
-$db->put($resource, $query, $id, $field_id);
-$db->delete($resource, $query, $id, $field_id);
-$db->count($resource, $query, $id, $field_id);
-$db->run($sql, $params)->fetchAll();
-$db->prepare($sql)->execute($params)->fetch();
-
-```
 ```php
 // Или более читабельный код
 use Pllano\RouterDb\Router as RouterDb;
@@ -50,6 +39,17 @@ $routerDb = new RouterDb($config, 'Pdo');
 // Чтобы подключиться к второй базе mysql_duo необходимо в третьем параметре передать префикс duo 
 $db = $routerDb->run('mysql', [], 'duo');
 $data = $db->get($resource, $query, $id);
+```
+## Типы запросов
+```php
+$db->get($resource, $query, $id, $field_id);
+$db->post($resource, $query, $field_id);
+$db->put($resource, $query, $id, $field_id);
+$db->delete($resource, $query, $id, $field_id);
+$db->count($resource, $query, $id, $field_id);
+$db->run($sql, $params)->fetchAll();
+$db->prepare($sql)->execute($params)->fetch();
+
 ```
 ```php
 use Pllano\RouterDb\Router as RouterDb;
