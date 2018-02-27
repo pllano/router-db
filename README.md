@@ -5,6 +5,35 @@
 ```php
 use Pllano\RouterDb\Router as RouterDb;
 
+// Таблица (ресурс) к которой обращаемся
+$resource = "user";
+
+// Отдаем роутеру конфигурацию и название адаптера
+$routerDb = new RouterDb($config, 'Pdo');
+
+// Пингуем доступную базу данных для ресурса
+// Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+$db = $routerDb->run($routerDb->ping($resource));
+// или указываем базу
+// $db = $routerDb->run("mysql");
+
+// Массив для запроса
+$query = [];
+$id = 1;
+
+// Получить данные пользователя id=1 из базы mysql
+$responseArr = $db->get($resource, $query, $id);
+
+// или
+// Получить расширенные данные пользователя id=1, дополнительно запрашиваем адрес и корзину
+$query = [
+    "relation" => "address,cart"
+];
+$id = 1;
+$responseArr = $db->get($resource, $query, $id);
+```
+
+```php
 // Конфигурация
 $config = [
     "db" => [
@@ -32,33 +61,6 @@ $config = [
         ]
     ]
 ];
-
-// Таблица (ресурс) к которой обращаемся
-$resource = "user";
-
-// Отдаем роутеру конфигурацию и название адаптера
-$routerDb = new RouterDb($config, 'Pdo');
-
-// Пингуем доступную базу данных для ресурса
-// Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-$db = $routerDb->run($routerDb->ping($resource));
-// или указываем базу
-// $db = $routerDb->run("mysql");
-
-// Массив для запроса
-$query = [];
-$id = 1;
-
-// Получить данные пользователя id=1 из базы mysql
-$responseArr = $db->get($resource, $query, $id);
-
-// или
-// Получить расширенные данные пользователя id=1, дополнительно запрашиваем адрес и корзину
-$query = [
-    "relation" => "address,cart"
-];
-$id = 1;
-$responseArr = $db->get($resource, $query, $id);
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 
