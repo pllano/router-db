@@ -1,5 +1,4 @@
-<?php
-/**
+<?php /**
  * This file is part of the RouterDb
  *
  * @license http://opensource.org/licenses/MIT
@@ -30,12 +29,12 @@ class Mysql extends \PDO
     /**
      * @param $config
      * @var array
-	 */
+     */
     private $config = [];
     /**
      * @param $options
      * @var array
-	 */
+     */
     private $options = [];
 
     public function __construct(array $config = [], array $options = [], $other_base = null)
@@ -43,11 +42,11 @@ class Mysql extends \PDO
         if (isset($config)) {
             // Конфигурация
             $this->config = $config;
-			if (isset($other_base)){
+            if (isset($other_base)){
                 $db = $config['db'][$other_base];
-			} else {
-			    $db = $config['db']['mysql'];
-			}
+            } else {
+                $db = $config['db']['mysql'];
+            }
             $default_options = [
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,

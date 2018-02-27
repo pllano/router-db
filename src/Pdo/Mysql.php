@@ -18,7 +18,7 @@ use PDO;
 class Mysql
 {
     /*
-	// Стандартный конструктор PDO
+    // Стандартный конструктор PDO
     public function __construct($dsn, $username = null, $password = null, $options = [])
     {
         $default_options = [
@@ -34,11 +34,11 @@ class Mysql
     public function __construct(array $config = [], array $options = [], $other_base = null)
     {
         if (isset($config)) {
-			if (isset($other_base)) {
+            if (isset($other_base)) {
                 $db = $config['db'][$other_base];
-			} else {
-			    $db = $config['db']['mysql'];
-			}
+            } else {
+                $db = $config['db']['mysql'];
+            }
             $dsn = "mysql:host={$db['host']};dbname={$db['dbname']};charset={$db['charset']}";
             $user = $db['user'];
             $password = $db['password'];
@@ -49,7 +49,7 @@ class Mysql
             ];
             $options = array_replace($default_options, $options);
             return new Database($dsn, $user, $password, $options);
-		}
+        }
     }
 
     public function run($sql, $args = null)
@@ -547,8 +547,8 @@ class Mysql
 
     public function ping($resource = null)
     {
-		return 'mysql';
-	}
+        return 'mysql';
+    }
 
 }
  

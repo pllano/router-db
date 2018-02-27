@@ -1,10 +1,9 @@
-<?php
-/**
+<?php /**
  * This file is part of the RouterDb
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/router-db
- * @version 1.0.1
+ * @version 1.2.0
  * @package pllano/router-db
  *
  * For the full copyright and license information, please view the LICENSE

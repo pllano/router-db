@@ -1,10 +1,9 @@
-<?php
-/**
+<?php /**
  * This file is part of the RouterDb
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/router-db
- * @version 1.0.1
+ * @version 1.2.0
  * @package pllano/router-db
  *
  * For the full copyright and license information, please view the LICENSE
@@ -24,7 +23,7 @@ class Elasticsearch
 {
 
     private $client;
-	private $resource = null;
+    private $resource = null;
     private $host = null;
     private $port = null;
     private $type = null;
@@ -59,11 +58,11 @@ class Elasticsearch
             }
         }
 
-		$index = $config['db']['elasticsearch']['index'];
-		$user = $config['db']['elasticsearch']['user'];
-		$pass = $config['db']['elasticsearch']['pass'];
-		$hosts = ['http://'.$elasticsearch_user.':'.$elasticsearch_pass.'@localhost:9200'];
-		$this->client = Elastic::create()->setHosts($hosts)->build();
+        $index = $config['db']['elasticsearch']['index'];
+        $user = $config['db']['elasticsearch']['user'];
+        $pass = $config['db']['elasticsearch']['pass'];
+        $hosts = ['http://'.$elasticsearch_user.':'.$elasticsearch_pass.'@localhost:9200'];
+        $this->client = Elastic::create()->setHosts($hosts)->build();
 
     }
 

@@ -1,10 +1,9 @@
-<?php
-/**
+<?php /**
  * This file is part of the RouterDb
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/router-db
- * @version 1.0.1
+ * @version 1.2.0
  * @package pllano/router-db
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,7 +19,7 @@ class Api
 {
 
     private $client = null;
-	private $resource = null;
+    private $resource = null;
     private $url = null;
     private $auth = null;
     private $api = null;
@@ -43,8 +42,8 @@ class Api
             if (isset($config["db"]["api"]["public_key"])) {
                 $this->public_key = $config["db"]["api"]["public_key"];
             }
-			
-		$this->client = new $this->config['vendor']['http_client']['client']();
+            
+        $this->client = new $this->config['vendor']['http_client']['client']();
         }
     }
 
