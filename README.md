@@ -25,6 +25,14 @@ $responseArr = $db->get($resource, $query, $id);
 $responseArr = ((new \Pllano\RouterDb\Router($config, 'Pdo'))->run("mysql"))->get("user", [], 1);
 ```
 ```php
+// Или более читабельный код
+use Pllano\RouterDb\Router as RouterDb;
+// Отдаем роутеру конфигурацию и название адаптера
+$routerDb = new RouterDb($config, 'Pdo');
+
+$responseArr = ($routerDb->run("mysql"))->get("user", [], 1);
+```
+```php
 // Конфигурация
 $config = [
     "db" => [
