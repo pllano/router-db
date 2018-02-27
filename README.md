@@ -33,6 +33,9 @@ $routerDb = new RouterDb($config, 'Pdo');
 $data = ($routerDb->run("mysql"))->get("user", [], 1);
 ```
 ```php
+use Pllano\RouterDb\Router as RouterDb;
+// Отдаем роутеру конфигурацию и название адаптера
+$routerDb = new RouterDb($config, 'Pdo');
 // Чтобы подключиться к второй базе mysql_duo необходимо в третьем параметре передать префикс duo 
 $db = $routerDb->run('mysql', [], 'duo');
 $data = $db->get($resource, $query, $id);
@@ -42,9 +45,9 @@ use Pllano\RouterDb\Router as RouterDb;
 // Отдаем роутеру конфигурацию и название адаптера
 $routerDb = new RouterDb($config, 'Pdo');
 $db = $routerDb->run('mysql');
-// Поддерживаются запросы через PDO
+// Поддерживаются запросы напрямую
 $data = $db->run("SELECT * FROM users WHERE user_id=?",[$user_id])->fetchAll();
-// Стандартный запрос PDO
+// или
 $data = $db->prepare($sql)->execute($params)->fetch();
 ```
 ```php
