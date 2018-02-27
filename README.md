@@ -7,24 +7,21 @@ use Pllano\RouterDb\Router as RouterDb;
 
 // Таблица (ресурс) к которой обращаемся
 $resource = "user";
-
 // Отдаем роутеру конфигурацию и название адаптера
 $routerDb = new RouterDb($config, 'Pdo');
-
 // Пингуем доступную базу данных для ресурса
 // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
 $db = $routerDb->run($routerDb->ping($resource));
 // или указываем базу без пинга
 // $db = $routerDb->run("mysql");
-
 // Массив для запроса
 $query = [];
 $id = 1;
-
 // Получить данные пользователя id=1 из базы mysql
 $responseArr = $db->get($resource, $query, $id);
 
-// или
+```
+```php
 // Получить расширенные данные пользователя id=1, дополнительно запрашиваем адрес и корзину
 $query = [
     "relation" => "address,cart"
@@ -32,7 +29,6 @@ $query = [
 $id = 1;
 $responseArr = $db->get($resource, $query, $id);
 ```
-
 ```php
 // Конфигурация
 $config = [
