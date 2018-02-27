@@ -34,12 +34,11 @@ $id = 1;
 $responseArr = $db->get($resource, $query, $id);
 
 // или
-
+// Получить расширенные данные пользователя id=1, дополнительно запрашиваем адрес и корзину
 $query = [
-    ["relation" => "address,cart"]
+    "relation" => "address,cart"
 ];
 $id = 1;
-// Получить расширенные данные пользователя id=1, дополнительно запрашиваем адрес и корзину
 $responseArr = $db->get($resource, $query, $id);
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
