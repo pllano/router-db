@@ -39,8 +39,8 @@ $data = $db->get($resource, $query, $id);
 ```
 Поддерживаются запросы PDO
 ```php
-$data = $db->run("SELECT * FROM users WHERE sex=?",[$sex])->fetchAll();
-$data = $db->prepare($sql)->execute($params)->fetch();
+$data = ($routerDb->run('mysql'))->run("SELECT * FROM users WHERE sex=?",[$sex])->fetchAll();
+$data = ($routerDb->run('mysql'))->prepare($sql)->execute($params)->fetch();
 ```
 ```php
 // Конфигурация
