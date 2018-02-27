@@ -51,6 +51,7 @@ $db->delete($resource, $query, $id, $field_id);
 $db->count($resource, $query, $id, $field_id);
 // $db->search($resource, $query, $keyword, $field_id);
 // Или в стиле PDO
+$db->pdo($sql)->fetchAll();
 $db->pdo($sql, $params)->fetchAll();
 $db->prepare($sql)->execute($params)->fetch();
 $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
