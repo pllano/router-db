@@ -8,6 +8,8 @@ use Pllano\RouterDb\Router as RouterDb;
 // Конфигурация
 $config = [
     "db" => [
+        "master" => "mysql",
+        "slave" => "elasticsearch",
         "mysql" => [
             "host" => "localhost",
             "dbname" => "",
@@ -23,7 +25,7 @@ $config = [
             "db" => "mysql"
         ],
         "article" => [
-            "db" => "json"
+            "db" => "elasticsearch"
         ],
         "price" => [
             "db" => "api"
