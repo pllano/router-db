@@ -43,12 +43,19 @@ $data = $db->get($resource, $query, $id);
 ## Типы запросов
 ```php
 $db->post($resource, $query, $field_id);
+public function post(string $resource = null, array $query = [], string $field_id = null);
 $db->last_id($resource);
+public function last_id(string $resource = null);
 $db->get($resource, $query, $id, $field_id);
+public function get(string $resource = null, array $query = [], int $field_id = null, string $field_id = null);
 $db->put($resource, $query, $id, $field_id);
+public function put(string $resource = null, array $query = [], int $field_id = null, string $field_id = null);
 $db->patch($resource, $query, $id, $field_id);
+public function patch(string $resource = null, array $query = [], int $field_id = null, string $field_id = null);
 $db->delete($resource, $query, $id, $field_id);
+public function delete(string $resource = null, array $query = [], int $field_id = null, string $field_id = null);
 $db->count($resource, $query, $id, $field_id);
+public function count(string $resource = null, array $query = [], int $field_id = null, string $field_id = null);
 // $db->search($resource, $query, $keyword, $field_id);
 // Или в стиле PDO
 $db->pdo($sql)->fetchAll();
