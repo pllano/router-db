@@ -164,7 +164,7 @@ Contact: open.source@pllano.com
 
 - [issues](https://github.com/pllano/router-db/issues) 
 - [Commits](https://github.com/pllano/router-db/commits/master) 
-- [RSS](https://github.com/pllano/router-db/commits/master.atom).
+- [RSS](https://github.com/pllano/router-db/commits/master.atom)
 
 License
 -------
