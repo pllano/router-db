@@ -45,8 +45,11 @@ $data = $db->get($resource, $query, $id);
 $db->get($resource, $query, $id, $field_id);
 $db->post($resource, $query, $field_id);
 $db->put($resource, $query, $id, $field_id);
+$db->patch($resource, $query, $id, $field_id);
 $db->delete($resource, $query, $id, $field_id);
 $db->count($resource, $query, $id, $field_id);
+$db->last_id($resource);
+// $db->search($resource, $query, $keyword, $field_id);
 // Или в стиле PDO
 $db->run($sql, $params)->fetchAll();
 $db->prepare($sql)->execute($params)->fetch();
