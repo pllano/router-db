@@ -60,10 +60,10 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 public function post(string $resource = null, array $query = [], string $field_id = null): int {}
 public function last_id(string $resource = null): int {}
 public function get(string $resource = null, array $query = [], int $field_id = null, string $field_id = null): array {}
-public function put(string $resource = null, array $query = [], int $field_id = null, string $field_id = null) {}
-public function patch(string $resource = null, array $query = [], int $field_id = null, string $field_id = null) {}
+public function put(string $resource = null, array $query = [], int $field_id = null, string $field_id = null): int {}
+public function patch(string $resource = null, array $query = [], int $field_id = null, string $field_id = null): int {}
 public function delete(string $resource = null, array $query = [], int $field_id = null, string $field_id = null): int {}
-public function count(string $resource = null, array $query = [], int $field_id = null, string $field_id = null) {}
+public function count(string $resource = null, array $query = [], int $field_id = null, string $field_id = null): int {}
 ```
 ```php
 use Pllano\RouterDb\Router as RouterDb;
