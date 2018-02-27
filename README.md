@@ -57,13 +57,13 @@ $db->prepare($sql)->execute($params)->fetch();
 $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 ```
 ```php
-public function post(string $resource = null, array $query = [], string $field_id = null);
-public function last_id(string $resource = null): int;
-public function get(string $resource = null, array $query = [], int $field_id = null, string $field_id = null);
-public function put(string $resource = null, array $query = [], int $field_id = null, string $field_id = null);
-public function patch(string $resource = null, array $query = [], int $field_id = null, string $field_id = null);
-public function delete(string $resource = null, array $query = [], int $field_id = null, string $field_id = null): int;
-public function count(string $resource = null, array $query = [], int $field_id = null, string $field_id = null);
+public function post(string $resource = null, array $query = [], string $field_id = null): int {}
+public function last_id(string $resource = null): int {}
+public function get(string $resource = null, array $query = [], int $field_id = null, string $field_id = null): array {}
+public function put(string $resource = null, array $query = [], int $field_id = null, string $field_id = null) {}
+public function patch(string $resource = null, array $query = [], int $field_id = null, string $field_id = null) {}
+public function delete(string $resource = null, array $query = [], int $field_id = null, string $field_id = null): int {}
+public function count(string $resource = null, array $query = [], int $field_id = null, string $field_id = null) {}
 ```
 ```php
 use Pllano\RouterDb\Router as RouterDb;
