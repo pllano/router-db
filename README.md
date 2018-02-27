@@ -37,6 +37,10 @@ $responseArr = ($routerDb->run("mysql"))->get("user", [], 1);
 $db = $routerDb->run('mysql', [], 'duo');
 $responseArr = $db->get($resource, $query, $id);
 ```
+Поддерживаются прямые запросы в базу
+```php
+$responseArr = $db->run("SELECT * FROM users WHERE sex=?",[$sex])->fetchAll();
+```
 ```php
 // Конфигурация
 $config = [
