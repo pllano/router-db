@@ -137,7 +137,7 @@ $config = [
 ```
 
 ## routerDb - One interface for working with all databases
-Connect using [Composer](https://getcomposer.org/)
+Use [Composer](https://getcomposer.org/)
 ```diff
 "require" {
     ...
@@ -146,7 +146,7 @@ Connect using [Composer](https://getcomposer.org/)
     ...
 }
 ```
-Connect using [AutoRequire](https://github.com/pllano/auto-require)
+Use [AutoRequire](https://github.com/pllano/auto-require)
 ```json
 "require" [
     {
