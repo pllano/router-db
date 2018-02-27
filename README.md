@@ -38,6 +38,9 @@ $db = $routerDb->run('mysql', [], 'duo');
 $data = $db->get($resource, $query, $id);
 ```
 ```php
+use Pllano\RouterDb\Router as RouterDb;
+// Отдаем роутеру конфигурацию и название адаптера
+$routerDb = new RouterDb($config, 'Pdo');
 $db = $routerDb->run('mysql');
 // Поддерживаются запросы через PDO
 $data = $db->run("SELECT * FROM users WHERE user_id=?",[$user_id])->fetchAll();
