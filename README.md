@@ -48,13 +48,14 @@ $db->get($resource, $query, $id, $field_id);
 $db->put($resource, $query, $id, $field_id);
 $db->del($resource, $query, $id, $field_id);
 $db->count($resource, $query, $id, $field_id);
-// $db->search($resource, $query, $keyword, $field_id);
+
 // Или в стиле PDO
 $db->pdo($sql)->fetchAll();
 $db->pdo($sql, $params)->fetchAll(); // = $db->prepare($sql)->execute($params)->fetchAll();
 $db->prepare($sql)->execute($params)->fetch();
 $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
+// Или в стиле Slim-PDO
 // + https://github.com/FaaPz/Slim-PDO/blob/master/docs/README.md
 // SELECT * FROM users WHERE id = ?
 $selectStatement = $db->select()
