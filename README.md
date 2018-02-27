@@ -36,7 +36,7 @@ $routerDb = new RouterDb($config, 'Pdo');
 $db = $routerDb->run('mysql', [], 'duo');
 $data = $db->get($table, $query, $id);
 ```
-## Типы запросов
+## Types of requests
 ```php
 $post = $db->post($table, $query, $field_id);
 $get = $db->get($table, $query, $id, $field_id);
