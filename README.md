@@ -9,7 +9,13 @@ use Pllano\RouterDb\Router as RouterDb;
 $config = [
     "db" => [
         "mysql" => [
-            "" => ""
+            "host" => "localhost",
+            "dbname" => "",
+            "port" => "",
+            "charset" => "utf8",
+            "connect_timeout" => "15",
+            "user" => "",
+            "password" => ""
         ]
     ]
 ];
