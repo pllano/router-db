@@ -6,19 +6,19 @@
 use Pllano\RouterDb\Router as RouterDb;
 
 // Таблица (ресурс) к которой обращаемся
-$resource = "user";
+$table = "user";
 // Отдаем роутеру конфигурацию и название адаптера
 // Подключаемся к БД через выбранный Adapter: Pdo, Apis, ZendDb, DoctrineDbal, NetteDb (Default: Pdo)
 $routerDb = new RouterDb($config, 'Pdo');
 // Пингуем доступную базу данных для ресурса
-$db = $routerDb->run($routerDb->ping($resource));
+$db = $routerDb->run($routerDb->ping($table));
 // или указываем базу без пинга
 // $db = $routerDb->run("mysql");
 // Массив для запроса
 $query = [];
 $id = 1;
 // Получить данные пользователя id=1 из базы mysql
-$data = $db->get($resource, $query, $id);
+$data = $db->get($table, $query, $id);
 ```
 ```php
 // Тоже самое в одну строчку
@@ -38,16 +38,16 @@ use Pllano\RouterDb\Router as RouterDb;
 $routerDb = new RouterDb($config, 'Pdo');
 // Чтобы подключиться к второй базе mysql_duo необходимо в третьем параметре передать префикс duo 
 $db = $routerDb->run('mysql', [], 'duo');
-$data = $db->get($resource, $query, $id);
+$data = $db->get($table, $query, $id);
 ```
 ## Типы запросов
 ```php
-$db->post($resource, $query, $field_id);
-$db->last_id($resource);
-$db->get($resource, $query, $id, $field_id);
-$db->put($resource, $query, $id, $field_id);
-$db->del($resource, $query, $id, $field_id);
-$db->count($resource, $query, $id, $field_id);
+$db->post($table, $query, $field_id);
+$db->last_id($table);
+$db->get($table, $query, $id, $field_id);
+$db->put($table, $query, $id, $field_id);
+$db->del($table, $query, $id, $field_id);
+$db->count($table, $query, $id, $field_id);
 
 // Exclusive method
 $db->pdo($sql)->fetchAll(); // $db->prepare($sql)->execute()->fetchAll();
