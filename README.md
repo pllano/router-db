@@ -53,11 +53,11 @@ $db->count($resource, $query, $id, $field_id);
 $db->pdo($sql)->fetchAll(); // $db->prepare($sql)->execute()->fetchAll();
 $db->pdo($sql, $params)->fetchAll(); // $db->prepare($sql)->execute($params)->fetchAll();
 
-// Или в стиле PDO
+// In style PDO
 $db->prepare($sql)->execute($params)->fetch();
 $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
-// Или в стиле Slim-PDO
+// In style Slim-PDO
 // https://github.com/FaaPz/Slim-PDO/blob/master/docs/README.md
 
 // SELECT * FROM users WHERE id = ?
