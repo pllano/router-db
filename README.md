@@ -19,7 +19,10 @@ $query = [];
 $id = 1;
 // Получить данные пользователя id=1 из базы mysql
 $responseArr = $db->get($resource, $query, $id);
-
+```
+```php
+// Тоже самое в одну строчку
+((new \Pllano\RouterDb\Router($config, 'Pdo'))->run("mysql"))->get("user", [], 1);
 ```
 ```php
 // Получить расширенные данные пользователя id=1, дополнительно запрашиваем адрес и корзину
