@@ -69,23 +69,22 @@ $stmt = $selectStatement->execute();
 $data = $stmt->fetch();
 
 // INSERT INTO users ( id , usr , pwd ) VALUES ( ? , ? , ? )
-$insertStatement = $db->insert(array('id', 'usr', 'pwd'))
+$insertStatement = $db->insert(['id', 'usr', 'pwd'])
                        ->into('users')
-                       ->values(array(1234, 'your_username', 'your_password'));
-
+                       ->values([1234, 'your_username', 'your_password']);
 $insertId = $insertStatement->execute(false);
 
 // UPDATE users SET pwd = ? WHERE id = ?
-$updateStatement = $db->update(array('pwd' => 'your_new_password'))
+$updateStatement = $db->update(['pwd' => 'your_new_password'])
                        ->table('users')
                        ->where('id', '=', 1234);
-
 $affectedRows = $updateStatement->execute();
 
 // DELETE FROM users WHERE id = ?
 $deleteStatement = $db->delete()
                        ->from('users')
                        ->where('id', '=', 1234);
+$affectedRows = $deleteStatement->execute();
 ```
 ```php
 public function post(string $resource = null, array $query = [], string $field_id = null): int {}
