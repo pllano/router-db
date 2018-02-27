@@ -14,7 +14,7 @@ $routerDb = new RouterDb($config, 'Pdo');
 // Пингуем доступную базу данных для ресурса
 // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
 $db = $routerDb->run($routerDb->ping($resource));
-// или указываем базу
+// или указываем базу без пинга
 // $db = $routerDb->run("mysql");
 
 // Массив для запроса
