@@ -18,11 +18,11 @@ $db = $routerDb->run($routerDb->ping($resource));
 $query = [];
 $id = 1;
 // Получить данные пользователя id=1 из базы mysql
-$responseArr = $db->get($resource, $query, $id);
+$data = $db->get($resource, $query, $id);
 ```
 ```php
 // Тоже самое в одну строчку
-$responseArr = ((new \Pllano\RouterDb\Router($config, 'Pdo'))->run("mysql"))->get("user", [], 1);
+$data = ((new \Pllano\RouterDb\Router($config, 'Pdo'))->run("mysql"))->get("user", [], 1);
 ```
 ```php
 // Или более читабельный код
@@ -30,16 +30,17 @@ use Pllano\RouterDb\Router as RouterDb;
 // Отдаем роутеру конфигурацию и название адаптера
 $routerDb = new RouterDb($config, 'Pdo');
 
-$responseArr = ($routerDb->run("mysql"))->get("user", [], 1);
+$data = ($routerDb->run("mysql"))->get("user", [], 1);
 ```
 ```php
 // Чтобы подключиться к второй базе mysql_duo необходимо в третьем параметре передать префикс duo 
 $db = $routerDb->run('mysql', [], 'duo');
-$responseArr = $db->get($resource, $query, $id);
+$data = $db->get($resource, $query, $id);
 ```
-Поддерживаются прямые запросы в базу
+Поддерживаются запросы PDO
 ```php
-$responseArr = $db->run("SELECT * FROM users WHERE sex=?",[$sex])->fetchAll();
+$data = $db->run("SELECT * FROM users WHERE sex=?",[$sex])->fetchAll();
+$data = $db->prepare($sql)->execute($params)->fetch();
 ```
 ```php
 // Конфигурация
