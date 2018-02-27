@@ -47,9 +47,10 @@ $db->post($resource, $query, $field_id);
 $db->put($resource, $query, $id, $field_id);
 $db->delete($resource, $query, $id, $field_id);
 $db->count($resource, $query, $id, $field_id);
+// Или в стиле PDO
 $db->run($sql, $params)->fetchAll();
 $db->prepare($sql)->execute($params)->fetch();
-
+$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 ```
 ```php
 use Pllano\RouterDb\Router as RouterDb;
