@@ -42,11 +42,11 @@ $data = $db->get($table, $query, $id);
 ```
 ## Типы запросов
 ```php
-$data = $db->post($table, $query, $field_id);
-$data = $db->get($table, $query, $id, $field_id);
-$data = $db->put($table, $query, $id, $field_id);
-$data = $db->del($table, $query, $id, $field_id);
-$data = $db->count($table, $query, $id, $field_id);
+$post = $db->post($table, $query, $field_id);
+$get = $db->get($table, $query, $id, $field_id);
+$put = $db->put($table, $query, $id, $field_id);
+$del = $db->del($table, $query, $id, $field_id);
+$count = $db->count($table, $query, $id, $field_id);
 $last_id = $db->last_id($table);
 
 // Exclusive method
