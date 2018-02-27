@@ -34,7 +34,8 @@ $responseArr = ($routerDb->run("mysql"))->get("user", [], 1);
 ```
 ```php
 // Чтобы подключиться к второй базе mysql_duo необходимо в третьем параметре передать префикс duo 
-$responseArr = ((new \Pllano\RouterDb\Router($config, 'Pdo'))->run('mysql', [], 'duo'))->get('user', [], 1);
+$db = $routerDb->run('mysql', [], 'duo');
+$responseArr = $db->get($resource, $query, $id);
 ```
 ```php
 // Конфигурация
