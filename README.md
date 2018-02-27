@@ -8,9 +8,9 @@ use Pllano\RouterDb\Router as RouterDb;
 // Таблица (ресурс) к которой обращаемся
 $resource = "user";
 // Отдаем роутеру конфигурацию и название адаптера
+// Подключаемся к БД через выбранный Adapter: Pdo, Apis, ZendDb, DoctrineDbal, NetteDb (По умолчанию Pdo)
 $routerDb = new RouterDb($config, 'Pdo');
 // Пингуем доступную базу данных для ресурса
-// Подключаемся к БД через выбранный Adapter: Pdo, Apis, ZendDb, DoctrineDbal, NetteDb (По умолчанию Pdo)
 $db = $routerDb->run($routerDb->ping($resource));
 // или указываем базу без пинга
 // $db = $routerDb->run("mysql");
