@@ -31,11 +31,11 @@ class Mysql
     }
     */
 
-    public function __construct(array $config = [], array $options = [], $other_base = null)
+    public function __construct(array $config = [], array $options = [], $prefix = null)
     {
         if (isset($config)) {
-            if (isset($other_base)) {
-                $db = $config['db'][$other_base];
+            if (isset($prefix)) {
+                $db = $config['db']['mysql_'.$prefix];
             } else {
                 $db = $config['db']['mysql'];
             }

@@ -40,10 +40,10 @@ class Router
     */
     private $driver = '';
     /**
-     * @param $other_base
+     * @param other base $prefix
      * @var string
     */
-    private $other_base = null;
+    private $prefix = null;
     /**
      * @param $config
      * @var array
@@ -59,7 +59,7 @@ class Router
         ]
     ];
 
-    public function __construct(array $config = [], $adapter = null, $driver = null, $db = null, $other_base = null, $namespace = null)
+    public function __construct(array $config = [], $adapter = null, $driver = null, $db = null, $prefix = null, $namespace = null)
     {
         if (isset($config)) {
             // Конфигурация
@@ -79,9 +79,9 @@ class Router
             // Тип базы данных
             $this->db = $db;
         }
-        if (isset($other_base)) {
-            // Пространство имен
-            $this->other_base = $other_base;
+        if (isset($prefix)) {
+            // База с другим названием
+            $this->prefix = $other_base;
         }
         if (isset($namespace)) {
             // Пространство имен
@@ -158,15 +158,17 @@ class Router
     // return new \Pllano\RouterDb\Apis\Mysql($this->config, $this->adapter, $this->driver);
     // return new \Pllano\RouterDb\Apis\Api($this->config, $this->adapter, $this->driver);
     // return new \Pllano\RouterDb\Apis\Json($this->config, $this->adapter, $this->driver);
-    public function run($db = null, array $options = [])
+    public function run($db = null, array $options = [], $prefix = null)
     {
         if (isset($db)) {
             $this->db = $db;
         }
+        if (isset($prefix)) {
+            $this->prefix = $prefix;
+        }
         $_db = ucfirst(strtolower($this->db));
-
         $class = $this->namespace."\\".$this->adapter."\\".$_db."".$this->driver;
-        return new $class($this->config, $options, $this->db_config);
+        return new $class($this->config, $options, $this->prefix);
     }
 
     // Установить название базы данных

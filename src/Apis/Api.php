@@ -25,25 +25,32 @@ class Api
     private $api = null;
     private $public_key = null;
     private $config;
- 
-    public function __construct(array $config = [], array $options = [])
+
+    public function __construct(array $config = [], array $options = [], $prefix = null)
     {
-        if (count($config) >= 1){
-            $this->config = $config;
-            if (isset($config["db"]["api"]["config"])) {
-                $this->api = $config["db"]["api"]["config"];
+        if (isset($config)) {
+            if (isset($prefix)) {
+                $db = $config['db']['api_'.$prefix];
+            } else {
+                $db = $config['db']['api'];
             }
-            if (isset($config["db"]["api"]["url"])) {
-                $this->url = $config["db"]["api"]["url"];
+
+            $this->config = $db;
+
+            if (isset($this->config["config"])) {
+                $this->api = $this->config["config"];
             }
-            if (isset($config["db"]["api"]["auth"])) {
-                $this->auth = $config["db"]["api"]["auth"];
+            if (isset($this->config["url"])) {
+                $this->url = $this->config["url"];
             }
-            if (isset($config["db"]["api"]["public_key"])) {
-                $this->public_key = $config["db"]["api"]["public_key"];
+            if (isset($this->config["auth"])) {
+                $this->auth = $this->config["auth"];
             }
-            
-        $this->client = new $this->config['vendor']['http_client']['client']();
+            if (isset($this->config["public_key"])) {
+                $this->public_key = $this->config["public_key"];
+            }
+
+            $this->client = new $config['vendor']['http_client']['client']();
         }
     }
 
@@ -51,13 +58,12 @@ class Api
     {
         if (isset($resource) && isset($this->client)) {
             try {
-                $url = $this->config["db"]["api"]["url"];
+                $url = $this->config["url"];
                 $public_key = "?";
-                if ($this->config["db"]["api"]["auth"] == "QueryKeyAuth" && $this->config["db"]["api"]["public_key"] != null) {
-                    $public_key = "?public_key=".$this->config["db"]["api"]["public_key"];
+                if ($this->config["auth"] == "QueryKeyAuth" && $this->config["public_key"] != null) {
+                    $public_key = "?public_key=".$this->config["public_key"];
                 }
- 
-                
+
                 $response = $this->client->request("GET", $url."".$resource."".$public_key."&limit=1&offset=0");
  
                 $output = $response->getBody();

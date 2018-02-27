@@ -26,11 +26,16 @@ class Json
     private $crypt = null;
     private $config = null;
  
-    public function __construct(array $config = [], array $options = [])
+    public function __construct(array $config = [], array $options = [], $prefix = null)
     {
-        if (count($config) >= 1) {
-            $this->config = $config;
-        }
+        if (isset($config)) {
+            if (isset($prefix)) {
+                $db = $config['db']['json_'.$prefix];
+            } else {
+                $db = $config['db']['json'];
+            }
+			 $this->config = $db;
+		}
     }
 
     public function ping($resource = null)
@@ -54,7 +59,7 @@ class Json
             try {Validate::table($resource)->exists();
                 
                 // Конфигурация таблицы
-                $table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].''.$resource.'.config.json'), true);
+                $table_config = json_decode(file_get_contents($this->config["dir"].''.$resource.'.config.json'), true);
  
                     // Если указан id
                     if ($id >= 1) {
@@ -65,7 +70,7 @@ class Json
                             $resp["headers"]["status"] = "200 OK";
                             $resp["headers"]["code"] = 200;
                             $resp["headers"]["message"] = "OK";
-                            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                            $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                             $resp["response"]["source"] = "db";
                             $resp["response"]["total"] = $resCount;
                             $resp["request"]["query"] = "GET";
@@ -130,7 +135,7 @@ class Json
                                                             $val_id = $newArr[$val_name];
                                                         }
                                                         
-                                                        $rel_table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].'/'.$val.'.config.json'), true);
+                                                        $rel_table_config = json_decode(file_get_contents($this->config["dir"].'/'.$val.'.config.json'), true);
 
                                                         if (array_key_exists($resource_id, $rel_table_config["schema"]) && isset($id)) {
                                                             
@@ -194,7 +199,7 @@ class Json
                             $resp["headers"]["status"] = '404 Not Found';
                             $resp["headers"]["code"] = 404;
                             $resp["headers"]["message"] = 'Not Found';
-                            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                            $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                             $resp["response"]["source"] = "db";
                             $resp["response"]["total"] = 0;
                             $resp["request"]["query"] = "GET";
@@ -215,7 +220,7 @@ class Json
                             $resp["headers"]["status"] = "200 OK";
                             $resp["headers"]["code"] = 200;
                             $resp["headers"]["message"] = "OK";
-                            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                            $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                                 
                                 foreach($query as $key => $value)
                                 {
@@ -336,7 +341,7 @@ class Json
                                 $resp["headers"]["status"] = "200 OK";
                                 $resp["headers"]["code"] = 200;
                                 $resp["headers"]["message"] = "OK";
-                                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                                $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                                 $resp["response"]["source"] = "db";
                                 $resp["response"]["total"] = $newCount;
                                 $resp["request"]["query"] = "GET";
@@ -396,7 +401,7 @@ class Json
                                                         if (isset($newArr[$val_name])) {
                                                             $val_id = $newArr[$val_name];
                                                         }
-                                                        $rel_table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].'/'.$val.'.config.json'), true);
+                                                        $rel_table_config = json_decode(file_get_contents($this->config["dir"].'/'.$val.'.config.json'), true);
                                                         if (array_key_exists($resource_id, $rel_table_config["schema"]) && isset($id)) {
                                                             
                                                             $rel = Database::table($val)->where($resource_id, '=', $id)->findAll();
@@ -477,7 +482,7 @@ class Json
                                 $resp["headers"]["status"] = "200 OK";
                                 $resp["headers"]["code"] = 200;
                                 $resp["headers"]["message"] = "OK";
-                                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                                $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                                 $resp["response"]["source"] = "db";
                                 $resp["response"]["total"] = $resCount;
                                 $resp["request"]["query"] = "GET";
@@ -497,7 +502,7 @@ class Json
                                 $resp["headers"]["status"] = "404 Not Found";
                                 $resp["headers"]["code"] = 404;
                                 $resp["headers"]["message"] = "Not Found";
-                                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                                $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                                 $resp["response"]["source"] = "db";
                                 // База вернула 0 записей или null
                                 $resp["response"]["total"] = 0;
@@ -512,7 +517,7 @@ class Json
                 $resp["headers"]["status"] = '404 Not Found';
                 $resp["headers"]["code"] = 404;
                 $resp["headers"]["message"] = 'resource Not Found';
-                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                 $resp["response"]["total"] = 0;
                 $resp["request"]["query"] = "GET";
                 $resp["request"]["resource"] = null;
@@ -522,7 +527,7 @@ class Json
             $resp["headers"]["status"] = '400 Bad Request';
             $resp["headers"]["code"] = 400;
             $resp["headers"]["message"] = 'Missing resource name';
-            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
             $resp["response"]["total"] = 0;
             $resp["request"]["query"] = "GET";
             $resp["request"]["resource"] = null;
@@ -548,7 +553,7 @@ class Json
             try {
                 Validate::table($resource)->exists();
                 // Получаем параметры ресурса
-                $table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].'/'.$resource.'.config.json'), true);
+                $table_config = json_decode(file_get_contents($this->config["dir"].'/'.$resource.'.config.json'), true);
  
                 // Подключаем таблицу
                 $row = Database::table($resource);
@@ -609,7 +614,7 @@ class Json
                     $resp["headers"]["status"] = "201 Created";
                     $resp["headers"]["code"] = 201;
                     $resp["headers"]["message"] = "Created";
-                    $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                    $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                     $resp["response"]["id"] = $row->id;
                     $resp["request"]["query"] = "POST";
                     $resp["request"]["resource"] = $resource;
@@ -618,7 +623,7 @@ class Json
                     $resp["headers"]["status"] = '501 Not Implemented';
                     $resp["headers"]["code"] = 501;
                     $resp["headers"]["message"] = 'Not Implemented';
-                    $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                    $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                     $resp["response"]["total"] = 0;
                 }
  
@@ -627,7 +632,7 @@ class Json
                 $resp["headers"]["status"] = '404 Not Found';
                 $resp["headers"]["code"] = 404;
                 $resp["headers"]["message"] = 'resource Not Found';
-                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                 $resp["response"]["total"] = 0;
             }
  
@@ -636,7 +641,7 @@ class Json
             $resp["headers"]["status"] = '400 Bad Request';
             $resp["headers"]["code"] = 400;
             $resp["headers"]["message"] = 'Bad Request';
-            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
             $resp["response"]["total"] = 0;
         }
  
@@ -651,7 +656,7 @@ class Json
             // Проверяем наличие главной базы если нет даем ошибку
             try {
                 Validate::table($resource)->exists();
-                $table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].''.$resource.'.config.json'), true);
+                $table_config = json_decode(file_get_contents($this->config["dir"].''.$resource.'.config.json'), true);
 
                 // Если указан id обновляем одну запись
                 if ($id >= 1) {
@@ -713,7 +718,7 @@ class Json
                         $resp["headers"]["status"] = "202 Accepted";
                         $resp["headers"]["code"] = 202;
                         $resp["headers"]["message"] = "Accepted";
-                        $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                        $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                         $resp["response"]["id"] = $id;
                         $resp["request"]["query"] = "PUT";
                         $resp["request"]["resource"] = $resource;
@@ -722,7 +727,7 @@ class Json
                         $resp["headers"]["status"] = '501 Not Implemented';
                         $resp["headers"]["code"] = 501;
                         $resp["headers"]["message"] = 'Not Implemented';
-                        $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                        $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                         $resp["response"]["total"] = 0;
                     }
  
@@ -786,7 +791,7 @@ class Json
                         $resp["headers"]["status"] = "202 Accepted";
                         $resp["headers"]["code"] = 202;
                         $resp["headers"]["message"] = "Accepted";
-                        $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                        $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                         $resp["response"]["total"] = 1;
                         $resp["response"]["id"] = $row->id;
                         $resp["request"]["query"] = "PUT";
@@ -797,7 +802,7 @@ class Json
                         $resp["headers"]["status"] = '501 Not Implemented';
                         $resp["headers"]["code"] = 501;
                         $resp["headers"]["message"] = 'Not Implemented';
-                        $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                        $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                         $resp["response"]["total"] = 0;
                     }
                 }
@@ -807,7 +812,7 @@ class Json
                 $resp["headers"]["status"] = '404 Not Found';
                 $resp["headers"]["code"] = 404;
                 $resp["headers"]["message"] = 'Not Found';
-                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                 $resp["response"]["total"] = 0;
             }
  
@@ -816,7 +821,7 @@ class Json
             $resp["headers"]["status"] = '400 Bad Request';
             $resp["headers"]["code"] = 400;
             $resp["headers"]["message"] = 'Bad Request';
-            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
             $resp["response"]["total"] = 0;
         }
  
@@ -831,7 +836,7 @@ class Json
             // Проверяем наличие главной базы если нет даем ошибку
             try {
                 Validate::table($resource)->exists();
-                $table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].'/'.$resource.'.config.json'), true);
+                $table_config = json_decode(file_get_contents($this->config["dir"].'/'.$resource.'.config.json'), true);
 
                 // Если указан id обновляем одну запись
                 if ($id >= 1) {
@@ -894,7 +899,7 @@ class Json
                         $resp["headers"]["status"] = "202 Accepted";
                         $resp["headers"]["code"] = 202;
                         $resp["headers"]["message"] = "Accepted";
-                        $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                        $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                         $resp["response"]["id"] = $id;
                         $resp["request"]["query"] = "PATCH";
                         $resp["request"]["resource"] = $resource;
@@ -903,7 +908,7 @@ class Json
                         $resp["headers"]["status"] = '501 Not Implemented';
                         $resp["headers"]["code"] = 501;
                         $resp["headers"]["message"] = 'Not Implemented';
-                        $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                        $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                         $resp["response"]["total"] = 0;
                     }
  
@@ -966,7 +971,7 @@ class Json
                         $resp["headers"]["status"] = "202 Accepted";
                         $resp["headers"]["code"] = 202;
                         $resp["headers"]["message"] = "Accepted";
-                        $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                        $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                         $resp["response"]["total"] = 1;
                         $resp["response"]["id"] = '';
                         $resp["request"]["query"] = "PATCH";
@@ -977,7 +982,7 @@ class Json
                         $resp["headers"]["status"] = '501 Not Implemented';
                         $resp["headers"]["code"] = 501;
                         $resp["headers"]["message"] = 'Not Implemented';
-                        $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                        $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                         $resp["response"]["total"] = 0;
                     }
                 }
@@ -987,7 +992,7 @@ class Json
                 $resp["headers"]["status"] = '404 Not Found';
                 $resp["headers"]["code"] = 404;
                 $resp["headers"]["message"] = 'Not Found';
-                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                 $resp["response"]["total"] = 0;
             }
  
@@ -996,7 +1001,7 @@ class Json
             $resp["headers"]["status"] = '400 Bad Request';
             $resp["headers"]["code"] = 400;
             $resp["headers"]["message"] = 'Bad Request';
-            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
             $resp["response"]["total"] = 0;
         }
  
@@ -1013,7 +1018,7 @@ class Json
             // Проверяем наличие главной базы если нет даем ошибку
             try {
                 Validate::table($resource)->exists();
-                $table_config = json_decode(file_get_contents($this->config["db"]["json"]["dir"].'/'.$resource.'.config.json'), true);
+                $table_config = json_decode(file_get_contents($this->config["dir"].'/'.$resource.'.config.json'), true);
 
                 // Если указан id удаляем одну запись
                 if ($id >= 1) {
@@ -1027,7 +1032,7 @@ class Json
                         $resp["headers"]["status"] = "200 Removed";
                         $resp["headers"]["code"] = 200;
                         $resp["headers"]["message"] = "Removed";
-                        $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                        $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                         $resp["response"]["id"] = $id;
                         $resp["request"]["query"] = "DELETE";
                         $resp["request"]["resource"] = $resource;
@@ -1038,7 +1043,7 @@ class Json
                         $resp["headers"]["status"] = '501 Not Implemented';
                         $resp["headers"]["code"] = 501;
                         $resp["headers"]["message"] = 'Not Implemented';
-                        $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                        $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                         $resp["response"]["total"] = 0;
                     }
 
@@ -1046,7 +1051,7 @@ class Json
 
                     try {
                     
-                        $file = $this->config["db"]["json"]["dir"].'/'.$resource.'.data.json';
+                        $file = $this->config["dir"].'/'.$resource.'.data.json';
                         // Открываем файл для получения существующего содержимого
                         $current = file_get_contents($file);
                         // Очищаем весь контент оставляем только []
@@ -1058,7 +1063,7 @@ class Json
                         $resp["headers"]["status"] = "200 Removed";
                         $resp["headers"]["code"] = 200;
                         $resp["headers"]["message"] = "Deleted all rows";
-                        $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                        $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                         $resp["response"]["id"] = 'All';
                         $resp["request"]["query"] = "DELETE";
                         $resp["request"]["resource"] = $resource;
@@ -1069,7 +1074,7 @@ class Json
                         $resp["headers"]["status"] = '501 Not Implemented';
                         $resp["headers"]["code"] = 501;
                         $resp["headers"]["message"] = 'Not Implemented';
-                        $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                        $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                         $resp["response"]["total"] = 0;
                     }
                 }
@@ -1079,7 +1084,7 @@ class Json
                 $resp["headers"]["status"] = '404 Not Found';
                 $resp["headers"]["code"] = 404;
                 $resp["headers"]["message"] = 'Not Found';
-                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                 $resp["response"]["total"] = 0;
             }
  
@@ -1088,7 +1093,7 @@ class Json
             $resp["headers"]["status"] = '400 Bad Request';
             $resp["headers"]["code"] = 400;
             $resp["headers"]["message"] = 'Bad Request';
-            $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+            $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
             $resp["response"]["total"] = 0;
         }
  

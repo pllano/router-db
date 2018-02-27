@@ -32,36 +32,41 @@ class Elasticsearch
     private $user = null;
     private $password = null;
  
-    public function __construct(array $config = [], array $options = [])
+    public function __construct(array $config = [], array $options = [], $prefix = null)
     {
-        if (count($config) >= 1){
-            if (isset($config["host"])) {
-                $this->host = $config["host"];
+        if (isset($config)) {
+            if (isset($prefix)) {
+                $db = $config['db']['elasticsearch_'.$prefix];
+            } else {
+                $db = $config['db']['elasticsearch'];
             }
-            if (isset($config["port"])) {
-                $this->port = $config["port"];
+
+            $this->config = $db;
+			
+            if (isset($this->config["host"])) {
+                $this->host = $this->config["host"];
             }
-            if (isset($config["type"])) {
-                $this->type = $config["type"];
+            if (isset($this->config["port"])) {
+                $this->port = $this->config["port"];
             }
-            if (isset($config["index"])) {
-                $this->index = $config["index"];
+            if (isset($this->config["type"])) {
+                $this->type = $this->config["type"];
+            }
+            if (isset($this->config["index"])) {
+                $this->index = $this->config["index"];
             }
             if (isset($config["auth"])) {
-                $this->auth = $config["auth"];
+                $this->auth = $this->config["auth"];
             }
-            if (isset($config["user"])) {
-                $this->user = $config["user"];
+            if (isset($this->config["user"])) {
+                $this->user = $this->config["user"];
             }
-            if (isset($config["password"])) {
-                $this->password = $config["password"];
+            if (isset($this->config["password"])) {
+                $this->password = $this->config["password"];
             }
         }
 
-        $index = $config['db']['elasticsearch']['index'];
-        $user = $config['db']['elasticsearch']['user'];
-        $pass = $config['db']['elasticsearch']['pass'];
-        $hosts = ['http://'.$elasticsearch_user.':'.$elasticsearch_pass.'@localhost:9200'];
+        $hosts = ['http://'.$this->user.':'.$this->password.'@'.$this->host.':'.$this->port.''];
         $this->client = Elastic::create()->setHosts($hosts)->build();
 
     }
