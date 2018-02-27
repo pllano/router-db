@@ -37,10 +37,12 @@ $data = ($routerDb->run("mysql"))->get("user", [], 1);
 $db = $routerDb->run('mysql', [], 'duo');
 $data = $db->get($resource, $query, $id);
 ```
-Поддерживаются запросы PDO
 ```php
-$data = ($routerDb->run('mysql'))->run("SELECT * FROM users WHERE sex=?",[$sex])->fetchAll();
-$data = ($routerDb->run('mysql'))->prepare($sql)->execute($params)->fetch();
+$db = $routerDb->run('mysql');
+// Поддерживаются запросы через PDO
+$data = $db->run("SELECT * FROM users WHERE user_id=?",[$user_id])->fetchAll();
+// Стандартный запрос PDO
+$data = $db->prepare($sql)->execute($params)->fetch();
 ```
 ```php
 // Конфигурация
