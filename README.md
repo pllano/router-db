@@ -1,5 +1,5 @@
 # routerDb
-
+## One interface for working with all databases
 ## Simple and clear code
 ```php
 use Pllano\RouterDb\Router as RouterDb;
@@ -135,8 +135,7 @@ $config = [
     ]
 ];
 ```
-
-## routerDb - One interface for working with all databases
+## Installation
 Use [Composer](https://getcomposer.org/)
 ```diff
 "require" {
