@@ -17,6 +17,17 @@ $config = [
             "user" => "",
             "password" => ""
         ]
+    ],
+    "resource" => [
+        "user" => [
+            "db" => "mysql"
+        ],
+        "article" => [
+            "db" => "json"
+        ],
+        "price" => [
+            "db" => "api"
+        ]
     ]
 ];
 
