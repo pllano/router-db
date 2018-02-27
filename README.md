@@ -283,42 +283,6 @@ $config["db"]["resource"]["article_category"]["db"] = "mysql";
 // Синхронизировать ресурс article_category или нет. По умолчанию false
 $config["db"]["resource"]["article_category"]["synchronize"] = false;
 ```
-#### На будущее, заложена возможность расширять индивидуальную конфигурацию каждого ресурса.
-Например:
-```php
-// Сейчас используется только два параметра для каждого ресурса
-$config["db"]["resource"]["user"]["db"] = "mysql";
-$config["db"]["resource"]["user"]["synchronize"] = false;
-```
-В будущем мы хотим дать возможность:
-```php
-// Подключится к другой базе mysql
-$config["db"]["resource"]["user"]["mysql"]["host"] = "localhost";
-$config["db"]["resource"]["user"]["mysql"]["dbname"] = "";
-$config["db"]["resource"]["user"]["mysql"]["port"] = "";
-$config["db"]["resource"]["user"]["mysql"]["charset"] = "utf8";
-$config["db"]["resource"]["user"]["mysql"]["connect_timeout"] = 30;
-$config["db"]["resource"]["user"]["mysql"]["user"] = "";
-$config["db"]["resource"]["user"]["mysql"]["password"] = "";
- 
-// Включать кеширование для каждого ресурса индивидуально
-$config["db"]["resource"]["user"]["cached"] = true;
- 
-// Включать шифрование для каждого ресурса индивидуально
-$config["db"]["resource"]["user"]["crypt"] = true;
-$config["db"]["resource"]["user"]["key"] = true;
- 
-// Отдавать в ответе только указанные поля
-$config["db"]["resource"]["user"]["fields"] = "phone,email,iname,fname";
- 
-// Запретить или разрешить отдавать связанные данные из других ресурсов через параметр relations
-$config["db"]["resource"]["user"]["relations"] = false;
- 
-// Запретить переключатся на slave базу
-$config["db"]["resource"]["user"]["db"]["slave"] = false;
-// Или указать slave базу индивидуально для этого ресурса
-$config["db"]["resource"]["user"]["db"]["slave"] = "api";
-```
 
 ### Конфигурация баз данных
 #### [jsonDb](https://github.com/pllano/json-db)
