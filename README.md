@@ -33,12 +33,25 @@ $routerDb = new RouterDb($config, 'Pdo');
 $responseArr = ($routerDb->run("mysql"))->get("user", [], 1);
 ```
 ```php
+// Чтобы подключиться к второй базе mysql_duo необходимо в третьем параметре передать префикс duo 
+$responseArr = ((new \Pllano\RouterDb\Router($config, 'Pdo'))->run('mysql', [], 'duo'))->get('user', [], 1);
+```
+```php
 // Конфигурация
 $config = [
     "db" => [
         "master" => "mysql",
         "slave" => "elasticsearch",
         "mysql" => [
+            "host" => "localhost",
+            "dbname" => "",
+            "port" => "",
+            "charset" => "utf8",
+            "connect_timeout" => "15",
+            "user" => "",
+            "password" => ""
+        ],
+        "mysql_duo" => [
             "host" => "localhost",
             "dbname" => "",
             "port" => "",
