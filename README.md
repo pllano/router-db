@@ -161,9 +161,11 @@ Connect using [AutoRequire](https://github.com/pllano/auto-require)
 ```
 <a name="feedback"></a>
 ## Support, feedback, news
-feedback: open.source@pllano.com
+Contact: open.source@pllano.com
 
-[issues](https://github.com/pllano/router-db/issues) & [commits](https://github.com/pllano/router-db/commits/master) & [RSS](https://github.com/pllano/router-db/commits/master.atom).
+- [issues](https://github.com/pllano/router-db/issues) 
+- [Commits](https://github.com/pllano/router-db/commits/master) 
+- [RSS](https://github.com/pllano/router-db/commits/master.atom).
 
 License
 -------
