@@ -47,7 +47,7 @@ $db->last_id($resource);
 $db->get($resource, $query, $id, $field_id);
 $db->put($resource, $query, $id, $field_id);
 $db->patch($resource, $query, $id, $field_id);
-$db->delete($resource, $query, $id, $field_id);
+$db->del($resource, $query, $id, $field_id);
 $db->count($resource, $query, $id, $field_id);
 // $db->search($resource, $query, $keyword, $field_id);
 // Или в стиле PDO
@@ -58,7 +58,7 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
 // + https://github.com/FaaPz/Slim-PDO/blob/master/docs/README.md
 // SELECT * FROM users WHERE id = ?
-$selectStatement = $pdo->select()
+$selectStatement = $db->select()
                        ->from('users')
                        ->where('id', '=', 1234);
 
@@ -66,21 +66,21 @@ $stmt = $selectStatement->execute();
 $data = $stmt->fetch();
 
 // INSERT INTO users ( id , usr , pwd ) VALUES ( ? , ? , ? )
-$insertStatement = $pdo->insert(array('id', 'usr', 'pwd'))
+$insertStatement = $db->insert(array('id', 'usr', 'pwd'))
                        ->into('users')
                        ->values(array(1234, 'your_username', 'your_password'));
 
 $insertId = $insertStatement->execute(false);
 
 // UPDATE users SET pwd = ? WHERE id = ?
-$updateStatement = $pdo->update(array('pwd' => 'your_new_password'))
+$updateStatement = $db->update(array('pwd' => 'your_new_password'))
                        ->table('users')
                        ->where('id', '=', 1234);
 
 $affectedRows = $updateStatement->execute();
 
 // DELETE FROM users WHERE id = ?
-$deleteStatement = $pdo->delete()
+$deleteStatement = $db->delete()
                        ->from('users')
                        ->where('id', '=', 1234);
 ```
