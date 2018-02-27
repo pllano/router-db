@@ -25,14 +25,6 @@ $responseArr = $db->get($resource, $query, $id);
 $responseArr = ((new \Pllano\RouterDb\Router($config, 'Pdo'))->run("mysql"))->get("user", [], 1);
 ```
 ```php
-// Получить расширенные данные пользователя id=1, дополнительно запрашиваем адрес и корзину
-$query = [
-    "relation" => "address,cart"
-];
-$id = 1;
-$responseArr = $db->get($resource, $query, $id);
-```
-```php
 // Конфигурация
 $config = [
     "db" => [
