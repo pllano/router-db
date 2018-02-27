@@ -64,7 +64,6 @@ $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $selectStatement = $db->select()
                        ->from('users')
                        ->where('id', '=', 1234);
-
 $stmt = $selectStatement->execute();
 $data = $stmt->fetch();
 
