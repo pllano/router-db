@@ -50,12 +50,12 @@ $count = $db->count($table, $query, $id, $field_id);
 $last_id = $db->last_id($table);
 
 // Exclusive method
-$db->pdo($sql)->fetchAll(); // $db->prepare($sql)->execute()->fetchAll();
-$db->pdo($sql, $params)->fetchAll(); // $db->prepare($sql)->execute($params)->fetchAll();
+$data = $db->pdo($sql)->fetchAll(); // $db->prepare($sql)->execute()->fetchAll();
+$data = $db->pdo($sql, $params)->fetchAll(); // $db->prepare($sql)->execute($params)->fetchAll();
 
 // In style PDO
-$db->prepare($sql)->execute($params)->fetch();
-$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+$data = $db->prepare($sql)->execute($params)->fetch();
+$data = $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
 // In style Slim-PDO
 // https://github.com/FaaPz/Slim-PDO/blob/master/docs/README.md
