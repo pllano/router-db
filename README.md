@@ -157,7 +157,8 @@ foreach ($_POST as $key => $value)
         return 'injection'; // Stop Execution
     }
 }
-$data = $db->prepare($sql)->execute($params)->fetch();
+$setStr = rtrim($setStr, ",");
+$data = $db->prepare("UPDATE users SET $setStr WHERE id = :id")->execute($params);
 ```
 ## Installation
 Use [Composer](https://getcomposer.org/)
