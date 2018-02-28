@@ -165,7 +165,7 @@ $setStr = rtrim($setStr, ",");
 $data = $db->prepare("UPDATE users SET $setStr WHERE id = :id")->execute($params);
 ```
 ``` php
-public function search_injections($value = '', $new_keywords = []): int
+public function search_injections(string $value = '', array $new_keywords = []): int
 {
     if($value == '') {return null;}
     if (isset($new_keywords)) {
