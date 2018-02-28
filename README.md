@@ -213,7 +213,7 @@ public function search_injections(string $value = null, array $new_keywords = []
         $value = str_ireplace($list_keywords, "👌", $value, $i);
         return $i;
     } else {
-        return null;
+        return 0;
     }
 }
 ```
