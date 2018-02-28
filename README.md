@@ -136,6 +136,7 @@ $config = [
 ];
 ```
 ## Protection against SQL injections
+Use only where it is very necessary!
 ```php
 use Pllano\RouterDb\Utility;
 use Pllano\RouterDb\Router as RouterDb;
@@ -151,13 +152,15 @@ foreach ($_POST as $key => $value)
     if ($key != "id") {
         $setStr .= $key." = :".$key.","; 
     }
-    // Use only where it is very necessary!
-    // If search_injections finds two keywords from the list
-    // "INSERT", "UPDATE", "FROM", "SELECT", "FROM", "LOAD_FILE", "GROUP", "BY", "WHERE", "foreach", "echo", "script", "javascript", "public", "function", "secret", "admin", "root", "password", "push", "false", "return", "onclick"
-    if ($utility->search_injections($value) >= 2) {
-        $params[$key] = $value;
-    } else {
+    // List of keywords for search
+    // INSERT, UPDATE, FROM, SELECT, FROM, LOAD_FILE, GROUP, BY, WHERE, foreach, echo, script, javascript, 
+    // public, function, secret, admin, root, password, push, 'false', 'true', return, onclick
+    // If search_injections finds $x keywords from the list
+    $x = 2;
+    if ($utility->search_injections($value) >= $x) {
         return 'injection'; // Stop Execution
+    } else {
+        $params[$key] = $value;
     }
 }
 $setStr = rtrim($setStr, ",");
