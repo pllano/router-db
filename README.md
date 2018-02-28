@@ -151,6 +151,9 @@ foreach ($_POST as $key => $value)
     if ($key != "id") {
         $setStr .= $key." = :".$key.","; 
     }
+    // Use only where it is very necessary!
+    // If search_injections finds two keywords from the list
+    // "INSERT", "UPDATE", "FROM", "SELECT", "FROM", "LOAD_FILE", "GROUP", "BY", "WHERE", "foreach", "echo", "script", "javascript", "public", "function", "secret", "admin", "root", "password", "push", "false", "return", "onclick"
     if ($utility->search_injections($value) >= 2) {
         $params[$key] = $value;
     } else {
