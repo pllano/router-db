@@ -153,11 +153,7 @@ foreach ($_POST as $key => $value)
         $setStr .= $key." = :".$key.","; 
     }
     // List of keywords for search
-    // INSERT, UPDATE, FROM, SELECT, FROM, LOAD_FILE, GROUP, BY, WHERE, foreach, echo, script, javascript, 
-    // public, function, secret, admin, root, password, push, 'false', 'true', return, onclick
-    // $value = str_ireplace($list_keywords, "👌", $value, $i); return $i;
     // If search_injections finds $x keywords from the list
-    // public function search_injections($value = '', $new_keywords = []): int {}
     $x = 2;
     if ($utility->search_injections($value) >= $x) {
         return 'injection'; // Stop Execution
@@ -167,8 +163,42 @@ foreach ($_POST as $key => $value)
 }
 $setStr = rtrim($setStr, ",");
 $data = $db->prepare("UPDATE users SET $setStr WHERE id = :id")->execute($params);
-
-
+```
+``` php
+public function search_injections($value = '', $new_keywords = []): int
+{
+    if($value == '') {return null;}
+    if (isset($new_keywords)) {
+        $list_keywords = $new_keywords;
+    } else {
+        $list_keywords = [
+            "INSERT", 
+            "UPDATE", 
+            "SELECT * FROM",
+            "SELECT",
+            "FROM",
+            "LOAD_FILE", 
+            "GROUP BY",
+            "WHERE",
+            "foreach",
+            "echo",
+            "script",
+            "javascript",
+            "public",
+            "function",
+            "secret",
+            "admin",
+            "root",
+            "password",
+            "push",
+            "false",
+            "return",
+            "onclick"
+        ];
+    }
+    $value = str_ireplace($list_keywords, "👌", $value, $i);
+    return $i;
+}
 ```
 ## Installation
 Use [Composer](https://getcomposer.org/)
