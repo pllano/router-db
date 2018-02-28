@@ -165,13 +165,13 @@ $setStr = rtrim($setStr, ",");
 $data = $db->prepare("UPDATE users SET $setStr WHERE id = :id")->execute($params);
 ```
 ``` php
-public function search_injections(string $value = '', array $new_keywords = []): int
+public function search_injections(string $value = null, array $new_keywords = []): int
 {
-    if($value == '') {return null;}
-    if (isset($new_keywords)) {
-        $list_keywords = $new_keywords;
-    } else {
-        $list_keywords = [
+    if (isset($value)) {
+        if (isset($new_keywords)) {
+            $list_keywords = $new_keywords;
+        } else {
+            $list_keywords = [
             '*', 
             'SELECT', 
             'UPDATE', 
@@ -208,10 +208,13 @@ public function search_injections(string $value = '', array $new_keywords = []):
             '"true"',
             'return',
             'onclick'
-        ];
+            ];
+        }
+        $value = str_ireplace($list_keywords, "👌", $value, $i);
+        return $i;
+    } else {
+        return null;
     }
-    $value = str_ireplace($list_keywords, "👌", $value, $i);
-    return $i;
 }
 ```
 ## Installation
