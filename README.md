@@ -135,6 +135,30 @@ $config = [
     ]
 ];
 ```
+## Protection against SQL injections
+```php
+use Pllano\RouterDb\Utility;
+use Pllano\RouterDb\Router as RouterDb;
+
+$utility = new Utility();
+$routerDb = new RouterDb($config, 'Pdo');
+$db = $routerDb->run('mysql');
+
+$params = [];
+$setStr = "";
+foreach ($_POST as $key => $value)
+{
+    if ($key != "id") {
+        $setStr .= $key." = :".$key.","; 
+    }
+    if ($utility->search_injections($value) >= 2) {
+        $params[$key] = $value;
+    } else {
+        return 'injection'; // Stop Execution
+    }
+}
+$data = $db->prepare($sql)->execute($params)->fetch();
+```
 ## Installation
 Use [Composer](https://getcomposer.org/)
 ```diff
