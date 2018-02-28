@@ -153,9 +153,9 @@ foreach ($_POST as $key => $value)
         $setStr .= $key." = :".$key.","; 
     }
     // List of keywords for search
-    // If search_injections finds $x keywords from the list
-    $x = 2;
-    if ($utility->search_injections($value) >= $x) {
+    $new_keywords = []; // Replace with your keywords
+    $x = 2; // If search_injections finds $x keywords from the list
+    if ($utility->search_injections($value, $new_keywords) >= $x) {
         return 'injection'; // Stop Execution
     } else {
         $params[$key] = $value;
@@ -172,28 +172,42 @@ public function search_injections($value = '', $new_keywords = []): int
         $list_keywords = $new_keywords;
     } else {
         $list_keywords = [
-            "INSERT", 
-            "UPDATE", 
-            "SELECT * FROM",
-            "SELECT",
-            "FROM",
-            "LOAD_FILE", 
-            "GROUP BY",
-            "WHERE",
-            "foreach",
-            "echo",
-            "script",
-            "javascript",
-            "public",
-            "function",
-            "secret",
-            "admin",
-            "root",
-            "password",
-            "push",
-            "false",
-            "return",
-            "onclick"
+            '*', 
+            'SELECT', 
+            'UPDATE', 
+            'DELETE', 
+            'INSERT', 
+            'INTO', 
+            'VALUES', 
+            'FROM', 
+            'LEFT', 
+            'JOIN', 
+            'WHERE', 
+            'LIMIT', 
+            'ORDER BY', 
+            'AND', 
+            'OR ',
+            'DESC', 
+            'ASC', 
+            'ON'
+            'LOAD_FILE', 
+            'GROUP',
+            'BY',
+            'foreach',
+            'echo',
+            'script',
+            'javascript',
+            'public',
+            'function',
+            'secret',
+            'admin',
+            'root',
+            'password',
+            'push',
+            '"false"',
+            '"true"',
+            'return',
+            'onclick'
         ];
     }
     $value = str_ireplace($list_keywords, "👌", $value, $i);
