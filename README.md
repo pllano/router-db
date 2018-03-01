@@ -136,36 +136,7 @@ $config = [
 ];
 ```
 ## Protection against SQL injections
-Use only where it is very necessary!
-### Method 1
-Can help in 90% of cases.
-```php
-use Pllano\RouterDb\Utility;
-use Pllano\RouterDb\Router as RouterDb;
-
-$utility = new Utility();
-$routerDb = new RouterDb($config, 'Pdo');
-$db = $routerDb->run('mysql');
-
-$params = [];
-$setStr = "";
-$x = 2; // If search_injections finds $x keywords from the list
-
-foreach ($_POST as $key => $value)
-{
-    if ($utility->search_injections($key) >= $x || $utility->search_injections($value) >= $x) {
-        return 'injection'; // Stop Execution
-    } else {
-        if ($key != "id") {
-            $setStr .= "`".str_replace("`", "``", $key)."` = :".$key.",";
-        }
-        $params[$key] = $value;
-    }
-}
-$setStr = rtrim($setStr, ",");
-$data = $db->prepare("UPDATE users SET $setStr WHERE id = :id")->execute($params);
-```
-#### function search_injections()
+### function search_injections()
 Very simple function
 ``` php
 public function search_injections(string $value = null, array $new_keywords = []): int
@@ -220,7 +191,7 @@ public function search_injections(string $value = null, array $new_keywords = []
     }
 }
 ```
-### Method 2
+### Example injection
 An SQL injection against which prepared statements won't help
 ```html
 <form method=POST>
@@ -228,8 +199,9 @@ An SQL injection against which prepared statements won't help
 <input type=submit>
 </form>
 ```
+### Method 1 (Can help in 99% of cases.)
+Use only where it is very necessary !
 Check the existence of the key in the table
-Can help in 95% of cases.
 ```php
 use Pllano\RouterDb\Utility;
 use Pllano\RouterDb\Router as RouterDb;
@@ -241,7 +213,7 @@ $db = $routerDb->run('mysql');
 $params = [];
 $setStr = "";
 $x = 2; // If search_injections finds $x keywords from the list
-$table_schema = ["id", "name", "user_id", "bla"];
+$table_schema = ["id", "name", "user_id", "surname", "email"];
 
 foreach ($_POST as $key => $value)
 {
@@ -257,6 +229,22 @@ foreach ($_POST as $key => $value)
             $params[$key] = $value;
         }
     }
+}
+// Or
+foreach ($table_schema as $key)
+{
+    if (isset($_POST[$key]) && $key != "id") {
+        if ($utility->search_injections($key) >= $x || $utility->search_injections($_POST[$key]) >= $x) {
+            return 'injection'; // Stop Execution
+        } else {
+            $setStr .= "`".str_replace("`", "``", $key)."` = :".$key.",";
+            $params[$key] = $_POST[$key];
+        }
+    }
+}
+
+if (isset($_POST['id'])) {
+    $params['id'] = intval($_POST['id']);
 }
 $setStr = rtrim($setStr, ",");
 $data = $db->prepare("UPDATE users SET $setStr WHERE id = :id")->execute($params);
