@@ -159,9 +159,8 @@ $table = 'users';
 // Get The Structure Of A MySQL Table In PHP (PDO).
 // Query MySQL with the PDO objecy.
 // The SQL statement is: DESCRIBE [INSERT TABLE NAME]
-$statement = $pdo->query('DESCRIBE ' . $table);
 // Fetch our result.
-$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+$result = $db->query('DESCRIBE ' . $table)->fetchAll(PDO::FETCH_ASSOC);
 // The result should be an array of arrays,
 // with each array containing information about the columns
 // that the table has.
