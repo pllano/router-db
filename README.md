@@ -157,11 +157,11 @@ $db = $routerDb->run('mysql');
 $params = [];
 $setStr = "";
 $x = 2; // If search_injections finds $x keywords from the list
-$table_schema = ["id", "name", "user_id", "surname", "email"];
+$table_schema = array_flip(["id", "name", "user_id", "surname", "email"]);
 
 foreach ($_POST as $key => $value)
 {
-    if (array_key_exists($key, $table_schema)) {
+    if (isset($table_schema) || array_key_exists($key, $table_schema)) {
         if ($utility->search_injections($value) >= $x) {
             // Write to the log. A letter to the administrator.
             $this->logger->info("SQL_injection", ["key" => $key, "value" => $value, "request" => [$request]]);
