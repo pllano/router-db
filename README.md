@@ -256,13 +256,17 @@ if (isset($_POST['id']) ?? is_int($_POST['id'])) {
 ### function search_injections()
 Very simple function
 ``` php
-public function search_injections(string $value = null, array $new_keywords = []): int
+public function search_injections(string $value = null, array $new_keywords = [], $add_keywords = []): int
 {
     $list_keywords = [];
     if (isset($value)) {
         if (isset($new_keywords)) {
             $list_keywords = $new_keywords;
         } else {
+            $plus_keywords = [];
+            if (isset($add_keywords)) {
+                $plus_keywords = $add_keywords;
+            }
             $list_keywords = [
             '*', 
             'SELECT', 
@@ -299,8 +303,9 @@ public function search_injections(string $value = null, array $new_keywords = []
             'return',
             'onclick'
             ];
+            $keywords = array_replace_recursive($list_keywords, $plus_keywords);
         }
-        $value = str_ireplace($list_keywords, "👌", $value, $i);
+        $value = str_ireplace($keywords, "👌", $value, $i);
         return $i;
     } else {
         return 0;
