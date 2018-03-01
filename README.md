@@ -201,6 +201,8 @@ foreach($result as $column){
 }
 // Or determine the list yourself
 // $table_schema = array_flip(["id", "user_id", "name", "surname", "email", "phone"]);
+// Or
+// $table_schema = array_flip(explode(",", "id,user_id,name,surname,email,phone"));
 
 $params = [];
 $setStr = "";
