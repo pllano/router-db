@@ -164,6 +164,7 @@ foreach ($_POST as $key => $value)
     if (array_key_exists($key, $table_schema)) {
         if ($utility->search_injections($value) >= $x) {
             // Write to the log. A letter to the administrator.
+            $this->logger->info("SQL_injection", ["key" => $key, "value" => $value, "request" => [$request]]);
             return 'injection'; // Stop Execution
         } else {
             if ($key != "id") {
@@ -174,6 +175,7 @@ foreach ($_POST as $key => $value)
     } else {
         if ($utility->search_injections($key) >= 1 || $utility->search_injections($value) >= 1) {
             // Write to the log. A letter to the administrator.
+            $this->logger->info("SQL_injection", ["key" => $key, "value" => $value, "request" => [$request]]);
             return 'injection'; // Stop Execution
         }
     }
