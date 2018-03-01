@@ -218,9 +218,11 @@ $table_schema = ["id", "name", "user_id", "surname", "email"];
 foreach ($_POST as $key => $value)
 {
     if ($utility->search_injections($key) >= $x || $utility->search_injections($value) >= $x) {
+        // Write to the log. A letter to the administrator.
         return 'injection'; // Stop Execution
     } else {
         if (!array_key_exists($key, $table_schema)) {
+            // Write to the log. A letter to the administrator.
             return 'injection'; // Stop Execution
         } else {
             if ($key != "id") {
@@ -235,6 +237,7 @@ foreach ($table_schema as $key)
 {
     if (isset($_POST[$key]) && $key != "id") {
         if ($utility->search_injections($key) >= $x || $utility->search_injections($_POST[$key]) >= $x) {
+            // Write to the log. A letter to the administrator.
             return 'injection'; // Stop Execution
         } else {
             $setStr .= "`".str_replace("`", "``", $key)."` = :".$key.",";
