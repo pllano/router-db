@@ -256,7 +256,7 @@ if (isset($_POST['id']) ?? is_int($_POST['id'])) {
 ### function search_injections()
 Very simple function
 ``` php
-public function search_injections(string $value = null, array $new_keywords = [], $add_keywords = []): int
+public function search_injections(string $value = null, array $add_keywords = [], array $new_keywords = []): int
 {
     $list_keywords = [];
     if (isset($value)) {
