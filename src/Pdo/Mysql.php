@@ -52,7 +52,7 @@ class Mysql
         }
     }
 
-    public function run($sql, $args = null)
+    public function pdo($sql, $args = null)
     {
         if (!$args) {
              return $this->query($sql);
@@ -63,7 +63,7 @@ class Mysql
     }
 
     // Загрузить
-    public function get($resource = null, array $arr = [], $id = null, $field_id = null)
+    public function get(string $resource = null, array $arr = [], int $id = null, $field_id = null): array
     {
         $this->resource = $resource;
         if ($resource != null) {
@@ -174,17 +174,8 @@ class Mysql
  
     }
 
-    // Искать
-    public function search($resource = null, array $query_arr = [], $keyword = null, $field_id = null)
-    {
-        // Новый запрос, аналог get рассчитан на полнотекстовый поиск
-        // Должен возвращать count для пагинации в параметре ["response"]["total"]
- 
-        // Еще в разработке ...
-    }
- 
     // Создаем одну запись
-    public function post($resource = null, array $arr = [], $field_id = null)
+    public function post(string $resource = null, array $arr = [], string $field_id = null): int
     {
         if ($field_id == null) {
             $show = null;
@@ -240,7 +231,7 @@ class Mysql
     }
  
     // Обновляем
-    public function put($resource = null, array $arr = [], $id = null, $field_id = null)
+    public function put(string $resource = null, array $arr = [], int $id = null, string $field_id = null)
     {
         $this->resource = $resource;
         if ($resource != null) {
@@ -328,102 +319,8 @@ class Mysql
  
     }
 
-    // Обновляем
-    public function patch($resource = null, array $arr = [], $id = null, $field_id = null)
-    {
-        $this->resource = $resource;
-        if ($this->resource == null) {
-            if ($field_id == null) {
-                $show = null;
-                $resource_id = "id";
-                $this->resource_id = "id";
-                $show = $this->query("SHOW COLUMNS FROM `".$this->resource."` where `Field` = 'id'")->fetch(PDO::FETCH_ASSOC)['Field'];
-                if ($show == "id") {
-                    $this->resource_id = "id";
-                    $resource_id = "id";
-                } else {
-                    $show = $this->query("SHOW COLUMNS FROM `".$this->resource."` where `Field` = '".$this->resource."_id'")->fetch(PDO::FETCH_ASSOC)['Field'];
-                    if ($show == $this->resource."_id") {
-                        $this->resource_id = $this->resource."_id";
-                        $resource_id = $this->resource."_id";
-                    }
-                }
-            } else {
-                $this->resource_id = $field_id;
-                $resource_id = $field_id;
-            }
-        }
-        // Задаем пустое значение $query чтобы не выдавало ошибок
-        $query = '';
-        // если есть id, тогда в массиве $arr данные для одной записи
-        if ($id >= 1) {
-            if (count($arr) >= 1) {
-                foreach($arr as $key => $value)
-                {
-                    if ($key == ''){$key = null;}
-                    if (isset($key) && isset($value)) {
-                        $query .= "`".$key."` ='".$value."' ";
-                    }
-                }
-            }
-            // Формируем запрос к базе данных
-            $sql = "
-                UPDATE `".$this->resource."` 
-                SET ".$query." 
-                WHERE `".$resource_id."` =".$id."
-            ";
-            // Отправляем запрос в базу
-            $stmt = $this->prepare($sql);
-
-            if ($stmt->execute()) {
-                // Если все ок отдаем 1
-                $total = 1;
-            } else {
-                // Если нет отдаем 0
-                $total = null;
-                return $total;
-            }
-        } else {
-            $i=0;
-            if (count($arr) >= 1) {
-                foreach($arr as $item)
-                {
-                    foreach($item as $key => $value)
-                    {
-                        if ($key == ""){$key = null;}
-                        if (isset($key) && isset($value)) {
-                            if ($key == $resource_id){
-                                $key_id = $key;
-                                $id = $value;
-                            } else {
-                                $query .= "`".$key."` ='".$value."' ";
-                            }
-                        }
-                    }
-                    // Формируем запрос к базе данных
-                    $sql = "UPDATE `".$this->resource."` SET ".$query." WHERE `".$key_id."` ='".$id."'";
-                    // Отправляем запрос в базу
-                    $stmt = $this->prepare($sql);
-                    if ($stmt->execute()) {
-                        // Если все ок +1
-                        $i+=1;
-                    } else {
-                        // Если нет +0
-                        $i+=0;
-                    }
-                }
-            }
- 
-            $total = $i;
-        }
- 
-        // Возвращаем колличество обновленных записей
-        return $total;
- 
-    }
-
     // Удаляем
-    public function delete($resource = null, array $arr = [], $id = null, $field_id = null)
+    public function del(string $resource = null, array $arr = [], int $id = null, string $field_id = null): int
     {
         if ($resource != null) {
             if ($id >= 1) {
@@ -491,7 +388,7 @@ class Mysql
     }
 
     // count для пагинатора
-    public function count($resource = null, array $arr = [], $id = null, $field_id = null)
+    public function count(string $resource = null, array $arr = [], int $id = null, string $field_id = null)
     {
         $i=0;
         // Приходится делать запрос и при наличии id, так как может отдать null
@@ -540,12 +437,12 @@ class Mysql
     }
 
     // Получить последний идентификатор
-    public function last_id($resource)
+    public function last_id(string $resource): int
     {
         return $this->query("SHOW TABLE STATUS LIKE '".$resource."'")->fetch(PDO::FETCH_ASSOC)['Auto_increment'];
     }
 
-    public function ping($resource = null)
+    public function ping(string $resource = null)
     {
         return 'mysql';
     }

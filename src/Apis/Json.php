@@ -467,7 +467,7 @@ class Json
                                 $resp["headers"]["status"] = "404 Not Found";
                                 $resp["headers"]["code"] = 404;
                                 $resp["headers"]["message"] = "Not Found";
-                                $resp["headers"]["message_id"] = $this->config["db"]['http-codes']."".$resp["headers"]["code"].".md";
+                                $resp["headers"]["message_id"] = $this->config['http-codes']."".$resp["headers"]["code"].".md";
                                 $resp["response"]["source"] = "db";
                                 $resp["response"]["total"] = 0;
                                 $resp["request"]["query"] = "GET";
