@@ -205,7 +205,7 @@ foreach ($_POST as $key => $value)
 if (isset($_POST['id']) ?? is_int($_POST['id'])) {
     $params['id'] = intval($_POST['id']);
     $setStr = rtrim($setStr, ",");
-    $data = $db->prepare("UPDATE $table SET $setStr WHERE id = :id")->execute($params);
+    $db->prepare("UPDATE $table SET $setStr WHERE id = :id")->execute($params);
 }
 ```
 ### function search_injections()
