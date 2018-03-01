@@ -153,11 +153,10 @@ use Pllano\RouterDb\Router as RouterDb;
 $utility = new Utility();
 $routerDb = new RouterDb($config, 'Pdo');
 $db = $routerDb->run('mysql');
-
+$table = 'users';
+// The name of the table that we want the structure of.
 // $table_schema = array_flip(["id", "user_id", "name", "surname", "email", "phone"]);
 // Get The Structure Of A MySQL Table In PHP (PDO).
-// The name of the table that we want the structure of.
-$table = 'users';
 // Query MySQL with the PDO objecy.
 // The SQL statement is: DESCRIBE [INSERT TABLE NAME]
 $statement = $pdo->query('DESCRIBE ' . $table);
