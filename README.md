@@ -189,7 +189,7 @@ public function search_injections(string $value = null, array $new_keywords = []
             'OR ',
             'DESC', 
             'ASC', 
-            'ON'
+            'ON',
             'LOAD_FILE', 
             'GROUP',
             'BY',
