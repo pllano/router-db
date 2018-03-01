@@ -155,7 +155,6 @@ $routerDb = new RouterDb($config, 'Pdo');
 $db = $routerDb->run('mysql');
 $table = 'users';
 // The name of the table that we want the structure of.
-// $table_schema = array_flip(["id", "user_id", "name", "surname", "email", "phone"]);
 // Get The Structure Of A MySQL Table In PHP (PDO).
 // Query MySQL with the PDO objecy.
 // The SQL statement is: DESCRIBE [INSERT TABLE NAME]
@@ -172,6 +171,8 @@ foreach($result as $column){
     $field_type = $column['Type'];
     $table_schema[$field] = $field_type;
 }
+// Or determine the list yourself
+// $table_schema = array_flip(["id", "user_id", "name", "surname", "email", "phone"]);
 
 $inj = 'sql_injection';
 $logger = $this->logger;
