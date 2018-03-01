@@ -176,11 +176,13 @@ use Pllano\RouterDb\Router as RouterDb;
 
 $utility = new Utility();
 $uri = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$host = $_SERVER['HTTP_HOST'];
 $escaped_url = htmlspecialchars($uri, ENT_QUOTES, 'UTF-8');
 $inj = 'sql_injection';
 
 $routerDb = new RouterDb($config, 'Pdo');
 $routerDb->setLogger($this->logger);
+$routerDb->setMailer($this->mailer);
 $db = $routerDb->run('mysql');
 $table = 'users';
 // The name of the table that we want the structure of.
@@ -218,6 +220,9 @@ foreach ($_POST as $key => $value)
                 "url" => $escaped_url, 
                 "request" => [$request]
             ]);
+            $db->mailer->setFrom(['attention@'.$host => 'Attention SQL injection'])
+            ->setTo(['admin@'.$host => 'Admin'])
+            ->setBody('Attention SQL injection: '.$uri);
             return $inj; // Stop Execution
         } else {
             if ($key != "id") {
@@ -234,6 +239,9 @@ foreach ($_POST as $key => $value)
                 "url" => $escaped_url, 
                 "request" => [$request]
             ]);
+            $db->mailer->setFrom(['attention@'.$host => 'Attention SQL injection'])
+            ->setTo(['admin@'.$host => 'Admin'])
+            ->setBody('Attention SQL injection: '.$uri);
             return $inj; // Stop Execution
         }
     }
