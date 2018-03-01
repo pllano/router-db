@@ -181,7 +181,7 @@ foreach ($_POST as $key => $value)
     }
 }
 
-if (isset($_POST['id'])) {
+if (isset($_POST['id']) ?? is_int($_POST['id'])) {
     $params['id'] = intval($_POST['id']);
     $setStr = rtrim($setStr, ",");
     $data = $db->prepare("UPDATE users SET $setStr WHERE id = :id")->execute($params);
