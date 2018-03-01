@@ -153,16 +153,12 @@ $x = 2; // If search_injections finds $x keywords from the list
 
 foreach ($_POST as $key => $value)
 {
-    if ($utility->search_injections($key, $new_keywords) >= $x) {
+    if ($utility->search_injections($key, $new_keywords) >= $x || $utility->search_injections($value, $new_keywords) >= $x) {
         return 'injection'; // Stop Execution
     } else {
         if ($key != "id") {
             $setStr .= $key." = :".$key.","; 
         }
-    }
-    if ($utility->search_injections($value, $new_keywords) >= $x) {
-        return 'injection'; // Stop Execution
-    } else {
         $params[$key] = $value;
     }
 }
