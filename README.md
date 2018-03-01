@@ -228,7 +228,7 @@ foreach ($_POST as $key => $value)
             if ($key != "id") {
                 $setStr .= "`".str_replace("`", "``", $key)."` = :".$key.","; 
             }
-            $params[$key] = $value;
+            $params[$key] = filter_var($value, FILTER_SANITIZE_STRING);
         }
     } else {
         if ($utility->search_injections($key) >= 1 || $utility->search_injections($value) >= 1) {
