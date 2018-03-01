@@ -137,6 +137,7 @@ $config = [
 ```
 ## Protection against SQL injections
 Use only where it is very necessary!
+### Method 1
 Can help in 90% of cases.
 ```php
 use Pllano\RouterDb\Utility;
@@ -216,6 +217,47 @@ public function search_injections(string $value = null, array $new_keywords = []
         return 0;
     }
 }
+```
+### Method 2
+An SQL injection against which prepared statements won't help
+```html
+<form method=POST>
+<input type=hidden name="name=(SELECT'hacked!')WHERE`id`=1#" value="">
+<input type=submit>
+</form>
+```
+Check the existence of the key in the table
+Can help in 95% of cases.
+```php
+use Pllano\RouterDb\Utility;
+use Pllano\RouterDb\Router as RouterDb;
+
+$utility = new Utility();
+$routerDb = new RouterDb($config, 'Pdo');
+$db = $routerDb->run('mysql');
+
+$params = [];
+$setStr = "";
+$x = 2; // If search_injections finds $x keywords from the list
+$table_schema = ["id", "name", "user_id", "bla"];
+
+foreach ($_POST as $key => $value)
+{
+    if ($utility->search_injections($key) >= $x || $utility->search_injections($value) >= $x) {
+        return 'injection'; // Stop Execution
+    } else {
+        if (!array_key_exists($key, $table_schema)) {
+            return 'injection'; // Stop Execution
+        } else {
+            if ($key != "id") {
+                $setStr .= $key." = :".$key.","; 
+            }
+            $params[$key] = $value;
+        }
+    }
+}
+$setStr = rtrim($setStr, ",");
+$data = $db->prepare("UPDATE users SET $setStr WHERE id = :id")->execute($params);
 ```
 ## Installation
 Use [Composer](https://getcomposer.org/)
