@@ -165,7 +165,7 @@ foreach ($_POST as $key => $value)
         if ($utility->search_injections($value) >= $x) {
             // Write to the log. A letter to the administrator.
             $this->logger->info("SQL_injection", ["key" => $key, "value" => $value, "request" => [$request]]);
-            return 'injection'; // Stop Execution
+            return 'sql_injection'; // Stop Execution
         } else {
             if ($key != "id") {
                 $setStr .= "`".str_replace("`", "``", $key)."` = :".$key.","; 
@@ -176,7 +176,7 @@ foreach ($_POST as $key => $value)
         if ($utility->search_injections($key) >= 1 || $utility->search_injections($value) >= 1) {
             // Write to the log. A letter to the administrator.
             $this->logger->info("SQL_injection", ["key" => $key, "value" => $value, "request" => [$request]]);
-            return 'injection'; // Stop Execution
+            return 'sql_injection'; // Stop Execution
         }
     }
 }
