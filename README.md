@@ -193,7 +193,6 @@ $result = $db->query('DESCRIBE ' . $table)->fetchAll(PDO::FETCH_ASSOC);
 // with each array containing information about the columns
 // that the table has.
 // var_dump($result);
-// For the sake of this tutorial, I will loop through the result
 $table_schema = [];
 foreach($result as $column){
     $field = $column['Field'];
