@@ -147,14 +147,19 @@ $db = $routerDb->run('mysql');
 
 $params = [];
 $setStr = "";
+// List of keywords for search
+$new_keywords = []; // Replace with your keywords
+$x = 2; // If search_injections finds $x keywords from the list
+
 foreach ($_POST as $key => $value)
 {
-    if ($key != "id") {
-        $setStr .= $key." = :".$key.","; 
+    if ($utility->search_injections($key, $new_keywords) >= $x) {
+        return 'injection'; // Stop Execution
+    } else {
+        if ($key != "id") {
+            $setStr .= $key." = :".$key.","; 
+        }
     }
-    // List of keywords for search
-    $new_keywords = []; // Replace with your keywords
-    $x = 2; // If search_injections finds $x keywords from the list
     if ($utility->search_injections($value, $new_keywords) >= $x) {
         return 'injection'; // Stop Execution
     } else {
