@@ -52,8 +52,9 @@ $data = $db->pdo($sql, $params)->fetchAll(); // $db->prepare($sql)->execute($par
 // In style PDO
 $data = $db->prepare($sql)->execute($params)->fetch();
 $data = $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-
-// In style Slim-PDO
+```
+In style Slim-PDO
+```php
 // https://github.com/FaaPz/Slim-PDO/blob/master/docs/README.md
 
 // SELECT * FROM users WHERE id = ?
