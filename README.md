@@ -190,6 +190,7 @@ Very simple function
 ``` php
 public function search_injections(string $value = null, array $new_keywords = []): int
 {
+    $list_keywords = [];
     if (isset($value)) {
         if (isset($new_keywords)) {
             $list_keywords = $new_keywords;
