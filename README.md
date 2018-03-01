@@ -174,6 +174,11 @@ use Pllano\RouterDb\Utility;
 use Pllano\RouterDb\Router as RouterDb;
 
 $utility = new Utility();
+$uri = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$escaped_url = htmlspecialchars($uri, ENT_QUOTES, 'UTF-8');
+$inj = 'sql_injection';
+$logger = $this->logger;
+
 $routerDb = new RouterDb($config, 'Pdo');
 $db = $routerDb->run('mysql');
 $table = 'users';
@@ -197,16 +202,9 @@ foreach($result as $column){
 // Or determine the list yourself
 // $table_schema = array_flip(["id", "user_id", "name", "surname", "email", "phone"]);
 
-$inj = 'sql_injection';
-$logger = $this->logger;
-
 $params = [];
 $setStr = "";
 $x = 2; // If search_injections finds $x keywords from the list
-
-$uri = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-$escaped_url = htmlspecialchars($uri, ENT_QUOTES, 'UTF-8');
-
 foreach ($_POST as $key => $value)
 {
     if (array_key_exists($key, $table_schema)) {
