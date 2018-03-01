@@ -42,7 +42,7 @@ class Elasticsearch
             }
 
             $this->config = $db;
-			
+            
             if (isset($this->config["host"])) {
                 $this->host = $this->config["host"];
             }

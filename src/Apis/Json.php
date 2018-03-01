@@ -34,8 +34,8 @@ class Json
             } else {
                 $db = $config['db']['json'];
             }
-			 $this->config = $db;
-		}
+             $this->config = $db;
+        }
     }
 
     public function ping($resource = null)

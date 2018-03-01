@@ -58,6 +58,8 @@ class Router
             ]
         ]
     ];
+    private $logger = null;
+    private $mailer = null;
 
     public function __construct(array $config = [], $adapter = null, $driver = null, $db = null, $prefix = null, $namespace = null)
     {
@@ -169,6 +171,22 @@ class Router
         $_db = ucfirst(strtolower($this->db));
         $class = $this->namespace."\\".$this->adapter."\\".$_db."".$this->driver;
         return new $class($this->config, $options, $this->prefix);
+    }
+    
+    // Установить logger
+    public function setLogger($logger = null)
+    {
+        if (isset($logger)) {
+            $this->logger = $logger;
+        }
+    }
+
+    // Установить mailer
+    public function setMailer($mailer = null)
+    {
+        if (isset($mailer)) {
+            $this->mailer = $mailer;
+        }
     }
 
     // Установить название базы данных
