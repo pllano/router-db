@@ -136,6 +136,56 @@ $config = [
 ];
 ```
 ## Protection against SQL injections
+### Example injection
+An SQL injection against which prepared statements won't help
+```html
+<form method=POST>
+<input type=hidden name="name=(SELECT'hacked!')WHERE`id`=1#" value="">
+<input type=submit>
+</form>
+```
+### Method 1 (Can help in 99% of cases.)
+Use only where it is very necessary !
+Check the existence of the key in the table & Search for keywords
+```php
+use Pllano\RouterDb\Utility;
+use Pllano\RouterDb\Router as RouterDb;
+
+$utility = new Utility();
+$routerDb = new RouterDb($config, 'Pdo');
+$db = $routerDb->run('mysql');
+
+$params = [];
+$setStr = "";
+$x = 2; // If search_injections finds $x keywords from the list
+$table_schema = ["id", "name", "user_id", "surname", "email"];
+
+foreach ($_POST as $key => $value)
+{
+    if (array_key_exists($key, $table_schema)) {
+        if ($utility->search_injections($value) >= $x) {
+            // Write to the log. A letter to the administrator.
+            return 'injection'; // Stop Execution
+        } else {
+            if ($key != "id") {
+                $setStr .= "`".str_replace("`", "``", $key)."` = :".$key.","; 
+            }
+            $params[$key] = $value;
+        }
+    } else {
+        if ($utility->search_injections($key) >= 1 || $utility->search_injections($value) >= 1) {
+            // Write to the log. A letter to the administrator.
+            return 'injection'; // Stop Execution
+        }
+    }
+}
+
+if (isset($_POST['id'])) {
+    $params['id'] = intval($_POST['id']);
+}
+$setStr = rtrim($setStr, ",");
+$data = $db->prepare("UPDATE users SET $setStr WHERE id = :id")->execute($params);
+```
 ### function search_injections()
 Very simple function
 ``` php
@@ -190,56 +240,6 @@ public function search_injections(string $value = null, array $new_keywords = []
         return 0;
     }
 }
-```
-### Example injection
-An SQL injection against which prepared statements won't help
-```html
-<form method=POST>
-<input type=hidden name="name=(SELECT'hacked!')WHERE`id`=1#" value="">
-<input type=submit>
-</form>
-```
-### Method 1 (Can help in 99% of cases.)
-Use only where it is very necessary !
-Check the existence of the key in the table
-```php
-use Pllano\RouterDb\Utility;
-use Pllano\RouterDb\Router as RouterDb;
-
-$utility = new Utility();
-$routerDb = new RouterDb($config, 'Pdo');
-$db = $routerDb->run('mysql');
-
-$params = [];
-$setStr = "";
-$x = 2; // If search_injections finds $x keywords from the list
-$table_schema = ["id", "name", "user_id", "surname", "email"];
-
-foreach ($_POST as $key => $value)
-{
-    if (array_key_exists($key, $table_schema)) {
-        if ($utility->search_injections($value) >= $x) {
-            // Write to the log. A letter to the administrator.
-            return 'injection'; // Stop Execution
-        } else {
-            if ($key != "id") {
-                $setStr .= "`".str_replace("`", "``", $key)."` = :".$key.","; 
-            }
-            $params[$key] = $value;
-        }
-    } else {
-        if ($utility->search_injections($key) >= 1 || $utility->search_injections($value) >= 1) {
-            // Write to the log. A letter to the administrator.
-            return 'injection'; // Stop Execution
-        }
-    }
-}
-
-if (isset($_POST['id'])) {
-    $params['id'] = intval($_POST['id']);
-}
-$setStr = rtrim($setStr, ",");
-$data = $db->prepare("UPDATE users SET $setStr WHERE id = :id")->execute($params);
 ```
 ## Installation
 Use [Composer](https://getcomposer.org/)
