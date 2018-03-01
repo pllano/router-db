@@ -135,6 +135,29 @@ $config = [
     ]
 ];
 ```
+## Installation
+Use [Composer](https://getcomposer.org/)
+```diff
+"require" {
+    ...
+-    "pllano/router-db": "1.1.*",
++    "pllano/router-db": "1.2.0",
+    ...
+}
+```
+Use [AutoRequire](https://github.com/pllano/auto-require)
+```json
+"require" [
+    {
+        "namespace": "Pllano\\RouterDb",
+        "dir": "/pllano/router-db/src",
+        "link": "https://github.com/pllano/router-db/archive/master.zip",
+        "name": "router-db",
+        "version": "master",
+        "vendor": "pllano"
+    }
+]
+```
 ## Protection against SQL injections
 ### Example injection
 An SQL injection against which prepared statements won't help
@@ -264,29 +287,6 @@ public function search_injections(string $value = null, array $new_keywords = []
         return 0;
     }
 }
-```
-## Installation
-Use [Composer](https://getcomposer.org/)
-```diff
-"require" {
-    ...
--    "pllano/router-db": "1.1.*",
-+    "pllano/router-db": "1.2.0",
-    ...
-}
-```
-Use [AutoRequire](https://github.com/pllano/auto-require)
-```json
-"require" [
-    {
-        "namespace": "Pllano\\RouterDb",
-        "dir": "/pllano/router-db/src",
-        "link": "https://github.com/pllano/router-db/archive/master.zip",
-        "name": "router-db",
-        "version": "master",
-        "vendor": "pllano"
-    }
-]
 ```
 <a name="feedback"></a>
 ## Support, feedback, news
