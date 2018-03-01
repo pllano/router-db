@@ -145,7 +145,6 @@ An SQL injection against which prepared statements won't help
 </form>
 ```
 ### Method 1 (Can help in 99% of cases.)
-Use only where it is very necessary !
 Check the existence of the key in the table & Search for keywords
 ```php
 use Pllano\RouterDb\Utility;
