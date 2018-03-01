@@ -137,6 +137,7 @@ $config = [
 ```
 ## Protection against SQL injections
 Use only where it is very necessary!
+Can help in 90% of cases.
 ```php
 use Pllano\RouterDb\Utility;
 use Pllano\RouterDb\Router as RouterDb;
