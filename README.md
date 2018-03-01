@@ -57,7 +57,7 @@ $data = $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 use Pllano\RouterDb\Router as RouterDb;
 $routerDb = new RouterDb($config, 'Pdo');
 $db = $routerDb->run('mysql');
-$data = $db->pdo("SELECT * FROM users WHERE user_id=?",[$user_id])->fetchAll();
+$data = $db->pdo("SELECT * FROM users WHERE user_id=?", [$user_id])->fetchAll();
 // or
 $data = $db->prepare($sql)->execute($params)->fetch();
 ```
