@@ -178,9 +178,9 @@ $utility = new Utility();
 $uri = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 $escaped_url = htmlspecialchars($uri, ENT_QUOTES, 'UTF-8');
 $inj = 'sql_injection';
-$logger = $this->logger;
 
 $routerDb = new RouterDb($config, 'Pdo');
+$routerDb->setLogger($this->logger);
 $db = $routerDb->run('mysql');
 $table = 'users';
 // The name of the table that we want the structure of.
@@ -212,7 +212,7 @@ foreach ($_POST as $key => $value)
     if (array_key_exists($key, $table_schema)) {
         if ($utility->search_injections($value) >= $x) {
             // Write to the log. A letter to the administrator.
-            $logger->info($inj, [
+            $db->logger->info($inj, [
                 "key" => $key, 
                 "value" => $value, 
                 "url" => $escaped_url, 
@@ -228,7 +228,7 @@ foreach ($_POST as $key => $value)
     } else {
         if ($utility->search_injections($key) >= 1 || $utility->search_injections($value) >= 1) {
             // Write to the log. A letter to the administrator.
-            $logger->info($inj, [
+            $db->logger->info($inj, [
                 "key" => $key, 
                 "value" => $value, 
                 "url" => $escaped_url, 
