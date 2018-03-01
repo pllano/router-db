@@ -170,6 +170,11 @@ An SQL injection against which prepared statements won't help
 ```
 ### Method 1 (Can help in 99% of cases.)
 Check the existence of the key in the table & Search for keywords
+
+We plan to embed this method in the function
+```php
+$post = $db->post($table, $query, $field_id);
+```
 ```php
 use Pllano\RouterDb\Utility;
 use Pllano\RouterDb\Router as RouterDb;
