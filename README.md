@@ -53,6 +53,14 @@ $data = $db->pdo($sql, $params)->fetchAll(); // $db->prepare($sql)->execute($par
 $data = $db->prepare($sql)->execute($params)->fetch();
 $data = $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 ```
+```php
+use Pllano\RouterDb\Router as RouterDb;
+$routerDb = new RouterDb($config, 'Pdo');
+$db = $routerDb->run('mysql');
+$data = $db->pdo("SELECT * FROM users WHERE user_id=?",[$user_id])->fetchAll();
+// or
+$data = $db->prepare($sql)->execute($params)->fetch();
+```
 In style Slim-PDO
 ```php
 // https://github.com/FaaPz/Slim-PDO/blob/master/docs/README.md
@@ -89,14 +97,6 @@ public function get(string $resource = null, array $query = [], int $field_id = 
 public function put(string $resource = null, array $query = [], int $field_id = null, string $field_id = null): int {}
 public function del(string $resource = null, array $query = [], int $field_id = null, string $field_id = null): int {}
 public function count(string $resource = null, array $query = [], int $field_id = null, string $field_id = null): int {}
-```
-```php
-use Pllano\RouterDb\Router as RouterDb;
-$routerDb = new RouterDb($config, 'Pdo');
-$db = $routerDb->run('mysql');
-$data = $db->pdo("SELECT * FROM users WHERE user_id=?",[$user_id])->fetchAll();
-// or
-$data = $db->prepare($sql)->execute($params)->fetch();
 ```
 ```php
 // Configuration
