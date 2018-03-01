@@ -204,12 +204,15 @@ $params = [];
 $setStr = "";
 $x = 2; // If search_injections finds $x keywords from the list
 
+$uri = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$escaped_url = htmlspecialchars($uri, ENT_QUOTES, 'UTF-8');
+
 foreach ($_POST as $key => $value)
 {
     if (array_key_exists($key, $table_schema)) {
         if ($utility->search_injections($value) >= $x) {
             // Write to the log. A letter to the administrator.
-            $logger->info($inj, ["key" => $key, "value" => $value, "request" => [$request]]);
+            $logger->info($inj, ["key" => $key, "value" => $value, "url" => $escaped_url, "request" => [$request]]);
             return $inj; // Stop Execution
         } else {
             if ($key != "id") {
@@ -220,7 +223,7 @@ foreach ($_POST as $key => $value)
     } else {
         if ($utility->search_injections($key) >= 1 || $utility->search_injections($value) >= 1) {
             // Write to the log. A letter to the administrator.
-            $logger->info($inj, ["key" => $key, "value" => $value, "request" => [$request]]);
+            $logger->info($inj, ["key" => $key, "value" => $value, "url" => $escaped_url, "request" => [$request]]);
             return $inj; // Stop Execution
         }
     }
