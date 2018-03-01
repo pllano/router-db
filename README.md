@@ -153,8 +153,28 @@ use Pllano\RouterDb\Router as RouterDb;
 $utility = new Utility();
 $routerDb = new RouterDb($config, 'Pdo');
 $db = $routerDb->run('mysql');
-$table = "users";
-$table_schema = array_flip(["id", "user_id", "name", "surname", "email", "phone"]);
+
+// $table_schema = array_flip(["id", "user_id", "name", "surname", "email", "phone"]);
+// Get The Structure Of A MySQL Table In PHP (PDO).
+// The name of the table that we want the structure of.
+$table = 'users';
+// Query MySQL with the PDO objecy.
+// The SQL statement is: DESCRIBE [INSERT TABLE NAME]
+$statement = $pdo->query('DESCRIBE ' . $table);
+// Fetch our result.
+$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+// The result should be an array of arrays,
+// with each array containing information about the columns
+// that the table has.
+// var_dump($result);
+// For the sake of this tutorial, I will loop through the result
+$table_schema = [];
+foreach($result as $column){
+    $field = $column['Field'];
+    $field_type = $column['Type'];
+    $table_schema[$field] = $field_type;
+}
+
 $inj = 'sql_injection';
 $logger = $this->logger;
 
