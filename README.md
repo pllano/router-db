@@ -157,7 +157,7 @@ foreach ($_POST as $key => $value)
         return 'injection'; // Stop Execution
     } else {
         if ($key != "id") {
-            $setStr .= $key." = :".$key.","; 
+            $setStr .= "`".str_replace("`", "``", $key)."` = :".$key.",";
         }
         $params[$key] = $value;
     }
@@ -165,6 +165,8 @@ foreach ($_POST as $key => $value)
 $setStr = rtrim($setStr, ",");
 $data = $db->prepare("UPDATE users SET $setStr WHERE id = :id")->execute($params);
 ```
+#### function search_injections()
+Very simple function
 ``` php
 public function search_injections(string $value = null, array $new_keywords = []): int
 {
@@ -250,7 +252,7 @@ foreach ($_POST as $key => $value)
             return 'injection'; // Stop Execution
         } else {
             if ($key != "id") {
-                $setStr .= $key." = :".$key.","; 
+                $setStr .= "`".str_replace("`", "``", $key)."` = :".$key.","; 
             }
             $params[$key] = $value;
         }
