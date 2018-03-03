@@ -68,6 +68,9 @@ class Utility {
                 }
                 $list_keywords = [
                 '*', 
+				'`',
+				'(',
+				')',
                 'SELECT', 
                 'UPDATE', 
                 'DELETE', 
