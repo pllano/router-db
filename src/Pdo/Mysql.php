@@ -442,6 +442,30 @@ class Mysql
         return $this->query("SHOW TABLE STATUS LIKE '".$resource."'")->fetch(PDO::FETCH_ASSOC)['Auto_increment'];
     }
 
+    // Получить список полей таблицы
+    public function fieldMap($table = null)
+    {
+        $fieldMap = null;
+		if (isset($table)) {
+			 $fieldMap = $this->query('DESCRIBE ' . $table)->fetchAll(PDO::FETCH_ASSOC);
+		}
+		return $fieldMap;
+    }
+
+	public function tableSchema($table)
+	{
+	    $fieldMap = $this->fieldMap($table);
+        $table_schema = [];
+        foreach($fieldMap as $column)
+		{
+            $field = $column['Field'];
+            $field_type = $column['Type'];
+            $table_schema[$field] = $field_type;
+        }
+		
+		return $table_schema;
+    }
+
     public function ping(string $resource = null)
     {
         return 'mysql';
