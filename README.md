@@ -195,13 +195,13 @@ $table = 'users';
 // Query MySQL with the PDO objecy.
 // The SQL statement is: DESCRIBE [INSERT TABLE NAME]
 // Fetch our result.
-$result = $db->query('DESCRIBE ' . $table)->fetchAll(PDO::FETCH_ASSOC);
+$fieldMap = $db->query('DESCRIBE ' . $table)->fetchAll(PDO::FETCH_ASSOC);
 // The result should be an array of arrays,
 // with each array containing information about the columns
 // that the table has.
 // var_dump($result);
 $table_schema = [];
-foreach($result as $column){
+foreach($fieldMap as $column){
     $field = $column['Field'];
     $field_type = $column['Type'];
     $table_schema[$field] = $field_type;
