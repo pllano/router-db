@@ -195,7 +195,7 @@ $table = 'users';
 // Query MySQL with the PDO objecy.
 // The SQL statement is: DESCRIBE [INSERT TABLE NAME]
 // Fetch our result.
-$fieldMap = $db->query('DESCRIBE ' . $table)->fetchAll(PDO::FETCH_ASSOC);
+$fieldMap = $db->fieldMap($table);
 // The result should be an array of arrays,
 // with each array containing information about the columns
 // that the table has.
