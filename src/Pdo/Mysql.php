@@ -1,35 +1,30 @@
-<?php /**
- * This file is part of the RouterDb
+<?php
+/**
+ * RouterDb (https://pllano.com)
  *
- * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/router-db
  * @version 1.2.0
- * @package pllano/router-db
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @copyright Copyright (c) 2017-2018 PLLANO
+ * @license http://opensource.org/licenses/MIT (MIT License)
  */
+namespace Pllano\RouterDb;
 
-namespace Pllano\RouterDb\Pdo;
-
+use Pllano\RouterDb\Interfaces\PdoInterface;
+use Pllano\RouterDb\Interfaces\ApisInterface;
+use Pllano\RouterDb\Router as RouterDb;
 use Slim\PDO\Database;
 use PDO;
 
-class Mysql
+class Mysql extends AdapterDb implements PdoInterface, ApisInterface
 {
-    /*
-    // Стандартный конструктор PDO
-    public function __construct($dsn, $username = null, $password = null, $options = [])
-    {
-        $default_options = [
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        ];
-        $options = array_replace($default_options, $options);
-        parent::__construct($dsn, $username, $password, $options);
-    }
+
+    /**
+     * Data
+     *
+     * @var array
+     * @access protected
     */
+    protected $_data = [];
 
     public function __construct(array $config = [], array $options = [], $prefix = null)
     {
@@ -50,6 +45,16 @@ class Mysql
             $options = array_replace($default_options, $options);
             return new Database($dsn, $user, $password, $options);
         }
+    }
+
+    public function ping(string $resource = null)
+    {
+        return 'mysql';
+    }
+
+    public function apis(array $arr = [], string $type = null)
+    {
+        return null;
     }
 
     public function pdo($sql, $args = null)
@@ -446,30 +451,90 @@ class Mysql
     public function fieldMap($table = null)
     {
         $fieldMap = null;
-		if (isset($table)) {
-			 $fieldMap = $this->query('DESCRIBE ' . $table)->fetchAll(PDO::FETCH_ASSOC);
-		}
-		return $fieldMap;
+        if (isset($table)) {
+             $fieldMap = $this->query('DESCRIBE ' . $table)->fetchAll(PDO::FETCH_ASSOC);
+        }
+        return $fieldMap;
     }
 
-	public function tableSchema($table)
-	{
-	    $fieldMap = $this->fieldMap($table);
+    public function tableSchema($table)
+    {
+        $fieldMap = $this->fieldMap($table);
         $table_schema = [];
         foreach($fieldMap as $column)
-		{
+        {
             $field = $column['Field'];
             $field_type = $column['Type'];
             $table_schema[$field] = $field_type;
         }
-		
-		return $table_schema;
-    }
-
-    public function ping(string $resource = null)
-    {
-        return 'mysql';
+        
+        return $table_schema;
     }
 
 }
+
+/*
+// *************************************
+// * extends Classes & implements Interfaces
+// *************************************
+
+// Mysql extends AdapterDb implements PdoInterface, ApisInterface
+
+// PdoInterface extends ApiInterface
+    // public function pdo($sql, $args = null);
+    // public function fieldMap(string $resource = null);
+    // public function tableSchema(string $resource = null);
+
+// ApisInterface extends ApiInterface
+    // public function apis(array $arr = [], string $type = null);
+    // public function setType(string $type = null);
+    // public function setCode(int $code = null);
+    // public function setMessage(string $message = null);
+    // public function setHttpCodes(string $httpCode = null);
+
+// ApiInterface extends DbInterface
+    // public function __construct(array $config = [], array $options = [], string $prefix = null);
+    // public function ping(string $resource = null);
+    // public function get(string $resource = null, array $array = [], int $id = null, string $field_id = null);
+    // public function search(string $resource = null, string $keyword = null, array $array = [], string $field_id = null);
+    // public function post(string $resource = null, array $array = [], string $field_id = null);
+    // public function put(string $resource = null, array $array = [], int $id = null, string $field_id = null);
+    // public function patch(string $resource = null, array $array = [], int $id = null, string $field_id = null);
+    // public function del(string $resource = null, array $array = [], int $id = null, string $field_id = null);
+    // public function last_id(string $resource = null, string $field_id = null);
+
+// DbInterface extends \ArrayAccess, \Countable, \ArrayIterator
+    // Magic Methods
+    // public function __set($key, $value = null);
+    // public function __get($key);
+    // public function __isset($key);
+    // public function __unset($key);
+
+// \ArrayAccess
+    // public function offsetSet($offset, $value);
+    // public function offsetExists($offset);
+    // public function offsetUnset($offset);
+    // public function offsetGet($offset);
+
+// \Countable
+    // public function count();
+
+// \ArrayIterator
+    // public function getIterator();
+
+*/
+
+/*
+// Стандартный конструктор PDO
+    public function __construct($dsn, $username = null, $password = null, $options = [])
+    {
+        $default_options = [
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        ];
+        $options = array_replace($default_options, $options);
+        parent::__construct($dsn, $username, $password, $options);
+    }
+*/
  

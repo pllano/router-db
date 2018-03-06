@@ -1,29 +1,30 @@
-<?php /**
- * This file is part of the RouterDb
+<?php
+/**
+ * RouterDb (https://pllano.com)
  *
- * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/router-db
  * @version 1.2.0
- * @package pllano/router-db
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
-*/
+ * @copyright Copyright (c) 2017-2018 PLLANO
+ * @license http://opensource.org/licenses/MIT (MIT License)
+ */
+namespace Pllano\RouterDb;
+
+use Pllano\RouterDb\Interfaces\RouterDbInterface;
+use Pllano\Core\Data;
+
 // В работе
 // https://github.com/nette/database
 // https://github.com/zendframework/zend-db
 // https://github.com/doctrine/dbal
 // https://github.com/FaaPz/Slim-PDO
 
-namespace Pllano\RouterDb;
-
-class Router
+class Router implements RouterDbInterface
 {
     /**
-     * @param $db name
+     * @param $dbName name
      * @var string
     */
-    private $db = "mysql";
+    private $dbName = "mysql";
     /**
      * @param $router
      * @var string
@@ -48,20 +49,11 @@ class Router
      * @param $config
      * @var array
     */
-    private $config = [
-        "db" => [
-            "mysql" => [
-                "host" => "localhost"
-            ],
-            "json" => [
-                "host" => "localhost"
-            ]
-        ]
-    ];
+    private $config = [];
     private $logger = null;
     private $mailer = null;
 
-    public function __construct(array $config = [], $adapter = null, $driver = null, $db = null, $prefix = null, $namespace = null)
+    public function __construct(array $config = [], string $adapter = null, string $driver = null, string $dbName = null, string $prefix = null, string $namespace = null)
     {
         if (isset($config)) {
             // Конфигурация
@@ -73,13 +65,13 @@ class Router
             // Адаптер
             $this->adapter = $adapter;
         }
-        if (isset($adapter)) {
+        if (isset($driver)) {
             // Драйвер
             $this->driver = $driver;
         }
-        if (isset($db)) {
+        if (isset($dbName)) {
             // Тип базы данных
-            $this->db = $db;
+            $this->dbName = $dbName;
         }
         if (isset($prefix)) {
             // База с другим названием
@@ -89,6 +81,62 @@ class Router
             // Пространство имен
             $this->namespace = $namespace;
         }
+    }
+
+    public function run($dbName = null, array $options = [], $prefix = null)
+    {
+        if (isset($dbName)) {
+            $this->dbName = $dbName;
+        }
+        if (isset($prefix)) {
+            $this->prefix = $prefix;
+        }
+        $_db = ucfirst(strtolower($this->dbName));
+        $class = $this->namespace."\\".$this->adapter."\\".$_db."".$this->driver;
+        return new $class($this->config, $options, $this->prefix);
+        // Формируем название класса базы данных
+        // Передаем класу параметры и возвращаем его интерфейс
+        // return new \Pllano\RouterDb\Pdo\MysqlPdo($this->config, $this->adapter, $this->driver);
+        // return new \Pllano\RouterDb\Pdo\MysqlSlimPdo($this->config, $this->adapter, $this->driver);
+        // return new \Pllano\RouterDb\Apis\Mysql($this->config, $this->adapter, $this->driver);
+        // return new \Pllano\RouterDb\Apis\Api($this->config, $this->adapter, $this->driver);
+        // return new \Pllano\RouterDb\Apis\Json($this->config, $this->adapter, $this->driver);
+    }
+
+    public function setConfig(array $config = [], string $adapter = null, string $driver = null, string $dbName = null, string $prefix = null, string $namespace = null)
+    {
+        if (isset($config)) {
+            // Конфигурация
+			$this->config = array_replace_recursive($this->config, $config);
+			// $this->config = array_merge($this->config, $config);
+        } elseif (file_exists(__DIR__ . 'config.json')) {
+			$this->config = array_replace_recursive($this->config, json_decode(file_get_contents(__DIR__ . 'config.json'), true));
+        }
+        if (isset($adapter)) {
+            // Адаптер
+            $this->adapter = $adapter;
+        }
+        if (isset($driver)) {
+            // Драйвер
+            $this->driver = $driver;
+        }
+        if (isset($dbName)) {
+            // Тип базы данных
+            $this->dbName = $dbName;
+        }
+        if (isset($prefix)) {
+            // База с другим названием
+            $this->prefix = $other_base;
+        }
+        if (isset($namespace)) {
+            // Пространство имен
+            $this->namespace = $namespace;
+        }
+    }
+
+    public function getConfig(): array
+    {
+        return $this->config ?? [];
     }
 
     public function ping($resource = null)
@@ -153,47 +201,23 @@ class Router
 
     }
 
-    // Формируем название класса базы данных
-    // Передаем класу параметры и возвращаем его интерфейс
-    // return new \Pllano\RouterDb\Pdo\MysqlPdo($this->config, $this->adapter, $this->driver);
-    // return new \Pllano\RouterDb\Pdo\MysqlSlimPdo($this->config, $this->adapter, $this->driver);
-    // return new \Pllano\RouterDb\Apis\Mysql($this->config, $this->adapter, $this->driver);
-    // return new \Pllano\RouterDb\Apis\Api($this->config, $this->adapter, $this->driver);
-    // return new \Pllano\RouterDb\Apis\Json($this->config, $this->adapter, $this->driver);
-    public function run($db = null, array $options = [], $prefix = null)
+    public function setOptions(array $options = [])
     {
-        if (isset($db)) {
-            $this->db = $db;
-        }
-        if (isset($prefix)) {
-            $this->prefix = $prefix;
-        }
-        $_db = ucfirst(strtolower($this->db));
-        $class = $this->namespace."\\".$this->adapter."\\".$_db."".$this->driver;
-        return new $class($this->config, $options, $this->prefix);
-    }
-    
-    // Установить logger
-    public function setLogger($logger = null)
-    {
-        if (isset($logger)) {
-            $this->logger = $logger;
+        if (isset($options)) {
+            $this->options = $options;
         }
     }
 
-    // Установить mailer
-    public function setMailer($mailer = null)
+    public function getOptions(): array
     {
-        if (isset($mailer)) {
-            $this->mailer = $mailer;
-        }
+        return $this->options ?? [];
     }
 
     // Установить название базы данных
-    public function setDb($db = null)
+    public function setDb($dbName = null)
     {
-        if (isset($db)) {
-            $this->db = $db;
+        if (isset($dbName)) {
+            $this->dbName = $dbName;
         }
     }
 
@@ -214,35 +238,62 @@ class Router
     }
 
     // Получить название базы данных
-    public function getDb($db = null)
+    public function getDb()
     {
-        return $this->db ?? null;
+        return $this->dbName ?? null;
     }
 
     // Получить пространство имен
-    public function getNamespace($namespace = null)
+    public function getNamespace()
     {
         return $this->namespace ?? null;
     }
 
     // Получить название адаптера
-    public function getAdapter($adapter = null)
+    public function getAdapter()
     {
         return $this->adapter ?? null;
     }
 
-/*     public function __get($name)
+    // Получить название адаптера
+    public function getDriver()
     {
-        return $this->_data[$name] ?? null;
+        return $this->driver ?? null;
     }
-    public function __set($name, $value)
+
+    public function setDriver(string $driver = null)
+	{
+        if (isset($driver)) {
+            $this->driver = $driver;
+        }
+	}
+
+    public function setPrefix(string $prefix = null)
+	{
+        if (isset($prefix)) {
+            $this->prefix = $prefix;
+			}
+	}
+    public function getPrefix()
+	{
+        return $this->prefix ?? null;
+	}
+	
+    // Установить logger
+    public function setLogger($logger = null)
     {
-        $this->_data[$name] = $value;
+        if (isset($logger)) {
+            $this->logger = $logger;
+        }
     }
-    public function __isset($name)
+
+    // Установить mailer
+    public function setMailer($mailer = null)
     {
-        return (isset($this->_data[$name]));
-    } */
+        if (isset($mailer)) {
+            $this->mailer = $mailer;
+        }
+    }
 
 }
  
