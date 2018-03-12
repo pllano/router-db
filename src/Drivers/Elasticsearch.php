@@ -32,7 +32,7 @@ class Elasticsearch
     private $user = null;
     private $password = null;
  
-    public function __construct(array $config = [], array $options = [], $prefix = null)
+    public function __construct(array $config = [], array $options = [], string $prefix = null, $other_base = null)
     {
         if (isset($config)) {
             if (isset($prefix)) {
@@ -54,7 +54,7 @@ class Elasticsearch
             }
             if (isset($this->config["index"])) {
                 $this->index = $this->config["index"];
-            }
+				}
             if (isset($config["auth"])) {
                 $this->auth = $this->config["auth"];
             }
@@ -71,13 +71,27 @@ class Elasticsearch
 
     }
 
+    public function api($data)
+    {
+        return $data;
+    }
+
+    public function pdo($data)
+    {
+        return $data;
+    }
+
+    public function apis($data)
+    {
+        return $data;
+    }
+
     public function ping($resource = null)
     {
             return "elasticsearch";
     }
 
-    // Загрузить
-    public function get($resource = null, array $arr = [], $id = null)
+    public function get(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         if (isset($resource)) {
 
@@ -111,16 +125,14 @@ class Elasticsearch
             return null;
         }
     }
- 
-    // Искать
-    public function search($resource = null, array $query_arr = [], $keyword = null)
+
+    public function search(string $resource = null, string $keyword = null, array $query = [], string $field_id = null)
     {
         // Здесь будет много кода с маневрами :)
         $this->client->search($params);
     }
- 
-    // Создаем одну запись
-    public function post($resource = null, array $arr = [])
+
+    public function post(string $resource = null, array $query = [], string $field_id = null): int
     {
 
         $params["index"] = $this->index;
@@ -143,8 +155,7 @@ class Elasticsearch
  
     }
  
-    // Обновляем
-    public function put($resource = null, array $arr = [], $id = null)
+    public function put(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         if (isset($resource)) {
 
@@ -176,8 +187,7 @@ class Elasticsearch
         }
     }
     
-    // Обновляем
-    public function patch($resource = null, array $arr = [], $id = null)
+    public function patch(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         if (isset($resource)) {
 
@@ -209,8 +219,7 @@ class Elasticsearch
         }
     }
  
-    // Удаляем
-    public function delete($resource = null, array $arr = [], $id = null)
+    public function delete(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         if (isset($resource)) {
 
@@ -255,10 +264,36 @@ class Elasticsearch
         }
     }
  
-    // Получить последний идентификатор
+    public function count(string $resource = null, array $query = [], int $id = null, string $field_id = null): int
+    {
+
+	}
+
     public function last_id($resource)
     {
         return null;
+    }
+
+    public function fieldMap($resource = null)
+    {
+        return [];
+    }
+
+    public function tableSchema($table)
+    {
+        $fieldMap = $this->fieldMap($table);
+        $table_schema = [];
+        foreach($fieldMap as $key => $val)
+        {
+            $table_schema[$key] = $val;
+        }
+        
+        return $table_schema;
+    }
+
+    static public function selectDate($minutes = null)
+    {
+        return "0000-00-00 00:00:00";
     }
 
 }

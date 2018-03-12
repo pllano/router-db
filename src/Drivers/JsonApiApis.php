@@ -17,13 +17,15 @@ use Pllano\RouterDb\Utility;
 class Jsonapi
 {
 
-    private $resource = null;
+    private $data;
+	private $resource = null;
     private $url = null;
     private $auth = null;
     private $public_key = null;
     private $config;
+	private $http_client;
  
-    public function __construct(array $config = [], array $options = [])
+    public function __construct(array $config = [], array $options = [], string $prefix = null, $other_base = null)
     {
         if (count($config) >= 1) {
             $this->config = $config;
@@ -36,10 +38,26 @@ class Jsonapi
             if (isset($config["db"]["jsonapi"]["public_key"])) {
                 $this->public_key = $config["db"]["jsonapi"]["public_key"];
             }
+			$this->http_client = new $this->config['vendor']['http_client']['client']();
         }
     }
 
-    public function ping($resource = null)
+    public function api($data)
+    {
+        return $data;
+    }
+
+    public function pdo($data)
+    {
+        return $data;
+    }
+
+    public function apis($data)
+    {
+        return $data;
+    }
+
+    public function ping(string $resource = null)
     {
         if ($resource != null) {
             try {
@@ -48,8 +66,7 @@ class Jsonapi
                 if ($this->config["db"]["jsonapi"]["auth"] == "QueryKeyAuth" && $this->config["db"]["jsonapi"]["public_key"] != null) {
                     $query = "?public_key=".$this->config["db"]["jsonapi"]["public_key"]."&limit=1&offset=0";
                 }
-                $http_client = new $this->config['vendor']['http_client']['client']();
-                $response = $http_client->request("GET", $url."".$resource."".$query);
+                $response = $this->http_client->request("GET", $url."".$resource."".$query);
                 $output = $response->getBody();
                 $output = (new Utility())->clean_json($output);
                 $records = json_decode($output, true);
@@ -65,10 +82,8 @@ class Jsonapi
         }
     }
 
-    // Загрузить
-    public function get($resource = null, array $arr = [], $id = null)
+    public function get(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -82,10 +97,10 @@ class Jsonapi
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }
-            if (count($arr) >= 1){
-                $array = "&".http_build_query($arr);
+            if (count($query) >= 1){
+                $array = "&".http_build_query($query);
             }
-            $response = $http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key."".$array);
+            $response = $this->http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key."".$array);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -93,10 +108,10 @@ class Jsonapi
         } elseif ($this->auth == "LoginPasswordAuth") {
             
         } else {
-            if (count($arr) >= 1){
-                $array = "?".http_build_query($arr);
+            if (count($query) >= 1){
+                $array = "?".http_build_query($query);
             }
-            $response = $http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$array);
+            $response = $this->http_client->request("GET", $this->url."".$this->resource."".$resource_id."".$array);
         }
         if ($response != null) {
             $get_body = $response->getBody();
@@ -113,20 +128,14 @@ class Jsonapi
             return null;
         }
     }
- 
-    // Искать
-    public function search($resource = null, array $query_arr = [], $keyword = null)
+
+    public function search(string $resource = null, string $keyword = null, array $query = [], string $field_id = null)
     {
-        // Новый запрос, аналог get рассчитан на полнотекстовый поиск
-        // Должен возвращать count для пагинации в параметре ["response"]["total"]
- 
-        // Еще в разработке ...
+
     }
- 
-    // Создаем одну запись
-    public function post($resource = null, array $arr = [])
+
+    public function post(string $resource = null, array $query = [], string $field_id = null): int
     {
-        $http_client = new $this->config['vendor']['http_client']['client']();
         $public_key = "";
         $array = "";
         if ($resource != null) {
@@ -136,11 +145,11 @@ class Jsonapi
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }
-            if (count($arr) >= 1){
-                $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
+            if (count($query) >= 1){
+                $arrKey = "public_key=".$this->public_key."&".http_build_query($query);
                 $array = parse_str($arrKey);
             }
-            $response = $http_client->request("POST", $this->url."".$this->resource, $array);
+            $response = $this->http_client->request("POST", $this->url."".$this->resource, $array);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -148,8 +157,8 @@ class Jsonapi
         } elseif ($this->auth == "LoginPasswordAuth") {
             
         } else {
-            if (count($arr) >= 1){
-                $response = $http_client->request("POST", $this->url."".$this->resource, ['form_params' => $arr]);
+            if (count($query) >= 1){
+                $response = $this->http_client->request("POST", $this->url."".$this->resource, ['form_params' => $query]);
             }
         }
         if ($response != null) {
@@ -171,11 +180,9 @@ class Jsonapi
             return null;
         }
     }
- 
-    // Обновляем
-    public function put($resource = null, array $arr = [], $id = null)
+
+    public function put(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -189,11 +196,11 @@ class Jsonapi
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }
-            if (count($arr) >= 1){
-                $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
+            if (count($query) >= 1){
+                $arrKey = "public_key=".$this->public_key."&".http_build_query($query);
                 $array = parse_str($arrKey);
             }
-            $response = $http_client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
+            $response = $this->http_client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -201,9 +208,9 @@ class Jsonapi
         } elseif ($this->auth == "LoginPasswordAuth") {
             
         } else {
-            if (count($arr) >= 1){
-                $array = "?".http_build_query($arr);
-                $response = $http_client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
+            if (count($query) >= 1){
+                $array = "?".http_build_query($query);
+                $response = $this->http_client->request("PUT", $this->url."".$this->resource."".$resource_id, ['form_params' => $query]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);
@@ -228,10 +235,8 @@ class Jsonapi
         }
     }
  
-    // Обновляем
-    public function patch($resource = null, array $arr = [], $id = null)
+    public function patch(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -245,11 +250,11 @@ class Jsonapi
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }
-            if (count($arr) >= 1){
-                $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
+            if (count($query) >= 1){
+                $arrKey = "public_key=".$this->public_key."&".http_build_query($query);
                 $array = parse_str($arrKey);
             }
-            $response = $http_client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
+            $response = $this->http_client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -257,10 +262,10 @@ class Jsonapi
         } elseif ($this->auth == "LoginPasswordAuth") {
             
         } else {
-            if (count($arr) >= 1){
-                $array = "?".http_build_query($arr);
-                //$response = $http_client->request("GET", $this->url."_put/".$this->resource."".$resource_id."".$array);
-                $response = $http_client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
+            if (count($query) >= 1){
+                $array = "?".http_build_query($query);
+                //$response = $this->http_client->request("GET", $this->url."_put/".$this->resource."".$resource_id."".$array);
+                $response = $this->http_client->request("PATCH", $this->url."".$this->resource."".$resource_id, ['form_params' => $query]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);
@@ -283,11 +288,9 @@ class Jsonapi
             return $records;
         }
     }
- 
-    // Удаляем
-    public function delete($resource = null, array $arr = [], $id = null)
+
+    public function delete(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
-        $http_client = new $this->config['vendor']['http_client']['client']();
         $resource_id = "";
         $public_key = "";
         $array = "";
@@ -301,11 +304,11 @@ class Jsonapi
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }
-            if (count($arr) >= 1){
-                $arrKey = "public_key=".$this->public_key."&".http_build_query($arr);
+            if (count($query) >= 1){
+                $arrKey = "public_key=".$this->public_key."&".http_build_query($query);
                 $array = parse_str($arrKey);
             }
-            $response = $http_client->request("DELETE", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
+            $response = $this->http_client->request("DELETE", $this->url."".$this->resource."".$resource_id, ['form_params' => $array]);
         } elseif ($this->auth == "CryptoAuth") {
             
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -313,9 +316,9 @@ class Jsonapi
         } elseif ($this->auth == "LoginPasswordAuth") {
             
         } else {
-            if (count($arr) >= 1){
-                $array = "?".http_build_query($arr);
-                $response = $http_client->request("DELETE", $this->url."".$this->resource."".$resource_id, ['form_params' => $arr]);
+            if (count($query) >= 1){
+                $array = "?".http_build_query($query);
+                $response = $this->http_client->request("DELETE", $this->url."".$this->resource."".$resource_id, ['form_params' => $query]);
                 $get_body = $response->getBody();
                 $output = (new Utility())->clean_json($get_body);
                 $records = json_decode($output, true);
@@ -338,11 +341,14 @@ class Jsonapi
             return $records;
         }
     }
- 
-    // Получить последний идентификатор
-    public function last_id($resource)
+	
+	public function count(string $resource = null, array $query = [], int $id = null, string $field_id = null): int
+	{
+	
+	}
+
+    public function last_id(string $resource = null, string $field_id = null): int
     {
-        $http_client = new $this->config['vendor']['http_client']['client']();
         $public_key = "";
         if ($resource != null) {
             $this->resource = $resource;
@@ -351,7 +357,7 @@ class Jsonapi
             if ($this->auth != null) {
                 $public_key = "?public_key=".$this->public_key;
             }
-            $response = $http_client->request("GET", $this->url."".$this->resource."/_last_id".$public_key);
+            $response = $this->http_client->request("GET", $this->url."".$this->resource."/_last_id".$public_key);
         } elseif ($this->auth == "CryptoAuth") {
  
         } elseif ($this->auth == "HttpTokenAuth") {
@@ -359,7 +365,7 @@ class Jsonapi
         } elseif ($this->auth == "LoginPasswordAuth") {
  
         } else {
-            $response = $http_client->request("GET", $this->url."".$this->resource."/_last_id");
+            $response = $this->http_client->request("GET", $this->url."".$this->resource."/_last_id");
         }
         if ($response != null) {
             $get_body = $response->getBody();
@@ -376,6 +382,21 @@ class Jsonapi
             return null;
         }  
     }
- 
+
+    public function fieldMap($resource = null)
+    {
+        return [];
+    }
+
+    public function tableSchema($table)
+    {
+        return [];
+    }
+
+    static public function selectDate($minutes = null)
+    {
+        return "0000-00-00 00:00:00";
+    }
+
 }
  

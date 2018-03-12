@@ -1,41 +1,83 @@
 <?php /**
- * This file is part of the RouterDb
+ * RouterDb (https://pllano.com)
  *
- * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/router-db
  * @version 1.2.0
- * @package pllano/router-db
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @copyright Copyright (c) 2017-2018 PLLANO
+ * @license http://opensource.org/licenses/MIT (MIT License)
  */
- 
-namespace Pllano\RouterDb\Apis;
+namespace Pllano\RouterDb\Drivers;
 
-use jsonDB\Db;
-use jsonDB\Database;
-use jsonDB\Validate;
-use jsonDB\dbException;
+use Pllano\Interfaces\DatabaseInterface;
+use jsonDB\{Db, Database, Validate, dbException};
 
-class Json
+class JsonApis implements DatabaseInterface
 {
     private $resource = null;
     private $dir = null;
     private $temp = null;
     private $api = null;
     private $crypt = null;
-    private $config = null;
- 
-    public function __construct(array $config = [], array $options = [], $prefix = null)
+    private $config = [];
+	private $options = [];
+	private $database = null;
+	private $prefix = null;
+	private $other_base = null;
+
+    public function __construct(array $config = [], string $database = null, array $options = [], string $format = null, string $prefix = null, $other_base = null)
     {
-        if (isset($config)) {
-            if (isset($prefix)) {
-                $db = $config['db']['json_'.$prefix];
-            } else {
-                $db = $config['db']['json'];
-            }
-             $this->config = $db;
+		$this->database = $database;
+		$this->options = $options;
+        if (isset($format)) {
+            $this->format = strtolower($format);
         }
+		if (isset($config)) {
+            if (isset($other_base)) {
+                $this->other_base = $other_base;
+                $this->config = $config['db'][$this->other_base];
+            } elseif (isset($prefix)) {
+			    $this->prefix = $prefix;
+                $this->config = $config['db'][$this->database.'_'.$this->prefix];
+            } else {
+                $this->config = $config['db'][$this->database];
+            }
+        }
+		return new Database();
+    }
+
+    public function setFormat($format = null)
+    {
+        if (isset($format)) {
+            $this->format = strtolower($format);
+        }
+    }
+
+    public function format($data, $format = null)
+    {
+        if (isset($format)) {
+            $this->format = strtolower($format);
+        }
+        $resp = [];
+        $r = [];
+        if ($this->format == 'apis') {
+            $this->response = $data;
+        } else {
+            if (isset($data["body"]["items"])) {
+                $resp = $data["body"]["items"];
+            }
+            if (isset($resp)) {
+                foreach($resp as $key => $value)
+                {
+                    $r[$key] = $value["item"];
+                }
+				if ($this->format == 'object') {
+                    $this->response = (object)$r;
+				} else {
+				    $this->response = $r;
+				}
+            }
+        }
+        return $this->response;
     }
 
     public function ping($resource = null)
@@ -43,7 +85,7 @@ class Json
         if ($resource != null) {
             try {Validate::table($resource)->exists();
                 return "json";
-            } catch(dbException $e){
+            } catch(dbException $e) {
                 return null;
             }
         } else {
@@ -51,8 +93,7 @@ class Json
         }
     }
 
-    // Загрузить
-    public function get($resource = null, array $query = [], $id = null)
+    public function get(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         if (isset($resource)) {
             // Проверяем наличие главной базы
@@ -332,7 +373,7 @@ class Json
                                         $resp["request"]["asArray"] = true;
                                     }
                                 }
-                                
+
                                 $count->findAll()->count();
                                 $newCount = count($count);
                             
@@ -532,21 +573,21 @@ class Json
             $resp["request"]["query"] = "GET";
             $resp["request"]["resource"] = null;
         }
-        
-        return $resp;
+		
+        if ($this->format != "apis") {
+            $this->response = $this->format($resp, $this->format);
+        } else {
+            $this->response = $resp;
+        }
+        return $this->response;
     }
  
-    // Искать
-    public function search($resource = null, array $query_arr = [], $keyword = null)
+    public function search(string $resource = null, array $query = [], string $keyword = null, string $field_id = null)
     {
-        // Новый запрос, аналог get рассчитан на полнотекстовый поиск
-        // Должен возвращать count для пагинации в параметре ["response"]["total"]
- 
-        // Еще в разработке ...
+        return null;
     }
  
-    // Создаем одну запись
-    public function post($resource = null, array $arr = [])
+    public function post(string $resource = null, array $query = [], string $field_id = null): int
     {
         if (isset($resource)) {
             // Проверяем наличие главной базы если нет даем ошибку
@@ -645,12 +686,16 @@ class Json
             $resp["response"]["total"] = 0;
         }
  
-        return $resp;
+        if ($this->format != "apis") {
+            $this->response = $this->format($resp, $this->format);
+        } else {
+            $this->response = $resp;
+        }
+        return $this->response;
  
     }
  
-    // Обновляем
-    public function put($resource = null, array $arr = [], $id = null)
+    public function put(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         if (isset($resource)) {
             // Проверяем наличие главной базы если нет даем ошибку
@@ -825,12 +870,16 @@ class Json
             $resp["response"]["total"] = 0;
         }
  
-        return $resp;
+        if ($this->format != "apis") {
+            $this->response = $this->format($resp, $this->format);
+        } else {
+            $this->response = $resp;
+        }
+        return $this->response;
     
     }
  
-    // Обновляем
-    public function patch($resource = null, array $arr = [], $id = null)
+    public function patch(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         if (isset($resource)) {
             // Проверяем наличие главной базы если нет даем ошибку
@@ -1005,13 +1054,16 @@ class Json
             $resp["response"]["total"] = 0;
         }
  
-        return $resp;
+        if ($this->format != "apis") {
+            $this->response = $this->format($resp, $this->format);
+        } else {
+            $this->response = $resp;
+        }
+        return $this->response;
     
     }
  
-    // Требует доработки !
-    // Удаление
-    public function delete($resource = null, array $arr = [], $id = null)
+    public function delete(string $resource = null, int $id = null, string $field_id = null)
     {
         if (isset($resource)) {
 
@@ -1097,15 +1149,42 @@ class Json
             $resp["response"]["total"] = 0;
         }
  
-        return $resp;
+        if ($this->format != "apis") {
+            $this->response = $this->format($resp, $this->format);
+        } else {
+            $this->response = $resp;
+        }
+        return $this->response;
  
     }
- 
-    // Получить последний идентификатор
-    public function last_id($resource)
+
+    public function count(string $resource = null, array $query = [], int $id = null, string $field_id = null): int
     {
-        return Database::table($resource)->lastId();
+
+	}
+
+    public function lastId(string $resource = null): int
+    {
+        $last_id = Database::table($resource)->lastId();
+		return (int)$last_id;
     }
- 
+
+	public function fieldMap($resource = null)
+	{
+        return [];
+	}
+
+    public function tableSchema($table)
+    {
+        $fieldMap = $this->fieldMap($table);
+        $table_schema = [];
+        foreach($fieldMap as $key => $val)
+        {
+            $table_schema[$key] = $val;
+        }
+        
+        return $table_schema;
+    }
+
 }
  

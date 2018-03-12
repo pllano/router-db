@@ -1,5 +1,4 @@
-<?php
-/**
+<?php /**
  * RouterDb (https://pllano.com)
  *
  * @link https://github.com/pllano/router-db
@@ -9,196 +8,169 @@
  */
 namespace Pllano\RouterDb;
 
-use Pllano\RouterDb\Interfaces\RouterDbInterface;
-use Pllano\Core\Data;
-
-// В работе
-// https://github.com/nette/database
-// https://github.com/zendframework/zend-db
-// https://github.com/doctrine/dbal
-// https://github.com/FaaPz/Slim-PDO
+use Pllano\Interfaces\RouterDbInterface;
 
 class Router implements RouterDbInterface
 {
-    /**
-     * @param $dbName name
-     * @var string
-    */
-    private $dbName = "mysql";
-    /**
-     * @param $router
-     * @var string
-    */
-    private $namespace = "\\Pllano\\RouterDb";
-    /**
-     * @param $adapter
-     * @var string
-    */
-    private $adapter = "Pdo";
-    /**
-     * @param $driver
-     * @var string
-    */
-    private $driver = '';
-    /**
-     * @param other base $prefix
-     * @var string
-    */
-    private $prefix = null;
     /**
      * @param $config
      * @var array
     */
     private $config = [];
+    /**
+     * @param $database
+     * @var string
+    */
+    private $database = null;
+    /**
+     * @param $router
+     * @var string
+    */
+    private $router = 0;
+    /**
+     * @param database $namespace
+     * @var namespace
+    */
+    private $namespace = "\\Pllano\\RouterDb\\Drivers";
+    /**
+     * @param $driver
+     * @var string
+    */
+    private $driver = null;
+    /**
+     * @param $adapter
+     * @var string
+    */
+    private $adapter = null;
+    /**
+     * @param $format
+     * @var string
+    */
+    private $format = 'Default';
+    /**
+     * @param $prefix
+     * @var string
+    */
+    private $prefix = null;
+    /**
+     * @param other database
+     * @var string
+    */
+	private $other_base = null;
+    /**
+     * @param $options
+     * @var array
+    */
+	private $options = [];
+    /**
+     * @param logger
+     * @var namespace
+    */
     private $logger = null;
+    /**
+     * @param mailer
+     * @var namespace
+    */
     private $mailer = null;
+	
+	private $resource = null;
 
-    public function __construct(array $config = [], string $adapter = null, string $driver = null, string $dbName = null, string $prefix = null, string $namespace = null)
+    public function __construct(array $config = [], string $adapter = null, string $driver = null, string $format = null)
     {
         if (isset($config)) {
-            // Конфигурация
             $this->config = $config;
         } elseif (file_exists(__DIR__ . 'config.json')) {
             $this->config = json_decode(file_get_contents(__DIR__ . 'config.json'), true);
         }
         if (isset($adapter)) {
-            // Адаптер
             $this->adapter = $adapter;
         }
         if (isset($driver)) {
-            // Драйвер
             $this->driver = $driver;
         }
-        if (isset($dbName)) {
-            // Тип базы данных
-            $this->dbName = $dbName;
+        if (isset($format)) {
+            $this->format = $format;
         }
-        if (isset($prefix)) {
-            // База с другим названием
-            $this->prefix = $other_base;
-        }
-        if (isset($namespace)) {
-            // Пространство имен
-            $this->namespace = $namespace;
-        }
+		$this->router = (int)$this->config["db"]["router"];
     }
 
-    public function run($dbName = null, array $options = [], $prefix = null)
-    {
-        if (isset($dbName)) {
-            $this->dbName = $dbName;
-        }
-        if (isset($prefix)) {
-            $this->prefix = $prefix;
-        }
-        $_db = ucfirst(strtolower($this->dbName));
-        $class = $this->namespace."\\".$this->adapter."\\".$_db."".$this->driver;
-        return new $class($this->config, $options, $this->prefix);
-        // Формируем название класса базы данных
-        // Передаем класу параметры и возвращаем его интерфейс
-        // return new \Pllano\RouterDb\Pdo\MysqlPdo($this->config, $this->adapter, $this->driver);
-        // return new \Pllano\RouterDb\Pdo\MysqlSlimPdo($this->config, $this->adapter, $this->driver);
-        // return new \Pllano\RouterDb\Apis\Mysql($this->config, $this->adapter, $this->driver);
-        // return new \Pllano\RouterDb\Apis\Api($this->config, $this->adapter, $this->driver);
-        // return new \Pllano\RouterDb\Apis\Json($this->config, $this->adapter, $this->driver);
-    }
-
-    public function setConfig(array $config = [], string $adapter = null, string $driver = null, string $dbName = null, string $prefix = null, string $namespace = null)
+    public function setConfig(array $config = [], string $adapter = null, string $driver = null, string $format = null)
     {
         if (isset($config)) {
-            // Конфигурация
 			$this->config = array_replace_recursive($this->config, $config);
-			// $this->config = array_merge($this->config, $config);
-        } elseif (file_exists(__DIR__ . 'config.json')) {
-			$this->config = array_replace_recursive($this->config, json_decode(file_get_contents(__DIR__ . 'config.json'), true));
         }
         if (isset($adapter)) {
-            // Адаптер
             $this->adapter = $adapter;
         }
         if (isset($driver)) {
-            // Драйвер
             $this->driver = $driver;
         }
-        if (isset($dbName)) {
-            // Тип базы данных
-            $this->dbName = $dbName;
-        }
-        if (isset($prefix)) {
-            // База с другим названием
-            $this->prefix = $other_base;
-        }
-        if (isset($namespace)) {
-            // Пространство имен
-            $this->namespace = $namespace;
+        if (isset($format)) {
+            $this->format = $format;
         }
     }
 
     public function getConfig(): array
     {
-        return $this->config ?? [];
+        return $this->config;
     }
 
-    public function ping($resource = null)
+    public function ping($resource = null, $prefix = null, $other_base = null)
     {
+		$this->resource = $resource;
+        $this->prefix = $prefix;
+        $this->other_base = $other_base;
+		$resource = $this->config['db']['resource'][$this->resource] ?? null;
+		$this->driver = $resource['driver'] ?? null;
+		$this->adapter = $resource['adapter'] ?? null;
+		$this->format = $resource['format'] ?? null;
+		$this->database = $resource["db"] ?? $this->config["db"]["master"];
+
+        if (isset($this->other_base)) {
+            $this->database = $this->other_base;
+        } elseif ($this->prefix) {
+            $this->database = $this->database.''.$this->prefix;
+        }
+
         // Проверяем наличие slave базы и включен ли роутинг
-        if ($this->config["db"]["slave"] != null && $this->config["db"]["router"] == '1') {
- 
-            if ($resource !== null && isset($this->config["db"]["resource"][$resource]["db"])) {
-                $this->db = $this->config["db"]["resource"][$resource]["db"];
-            } else {
-                $this->db = $this->config["db"]["master"];
-            }
+        if (isset($this->config["db"]["slave"]) && $this->router == 1) {
 
-            $_db = ucfirst(strtolower($this->db));
-            $_adapter = ucfirst(strtolower($this->adapter));
+            if (isset($this->namespace) && isset($this->driver) && isset($this->adapter) && isset($this->resource)) {
 
-            if ($this->db != null && $resource != null) {
-                // Пингуем наличие ресурса в указанной базы данных
-                $class = $this->namespace."\\".$_adapter."\\".$_db;
-                // $class = "\Package\Nameclass\NameclassPing";
-                $db = new $class($this->config);
-                $ping = $db->ping($resource);
+                $class = $this->namespace."\\".ucfirst(strtolower($this->driver))."".ucfirst(strtolower($this->adapter));
+                $ping = (new $class($this->config))->ping($resource);
+
                 // Вернет название ресурса или null
-                if ($ping == $this->config["db"]["resource"][$resource]["db"]) {
+                if ($ping == $this->config["db"]["resource"][$this->resource]["db"]) {
                     // Если все ок вернет название $resource
-                    return $this->config["db"]["resource"][$resource]["db"];
+					$this->database = $this->config["db"]["resource"][$this->resource]["db"];
                 } else {
-                    // Если ресурс недоступен вернет null или другой ответ
-                    // Тогда пингуем master и slave базы
-                    $class = $this->namespace."\\".$_adapter."\\".$_db."".$this->driver;
-                    // $class = "\Package\Nameclass\NameclassPing";
-                    $db = new $class($this->config);
-                    $ping = $db->ping($resource);
                     // Если все ок, вернет название master базы
                     if ($ping == $this->config["db"]["master"]) {
-                        return $this->config["db"]["master"];
+                        $this->database = $this->config["db"]["master"];
                     } else {
-                        // Если мастер база недоступна пингуем slave базу
-                        $class = $this->namespace."\\".$_adapter."\\".$_db."".$this->driver;
-                        // $class = "\Package\Nameclass\NameclassPing";
-                        $db = new $class($this->config);
-                        $ping = $db->ping($resource);
                         if ($ping == $this->config["db"]["slave"]) {
-                            return $this->config["db"]["slave"];
-                        } else {
-                            return null;
+                            $this->database = $this->config["db"]["slave"];
                         }
                     }
                 }
-            } else {
-                return null;
             }
-        } else {
-            // Берем название базы из конфигурации ресурса, если она не указанна берем название master базы.
-            if ($resource !== null && isset($this->config["db"]["resource"][$resource]["db"])) {
-            $this->db = $this->config["db"]["resource"][$resource]["db"];
-            } else {
-                $this->db = $this->config["db"]["master"];
-            }
-            return $this->db;
         }
 
+		return $this->database;
+
+    }
+
+    public function run($database = null, array $options = [])
+    {
+        $this->options = $options ?? [];
+        $this->database = $database ?? null;
+		if (isset($this->namespace) && isset($this->adapter)&& isset($this->driver)) {
+			$class = $this->namespace."\\".ucfirst(strtolower($this->driver))."".ucfirst(strtolower($this->adapter));
+            return new $class($this->config, $this->database, $this->options, $this->format, $this->prefix, $this->other_base);
+		} else {
+		    return null;
+		}
     }
 
     public function setOptions(array $options = [])
@@ -213,12 +185,18 @@ class Router implements RouterDbInterface
         return $this->options ?? [];
     }
 
-    // Установить название базы данных
-    public function setDb($dbName = null)
+    // Set DataBase Name
+    public function setDatabase($database = null)
     {
-        if (isset($dbName)) {
-            $this->dbName = $dbName;
+        if (isset($database)) {
+            $this->database = $database;
         }
+    }
+
+    // Get DataBase Name
+    public function getDatabase()
+    {
+        return $this->database;
     }
 
     // Установить пространство имен
@@ -229,6 +207,12 @@ class Router implements RouterDbInterface
         }
     }
 
+    // Get DataBase Namespace
+    public function getNamespace()
+    {
+        return $this->namespace ?? null;
+    }
+
     // Установить название адаптера
     public function setAdapter($adapter = null)
     {
@@ -237,49 +221,41 @@ class Router implements RouterDbInterface
         }
     }
 
-    // Получить название базы данных
-    public function getDb()
-    {
-        return $this->dbName ?? null;
-    }
-
-    // Получить пространство имен
-    public function getNamespace()
-    {
-        return $this->namespace ?? null;
-    }
-
-    // Получить название адаптера
+    // Get DataBase Adapter
     public function getAdapter()
     {
         return $this->adapter ?? null;
     }
 
-    // Получить название адаптера
-    public function getDriver()
-    {
-        return $this->driver ?? null;
-    }
-
-    public function setDriver(string $driver = null)
+    // Set DataBase Driver
+	public function setDriver(string $driver = null)
 	{
         if (isset($driver)) {
             $this->driver = $driver;
         }
 	}
 
-    public function setPrefix(string $prefix = null)
+    // Get DataBase Driver
+    public function getDriver()
+    {
+        return $this->driver ?? null;
+    }
+
+    // Set DataBase Prefix
+	public function setPrefix(string $prefix = null)
 	{
         if (isset($prefix)) {
             $this->prefix = $prefix;
 			}
 	}
-    public function getPrefix()
+
+	// Get DataBase Prefix
+	public function getPrefix()
 	{
         return $this->prefix ?? null;
 	}
-	
-    // Установить logger
+
+    // Set Logger
     public function setLogger($logger = null)
     {
         if (isset($logger)) {
@@ -287,7 +263,7 @@ class Router implements RouterDbInterface
         }
     }
 
-    // Установить mailer
+    // Set Mailer
     public function setMailer($mailer = null)
     {
         if (isset($mailer)) {

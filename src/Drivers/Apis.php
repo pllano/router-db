@@ -26,7 +26,7 @@ class Api
     private $public_key = null;
     private $config;
 
-    public function __construct(array $config = [], array $options = [], $prefix = null)
+    public function __construct(array $config = [], array $options = [], string $prefix = null, $other_base = null)
     {
         if (isset($config)) {
             if (isset($prefix)) {
@@ -52,6 +52,21 @@ class Api
 
             $this->client = new $config['vendor']['http_client']['client']();
         }
+    }
+
+    public function api($data)
+    {
+        return $data;
+    }
+
+    public function pdo($data)
+    {
+        return $data;
+    }
+
+    public function apis($data)
+    {
+        return $data;
     }
 
     public function ping($resource = null)
@@ -80,9 +95,8 @@ class Api
             return null;
         }
     }
- 
-    // Загрузить
-    public function get($resource = null, array $arr = [], $id = null)
+
+    public function get(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         $resource_id = "";
         $public_key = "";
@@ -134,17 +148,13 @@ class Api
         }
  
     }
- 
-    // Искать
-    public function search($resource = null, array $query_arr = [], $keyword = null)
+
+    public function search(string $resource = null, string $keyword = null, array $query = [], string $field_id = null)
     {
-        // Новый запрос, аналог get рассчитан на полнотекстовый поиск
-        // Должен возвращать count для пагинации в параметре ["response"]["total"]
-        // Еще в разработке ...
+
     }
- 
-    // Создаем одну запись
-    public function post($resource = null, array $arr = [])
+
+    public function post(string $resource = null, array $query = [], string $field_id = null): int
     {
         $public_key = "";
         $array = "";
@@ -196,8 +206,7 @@ class Api
         }    
     }
  
-    // Обновляем
-    public function put($resource = null, array $arr = [], $id = null)
+    public function put(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         $resource_id = "";
         $public_key = "";
@@ -250,8 +259,7 @@ class Api
         }
     }
  
-    // Обновляем
-    public function patch($resource = null, array $arr = [], $id = null)
+    public function patch(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         $resource_id = "";
         $public_key = "";
@@ -303,18 +311,43 @@ class Api
             return $records;
         }
     }
- 
-    // Удаляем
-    public function delete($resource = null, array $arr = [], $id = null)
+
+    public function delete(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         return null;
     }
- 
-    // Получить последний идентификатор
-    public function last_id($resource)
+
+	public function count(string $resource = null, array $query = [], int $id = null, string $field_id = null): int
+	{
+	
+	}
+
+    public function last_id(string $resource = null, string $field_id = null): int
     {
         return null;
     }
- 
+
+    public function fieldMap($resource = null)
+    {
+        return [];
+    }
+
+    public function tableSchema($table)
+    {
+        $fieldMap = $this->fieldMap($table);
+        $table_schema = [];
+        foreach($fieldMap as $key => $val)
+        {
+            $table_schema[$key] = $val;
+        }
+        
+        return $table_schema;
+    }
+
+    static public function selectDate($minutes = null)
+    {
+        return "0000-00-00 00:00:00";
+    }
+
 }
  

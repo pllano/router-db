@@ -37,7 +37,7 @@ class Mysql extends \PDO
      */
     private $options = [];
 
-    public function __construct(array $config = [], array $options = [], $other_base = null)
+    public function __construct(array $config = [], array $options = [], string $prefix = null, $other_base = null)
     {
         if (isset($config)) {
             // Конфигурация
@@ -60,8 +60,27 @@ class Mysql extends \PDO
         }
     }
 
-    // Загрузить
-    public function get($resource = null, array $arr = [], $id = null, $field_id = null)
+    public function api($data)
+    {
+        return $data;
+    }
+
+    public function pdo($data)
+    {
+        return $data;
+    }
+
+    public function apis($data)
+    {
+        return $data;
+    }
+
+    public function ping(string $resource = null)
+    {
+            return "mysql";
+    }
+
+    public function get(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         $this->resource = $resource;
         if ($resource != null) {
@@ -348,9 +367,8 @@ class Mysql extends \PDO
             return $resp;
  
     }
- 
-    // Искать
-    public function search($resource = null, array $query_arr = [], $keyword = null, $field_id = null)
+
+    public function search(string $resource = null, string $keyword = null, array $query = [], string $field_id = null)
     {
         // Новый запрос, аналог get рассчитан на полнотекстовый поиск
         // Должен возвращать count для пагинации в параметре ["response"]["total"]
@@ -358,8 +376,7 @@ class Mysql extends \PDO
         // Еще в разработке ...
     }
  
-    // Создаем одну запись
-    public function post($resource = null, array $arr = [], $field_id = null)
+    public function post(string $resource = null, array $query = [], string $field_id = null): int
     {
         if ($field_id == null) {
             $show = null;
@@ -442,9 +459,8 @@ class Mysql extends \PDO
         // Возвращаем ответ на запрос
         return $resp;
     }
- 
-    // Обновляем
-    public function put($resource = null, array $arr = [], $id = null, $field_id = null)
+
+    public function put(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         $this->resource = $resource;
         if ($resource != null) {
@@ -565,8 +581,7 @@ class Mysql extends \PDO
  
     }
 
-    // Обновляем
-    public function patch($resource = null, array $arr = [], $id = null, $field_id = null)
+    public function patch(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         $this->resource = $resource;
         if ($this->resource == null) {
@@ -687,9 +702,8 @@ class Mysql extends \PDO
         return $resp;
  
     }
- 
-    // Удаляем
-    public function delete($resource = null, array $arr = [], $id = null, $field_id = null)
+
+    public function delete(string $resource = null, array $query = [], int $id = null, string $field_id = null)
     {
         if ($resource != null) {
             if ($id >= 1) {
@@ -801,9 +815,8 @@ class Mysql extends \PDO
         // Возвращаем ответ
         return $resp;
     }
- 
-    // count для пагинатора
-    public function count($resource = null, array $arr = [], $id = null, $field_id = null)
+
+    public function count(string $resource = null, array $query = [], int $id = null, string $field_id = null): int
     {
         $i=0;
         // Приходится делать запрос и при наличии id, так как может отдать null
@@ -882,16 +895,25 @@ class Mysql extends \PDO
         return $response;
  
     }
- 
-    // Получить последний идентификатор
+
     public function last_id($resource)
     {
         return $this->query("SHOW TABLE STATUS LIKE '".$resource."'")->fetch(PDO::FETCH_ASSOC)['Auto_increment'];
     }
 
-    public function ping($resource = null)
+    public function fieldMap($resource = null)
     {
-            return "mysql";
+        return [];
+    }
+
+    public function tableSchema($table)
+    {
+        return [];
+    }
+
+    static public function selectDate($minutes = null)
+    {
+        return "0000-00-00 00:00:00";
     }
 
 }
