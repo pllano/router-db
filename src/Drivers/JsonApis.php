@@ -23,6 +23,7 @@ class JsonApis implements DatabaseInterface
 	private $database = null;
 	private $prefix = null;
 	private $other_base = null;
+	private $response = null;
 
     public function __construct(array $config = [], string $database = null, array $options = [], string $format = null, string $prefix = null, $other_base = null)
     {
@@ -587,7 +588,7 @@ class JsonApis implements DatabaseInterface
         return null;
     }
  
-    public function post(string $resource = null, array $query = [], string $field_id = null): int
+    public function post(string $resource = null, array $query = [], string $field_id = null)
     {
         if (isset($resource)) {
             // Проверяем наличие главной базы если нет даем ошибку
@@ -599,7 +600,7 @@ class JsonApis implements DatabaseInterface
                 // Подключаем таблицу
                 $row = Database::table($resource);
                 // Разбираем параметры полученные в теле запроса
-                foreach($arr as $key => $value){
+                foreach($query as $key => $value){
                    if (isset($key) && isset($value)) {
                         if ($key != "id") {
                             if (array_key_exists($key, $table_config["schema"])) {
@@ -708,7 +709,7 @@ class JsonApis implements DatabaseInterface
                     // Подключаем таблицу
                     $row = Database::table($resource)->find($id);
                     // Разбираем параметры полученные в теле запроса
-                    foreach($arr as $key => $value){
+                    foreach($query as $key => $value){
                         if (isset($key) && isset($value)) {
                             if ($key != "id") {
                                 if (array_key_exists($key, $table_config["schema"])) {
@@ -780,7 +781,7 @@ class JsonApis implements DatabaseInterface
                 else {
                     // Обновляем несколько записей
                     // Разбираем параметры полученные в теле запроса
-                    foreach($arr as $key => $value){
+                    foreach($query as $key => $value){
                         if (isset($key) && isset($value)) {
                             if ($key != "id") {
                                 if (array_key_exists($key, $table_config["schema"])) {
@@ -892,7 +893,7 @@ class JsonApis implements DatabaseInterface
                     // Подключаем таблицу
                     $row = Database::table($resource)->find($id);
                     // Разбираем параметры полученные в теле запроса
-                    foreach($arr as $key => $value){
+                    foreach($query as $key => $value){
                         if (isset($key) && isset($value)) {
                             if ($key != "id") {
                                 if (array_key_exists($key, $table_config["schema"])) {
@@ -964,7 +965,7 @@ class JsonApis implements DatabaseInterface
                 } else {
                     // Обновляем несколько записей
                     // Разбираем параметры полученные в теле запроса
-                    foreach($arr as $key => $value){
+                    foreach($query as $key => $value){
                         if (isset($key) && isset($value)) {
                             if ($key != "id") {
                                 if (array_key_exists($key, $table_config["schema"])) {

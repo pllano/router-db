@@ -6,6 +6,7 @@
  * @copyright Copyright (c) 2017-2018 PLLANO
  * @license http://opensource.org/licenses/MIT (MIT License)
  */
+
 namespace Pllano\RouterDb;
 
 use Pllano\Interfaces\RouterDbInterface;
@@ -75,7 +76,7 @@ class Router implements RouterDbInterface
 	
 	private $resource = null;
 
-    public function __construct(array $config = [], string $adapter = null, string $driver = null, string $format = null)
+    public function __construct(array $config = [], string $driver = null, string $adapter = null, string $format = null)
     {
         if (isset($config)) {
             $this->config = $config;
@@ -94,7 +95,7 @@ class Router implements RouterDbInterface
 		$this->router = (int)$this->config["db"]["router"];
     }
 
-    public function setConfig(array $config = [], string $adapter = null, string $driver = null, string $format = null)
+    public function setConfig(array $config = [], string $driver = null, string $adapter = null, string $format = null)
     {
         if (isset($config)) {
 			$this->config = array_replace_recursive($this->config, $config);
