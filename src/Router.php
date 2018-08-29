@@ -111,7 +111,7 @@ class Router implements RouterDbInterface
         }
     }
 
-    public function getConfig(): array
+    public function getConfig()
     {
         return $this->config;
     }
